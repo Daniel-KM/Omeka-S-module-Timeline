@@ -65,16 +65,26 @@
 
     $(document).ready(function () {
         var originalQuery = extractItemPoolQuery();
+
+        // Don't "warn if unsaved" for the "block timeline" on site page form.
         $('#timeline-form').on('o:before-form-unload', function () {
             if (originalQuery !== extractItemPoolQuery()) {
                 Omeka.markDirty(this);
             }
         });
+
         $('#timeline-form').on('submit', function(e) {
             // Append the query object to the form
             $('<input>', {type: 'hidden', name: 'item_pool'})
                 .val(extractItemPoolQuery())
-                .appendTo('#timeline-form');
+                .appendTo($(this));
         });
+
+        // TODO Remove the fix for <= Omeka S beta 3 (no id "site-page-form").
+        $('#timeline-form').on('submit', function(e) {
+                $('<input>', {type: 'hidden', name: 'o:block[1][o:data][item_pool]'})
+                    .val(extractItemPoolQuery())
+                    .appendTo($(this));
+              });
     });
 })(jQuery);

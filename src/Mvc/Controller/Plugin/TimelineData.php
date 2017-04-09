@@ -3,7 +3,6 @@
 namespace Timeline\Mvc\Controller\Plugin;
 
 use DateTime;
-use Timeline\Api\Representation\TimelineRepresentation;
 use Zend\Mvc\Controller\Plugin\AbstractPlugin;
 
 class TimelineData extends AbstractPlugin
@@ -15,28 +14,35 @@ class TimelineData extends AbstractPlugin
     const RENDER_YEAR_FULL_YEAR = 'full_year';
     // Render a year as a range: use convertSingleDate().
     const RENDER_YEAR_SKIP = 'skip';
+    const RENDER_YEAR_DEFAULT = self::RENDER_YEAR_JANUARY_1;
 
     protected $renderYear;
 
     /**
      * Extract titles, descriptions and dates from the timeline’s pool of items.
      *
-     * @param TimelineRepresentation $timeline
+     * @param array $itemPool
+     * @param array $args
      * @return array
      */
-    public function __invoke(TimelineRepresentation $timeline)
+    public function __invoke(array $itemPool, array $args)
     {
         $events = [];
 
-        $this->renderYear = $timeline->args()['render_year'];
+        $this->renderYear = isset($args['render_year'])
+            ? $args['render_year']
+            : self::RENDER_YEAR_DEFAULT;
 
-        $propertyItemTitle = $timeline->args()['item_title'];
-        $propertyItemDescription = $timeline->args()['item_description'];
-        $propertyItemDate = $timeline->args()['item_date'];
-        $propertyItemDateEnd = $timeline->args()['item_date_end'];
+        $propertyItemTitle = $args['item_title'];
+        $propertyItemDescription = $args['item_description'];
+        $propertyItemDate = $args['item_date'];
+        $propertyItemDateEnd = isset($args['item_date_end']) ? $args['item_date_end'] : null;
+
+        $params = $itemPool;
+        $params['has_property'][$args['item_date_id']] = 1;
 
         $items = $this->getController()->api()
-            ->search('items', ['timeline_slug' => $timeline->slug()])
+            ->search('items', $params)
             ->getContent();
         foreach ($items as $item) {
             // All items without dates are already automatically removed.

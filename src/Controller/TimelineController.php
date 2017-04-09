@@ -14,7 +14,7 @@ class TimelineController extends AbstractActionController
         );
         $timeline = $response->getContent();
 
-        $data = $this->timelineData($timeline);
+        $data = $this->timelineData($timeline->itemPool(), $timeline->args());
 
         $view = new JsonModel();
         $view->setVariables($data);

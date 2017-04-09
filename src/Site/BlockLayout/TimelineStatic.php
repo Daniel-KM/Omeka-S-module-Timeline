@@ -9,11 +9,11 @@ use Omeka\Site\BlockLayout\AbstractBlockLayout;
 use Zend\View\Renderer\PhpRenderer;
 use Zend\Form\Form;
 
-class Timeline extends AbstractBlockLayout
+class TimelineStatic extends AbstractBlockLayout
 {
     public function getLabel()
     {
-        return 'Timeline'; // @translate
+        return 'Timeline (static)'; // @translate
     }
 
     public function form(PhpRenderer $view, SiteRepresentation $site,
@@ -44,7 +44,7 @@ class Timeline extends AbstractBlockLayout
         }
 
         return $view->partial(
-            'common/block-layout/timeline-form',
+            'common/block-layout/timeline-static-form',
             ['form' => $form]
         );
     }
@@ -60,7 +60,7 @@ class Timeline extends AbstractBlockLayout
         $config = $block->getServiceLocator()->get('Config');
         $external = $config['assets']['use_externals'];
 
-        return $view->partial('common/block-layout/timeline', [
+        return $view->partial('common/block-layout/timeline-static', [
             'timeline' => $timeline,
             'external' => $external,
         ]);

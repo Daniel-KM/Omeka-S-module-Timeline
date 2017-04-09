@@ -20,7 +20,7 @@ return [
     ],
     'block_layouts' => [
         'invokables' => [
-            'timeline' => 'Timeline\Site\BlockLayout\Timeline',
+            'timelineStatic' => 'Timeline\Site\BlockLayout\TimelineStatic',
         ],
     ],
     'navigation_links' => [

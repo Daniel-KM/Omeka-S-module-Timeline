@@ -1,0 +1,53 @@
+<?php $form->prepare(); ?>
+<style type="text/css">
+    .inputs label {
+        display: block;
+    }
+</style>
+<fieldset>
+    <legend><?php echo $this->translate('Javascript Library'); ?></legend>
+    <?php $element = $form->get('timeline_library'); ?>
+        <?php echo $this->translate($element->getOption('info')); ?>
+    <div class="field">
+        <div class="field-meta">
+            <?php echo $this->formLabel($element); ?>
+        </div>
+        <div class='inputs'>
+            <?php echo $this->formRadio($element); ?>
+        </div>
+    </div>
+</fieldset>
+<fieldset>
+    <legend><?php echo $this->translate('Navigation'); ?></legend>
+    <?php $element = $form->get('timeline_link_to_nav'); ?>
+    <div class="field">
+        <div class="field-meta">
+            <?php echo $this->formLabel($element); ?>
+            <a class="expand" href="#"></a>
+            <div class="collapsible">
+                <div class="field-description">
+                    <?php echo $this->translate($element->getOption('info')); ?>
+                </div>
+            </div>
+        </div>
+        <div class='inputs'>
+            <?php echo $this->formSelect($element); ?>
+        </div>
+    </div>
+    <?php $element = $form->get('timeline_link_to_nav_main'); ?>
+    <div class="field">
+        <div class="field-meta">
+            <?php echo $this->formLabel($element); ?>
+            <a class="expand" href="#"></a>
+            <div class="collapsible">
+                <div class="field-description">
+                    <?php echo $this->translate($element->getOption('info')); ?>
+                </div>
+            </div>
+        </div>
+        <div class='inputs'>
+            <?php echo $this->formSelect($element); ?>
+        </div>
+    </div>
+</fieldset>
+<?php echo $this->formCollection($form->get('timeline_defaults')); ?>

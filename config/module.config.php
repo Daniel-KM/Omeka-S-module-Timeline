@@ -1,66 +1,150 @@
 <?php
 return [
-    'block_layouts' => [
+    'api_adapters' => [
         'invokables' => [
-            'universalViewer' => 'UniversalViewer\Site\BlockLayout\UniversalViewer',
+            'timelines' => 'Timeline\Api\Adapter\TimelineAdapter',
         ],
     ],
-    'controllers' => [
-        'invokables' => [
-            'UniversalViewer\Controller\Player' => 'UniversalViewer\Controller\PlayerController',
+    'entity_manager' => [
+        'mapping_classes_paths' => [
+            __DIR__ . '/../src/Entity',
         ],
-    ],
-    'form_elements' => [
-        'factories' => [
-            'UniversalViewer\Form\ConfigForm' => 'UniversalViewer\Service\Form\ConfigFormFactory',
-        ],
-    ],
-    'router' => [
-        'routes' => [
-            'universalviewer_player' => [
-                'type' => 'segment',
-                'options' => [
-                    'route' => '/:resourcename/:id/play',
-                    'constraints' => [
-                        'resourcename' => 'item|item\-set',
-                        'id' => '\d+',
-                    ],
-                    'defaults' => [
-                        '__NAMESPACE__' => 'UniversalViewer\Controller',
-                        'controller' => 'Player',
-                        'action' => 'play',
-                    ],
-                ],
-            ],
-
-            // If really needed, the next route may be uncommented to keep
-            // compatibility with the old schemes used by the plugin for Omeka 2
-            // before the version 2.4.2.
-            // 'universalviewer_player_classic' => [
-            //     'type' => 'segment',
-            //     'options' => [
-            //         'route' => '/:resourcename/play/:id',
-            //         'constraints' => [
-            //             'resourcename' => 'item|items|item\-set|item_set|collection|item\-sets|item_sets|collections',
-            //             'id' => '\d+',
-            //         ],
-            //         'defaults' => [
-            //             '__NAMESPACE__' => 'UniversalViewer\Controller',
-            //             'controller' => 'Player',
-            //             'action' => 'play',
-            //         ],
-            //     ],
-            // ],
+        'proxy_paths' => [
+            __DIR__ . '/../data/doctrine-proxies',
         ],
     ],
     'view_manager' => [
         'template_path_stack' => [
-            OMEKA_PATH . '/modules/UniversalViewer/view',
+            __DIR__ . '/../view',
         ],
     ],
-    'view_helpers' => [
+    'block_layouts' => [
         'invokables' => [
-            'universalViewer' => 'UniversalViewer\View\Helper\UniversalViewer',
+            'timeline' => 'Timeline\Site\BlockLayout\Timeline',
+        ],
+    ],
+    'navigation_links' => [
+        'invokables' => [
+            'browseTimelines' => 'Timeline\Site\Navigation\Link\BrowseTimelines',
+        ],
+    ],
+    'form_elements' => [
+        'invokables' => [
+            'Timeline\Form\Add' => 'Timeline\Form\Add',
+        ],
+        'factories' => [
+            'Timeline\Form\Config' => 'Timeline\Service\Form\ConfigFactory',
+        ],
+    ],
+    'navigation' => [
+        'AdminModule' => [
+            [
+                'label' => 'Timelines', // @translate
+                'route' => 'admin/timeline',
+                'resource' => 'Timeline\Controller\Admin\Timeline',
+                'privilege' => 'browse',
+                'pages' => [
+                    [
+                        'route' => 'admin/timeline',
+                        'visible' => false,
+                    ],
+                    [
+                        'route' => 'admin/timeline/slug',
+                        'visible' => false,
+                    ],
+                    [
+                        'route' => 'admin/add-timeline',
+                        'visible' => false,
+                    ],
+                ],
+            ],
+        ],
+    ],
+    'controllers' => [
+        'invokables' => [
+            'Timeline\Controller\Admin\Timeline' => 'Timeline\Controller\Admin\TimelineController',
+            'Timeline\Controller\Site\Timeline' => 'Timeline\Controller\Site\TimelineController',
+        ],
+    ],
+    'controller_plugins' => [
+        'invokables' => [
+            'timelineData' => 'Timeline\Mvc\Controller\Plugin\TimelineData',
+        ],
+    ],
+    'router' => [
+        'routes' => [
+            'admin' => [
+                'child_routes' => [
+                    'timeline' => [
+                        'type' => 'Literal',
+                        'options' => [
+                            'route' => '/timeline',
+                            'defaults' => [
+                                '__NAMESPACE__' => 'Timeline\Controller\Admin',
+                                'controller' => 'Timeline',
+                                'action' => 'browse',
+                            ],
+                        ],
+                        'may_terminate' => true,
+                        'child_routes' => [
+                            'slug' => [
+                                'type' => 'Segment',
+                                'options' => [
+                                    'route' => '/:timeline-slug[/:action]',
+                                    'constraints' => [
+                                        'timeline-slug' => '[a-zA-Z0-9_-]+',
+                                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                    ],
+                                    'defaults' => [
+                                        'action' => 'show',
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                    'add-timeline' => [
+                        'type' => 'Literal',
+                        'options' => [
+                            'route' => '/add-timeline',
+                            'defaults' => [
+                                '__NAMESPACE__' => 'Timeline\Controller\Admin',
+                                'controller' => 'Timeline',
+                                'action' => 'add',
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+            'site' => [
+                'child_routes' => [
+                    'timeline' => [
+                        'type' => 'Literal',
+                        'options' => [
+                            'route' => '/timeline',
+                            'defaults' => [
+                                '__NAMESPACE__' => 'Timeline\Controller\Site',
+                                'controller' => 'Timeline',
+                                'action' => 'browse',
+                            ],
+                        ],
+                        'may_terminate' => true,
+                        'child_routes' => [
+                            'slug' => [
+                                'type' => 'Segment',
+                                'options' => [
+                                    'route' => '/:timeline-slug',
+                                    'defaults' => [
+                                        'action' => 'show',
+                                    ],
+                                    'constraints' => [
+                                        'timeline-slug' => '[a-zA-Z0-9_-]+',
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
         ],
     ],
     'translator' => [

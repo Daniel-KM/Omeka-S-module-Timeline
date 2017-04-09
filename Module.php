@@ -48,25 +48,26 @@ class Module extends AbstractModule
 
     public function install(ServiceLocatorInterface $serviceLocator)
     {
+        $sql = <<<'SQL'
+CREATE TABLE `timeline` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `owner_id` int(11) DEFAULT NULL,
+  `slug` varchar(190) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `title` varchar(190) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `description` longtext COLLATE utf8mb4_unicode_ci,
+  `is_public` tinyint(1) NOT NULL,
+  `parameters` longtext COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '(DC2Type:json_array)',
+  `item_pool` longtext COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '(DC2Type:json_array)',
+  `created` datetime NOT NULL,
+  `modified` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `UNIQ_46FEC666989D9B62` (`slug`),
+  KEY `IDX_46FEC6667E3C61F9` (`owner_id`),
+  CONSTRAINT `FK_46FEC6667E3C61F9` FOREIGN KEY (`owner_id`) REFERENCES `user` (`id`) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+SQL;
         $conn = $serviceLocator->get('Omeka\Connection');
-        $conn->exec('
-CREATE TABLE IF NOT EXISTS `timeline` (
-    `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
-    `title` TINYTEXT COLLATE utf8_unicode_ci NOT NULL,
-    `description` TEXT COLLATE utf8_unicode_ci NOT NULL,
-    `owner_id` INT(10) UNSIGNED NOT NULL DEFAULT 0,
-    `public` TINYINT(1) UNSIGNED NOT NULL DEFAULT 0,
-    `featured` TINYINT(1) NOT NULL DEFAULT 0,
-    `parameters` TEXT COLLATE utf8_unicode_ci NOT NULL,
-    `query` TEXT COLLATE utf8_unicode_ci NOT NULL,
-    `added` timestamp NOT NULL default "2000-01-01 00:00:00",
-    `modified` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
-    PRIMARY KEY (`id`),
-    KEY `public` (`public`),
-    KEY `featured` (`featured`),
-    KEY `owner_id` (`owner_id`)
-) ENGINE=innodb DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-        ');
+        $conn->exec($sql);
 
         $settings = $serviceLocator->get('Omeka\Settings');
         foreach ($this->settings as $name => $value) {
@@ -76,10 +77,11 @@ CREATE TABLE IF NOT EXISTS `timeline` (
 
     public function uninstall(ServiceLocatorInterface $serviceLocator)
     {
-        $conn = $serviceLocator->get('Omeka\Connection');
-        $conn->exec('
+        $sql = <<<'SQL'
 DROP TABLE IF EXISTS timeline;
-        ');
+SQL;
+        $conn = $serviceLocator->get('Omeka\Connection');
+        $conn->exec($sql);
 
         $settings = $serviceLocator->get('Omeka\Settings');
         foreach ($this->settings as $name => $value) {

@@ -172,9 +172,10 @@ class TimelineController extends AbstractActionController
     {
         $data['o:item_pool'] = json_decode($data['item_pool'], true) ?: [];
 
-        $data['o:args']['viewer'] = empty($data['o:args']['viewer'])
-            ? []
-            : json_decode($data['o:args']['viewer'], true);
+        $data['o:args']['viewer'] = trim($data['o:args']['viewer']);
+        if ($data['o:args']['viewer'] === '') {
+            $data['o:args']['viewer'] = '{}';
+        }
 
         $vocabulary = strtok($data['o:args']['item_date'], ':');
         $name = strtok(':');

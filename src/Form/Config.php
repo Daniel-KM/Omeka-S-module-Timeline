@@ -113,30 +113,12 @@ class Config extends Form
             'type' => 'Textarea',
             'options' => [
                 'label' => 'Viewer', // @translate
-                'info' => 'Set the default params of the viewer as raw json, or let empty for the included default.' // @translate
+                'info' => 'Set the default params of the viewer as json, or let empty for the included default.' // @translate
                     . ' ' . 'Currently, only "bandInfos" and "centerDate" are managed.', // @translate
             ],
             'attributes' => [
                 'rows' => 15,
             ],
         ]);
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @param bool $onlyBase
-     */
-    public function populateValues($data, $onlyBase = false)
-    {
-        if (empty($data['timeline_defaults']['viewer'])) {
-            $data['timeline_defaults']['viewer'] = [];
-        }
-        $data['timeline_defaults']['viewer'] = trim(json_encode(
-            $data['timeline_defaults']['viewer'],
-            JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT
-        ), '"\'');
-
-        parent::populateValues($data);
     }
 }

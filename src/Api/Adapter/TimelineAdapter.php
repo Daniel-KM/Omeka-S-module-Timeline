@@ -74,7 +74,7 @@ class TimelineAdapter extends AbstractEntityAdapter
             $settings = $services->get('Omeka\Settings');
             $args = $request->getValue('o:args', $settings->get('timeline_default'));
             if (empty($args['viewer'])) {
-                $args['viewer'] = [];
+                $args['viewer'] = '{}';
             }
             $vocabulary = strtok($args['item_date'], ':');
             $name = strtok(':');

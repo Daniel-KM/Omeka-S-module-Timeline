@@ -93,9 +93,10 @@ class Timeline extends AbstractBlockLayout
 
         $data['item_pool'] = json_decode($data['item_pool'], true) ?: [];
 
-        $data['args']['viewer'] = empty($data['args']['viewer'])
-            ? []
-            : json_decode($data['args']['viewer'], true);
+        $data['args']['viewer'] = trim($data['args']['viewer']);
+        if ($data['args']['viewer'] === '') {
+            $data['args']['viewer'] = '{}';
+        }
 
         $vocabulary = strtok($data['args']['item_date'], ':');
         $name = strtok(':');

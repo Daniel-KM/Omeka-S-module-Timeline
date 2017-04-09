@@ -151,7 +151,7 @@ class Timeline extends Form
             'type' => 'Textarea',
             'options' => [
                 'label' => 'Viewer', // @translate
-                'info' => 'Set the default params of the viewer as raw json, or let empty for the included default.' // @translate
+                'info' => 'Set the default params of the viewer as json, or let empty for the included default.' // @translate
                     . ' ' . 'Currently, only "bandInfos" and "centerDate" are managed.', // @translate
             ],
             'attributes' => [
@@ -181,23 +181,5 @@ class Timeline extends Form
         //         'viewer',
         //     ],
         // ));
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @param bool $onlyBase
-     */
-    public function populateValues($data, $onlyBase = false)
-    {
-        if (empty($data['o:args']['viewer'])) {
-            $data['o:args']['viewer'] = (object) [];
-        }
-        $data['o:args']['viewer'] = trim(json_encode(
-            $data['o:args']['viewer'],
-            JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT
-        ), '"\'');
-
-        parent::populateValues($data);
     }
 }

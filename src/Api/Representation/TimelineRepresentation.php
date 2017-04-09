@@ -113,6 +113,25 @@ class TimelineRepresentation extends AbstractEntityRepresentation
         return $response->getTotalResults();
     }
 
+    /**
+     * Return the first media of the first item.
+     *
+     * {@inheritDoc}
+     */
+    public function primaryMedia()
+    {
+        $response = $this->getServiceLocator()->get('Omeka\ApiManager')
+            ->search('items', [
+                'timeline_slug' => $this->slug(),
+                'limit' => 1,
+            ]);
+        $items = $response->getContent();
+        if (empty($items)) {
+            return null;
+        }
+        return $items[0]->primaryMedia();
+    }
+
     public function siteUrl($siteSlug = null, $canonical = false)
     {
         if (!$siteSlug) {

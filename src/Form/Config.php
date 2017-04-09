@@ -4,6 +4,7 @@ namespace Timeline\Form;
 use Omeka\Api\Manager as ApiManager;
 use Omeka\Settings\Settings;
 use Zend\Form\Form;
+use Timeline\Mvc\Controller\Plugin\TimelineData;
 
 class Config extends Form
 {
@@ -143,10 +144,10 @@ class Config extends Form
                 'label' => 'Render Year', // @translate
                 'info' => 'When a date is a single year, like "1066", the value should be interpreted to be displayed on the timeline.', // @translate
                 'value_options' => [
-                    'skip' => 'Skip the record', // @translate
-                    'january_1' => 'Pick first January', // @translate
-                    'july_1' => 'Pick first July', // @translate
-                    'full_year' => 'Mark entire year', // @translate
+                    TimelineData::RENDER_YEAR_JANUARY_1 => 'Pick first January', // @translate
+                    TimelineData::RENDER_YEAR_JULY_1 => 'Pick first July', // @translate
+                    TimelineData::RENDER_YEAR_FULL_YEAR => 'Mark entire year', // @translate
+                    TimelineData::RENDER_YEAR_SKIP => 'Skip the record', // @translate
                 ],
             ],
             'attributes' => [

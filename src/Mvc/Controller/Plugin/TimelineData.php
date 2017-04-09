@@ -1,465 +1,379 @@
 <?php
-/**
- * Timeline helper functions
- */
 
-/**
- * Return specific field for a timeline record.
- *
- * @since 1.0
- * @param string
- * @param array $options
- * @param Timeline|null
- * @return string
- * @deprecated
- */
-function timeline($fieldname, $options = [], $timeline = null)
+namespace Timeline\Mvc\Controller\Plugin;
+
+use DateTime;
+use Timeline\Api\Representation\TimelineRepresentation;
+use Zend\Mvc\Controller\Plugin\AbstractPlugin;
+
+class TimelineData extends AbstractPlugin
 {
-    $timeline = $timeline ?: get_current_record('timeline');
-    return metadata($timeline, $fieldname, $options);
-}
+    const RENDER_YEAR_JANUARY_1 = 'january_1';
+    const RENDER_YEAR_JULY_1 = 'july_1';
+    const RENDER_YEAR_DECEMBER_31 = 'december_31';
+    const RENDER_YEAR_JUNE_30 = 'june_30';
+    const RENDER_YEAR_FULL_YEAR = 'full_year';
+    // Render a year as a range: use convertSingleDate().
+    const RENDER_YEAR_SKIP = 'skip';
 
-/**
- * Returns a link to a specific timeline.
- *
- * @since 1.0
- * @param string HTML for the text of the link.
- * @param array Attributes for the <a> tag. (optional)
- * @param string The action for the link. Default is 'show'.
- * @param Timeline|null
- * @return string HTML
- * @deprecated
- */
-function link_to_timeline($text = null, $props = [], $action = 'show', $timeline = null)
-{
-    $timeline = $timeline ?: get_current_record('timeline');
-    $text = $text ?: $timeline->title;
-    return link_to($timeline, $action, $text, $props);
-}
+    protected $renderYear;
 
-/**
- * Queues JavaScript and CSS for Timeline in the page header.
- *
- * @see TimelinePlugin::_head()
- * @since 1.0
- */
-function queue_timeline_assets()
-{
-    $library = get_option('timeline_library');
-    if ($library == 'knightlab') {
-        queue_css_url('//cdn.knightlab.com/libs/timeline3/latest/css/timeline.css');
-        queue_js_url('//cdn.knightlab.com/libs/timeline3/latest/js/timeline.js');
-        return;
-    }
+    /**
+     * Extract titles, descriptions and dates from the timeline’s pool of items.
+     *
+     * @param TimelineRepresentation $timeline
+     * @return array
+     */
+    public function __invoke(TimelineRepresentation $timeline)
+    {
+        $events = [];
 
-    // Default timeline library.
-    queue_css_file('timeline');
+        $this->renderYear = $timeline->parameters()['render_year'];
 
-    queue_js_file('timeline');
+        $propertyItemTitle = $timeline->parameters()['item_title'];
+        $propertyItemDescription = $timeline->parameters()['item_description'];
+        $propertyItemDate = $timeline->parameters()['item_date'];
+        $propertyItemDateEnd = $timeline->parameters()['item_date_end'];
 
-    // Check useInternalJavascripts in config.ini.
-    $config = Zend_Registry::get('bootstrap')->getResource('Config');
-    $useInternalJs = isset($config->theme->useInternalJavascripts)
-    ? (bool) $config->theme->useInternalJavascripts
-    : false;
-    $useInternalJs = isset($config->theme->useInternalAssets)
-    ? (bool) $config->theme->useInternalAssets
-    : $useInternalJs;
-
-    if ($useInternalJs) {
-        $timelineVariables = 'Timeline_ajax_url="' . src('simile-ajax-api.js', 'javascripts/simile/ajax-api') . '";
-            Timeline_urlPrefix="' . dirname(src('timeline-api.js', 'javascripts/simile/timeline-api')) . '/";
-            Timeline_parameters="bundle=true";';
-        queue_js_string($timelineVariables);
-        queue_js_file('timeline-api', 'javascripts/simile/timeline-api');
-    } else {
-        queue_js_url('//api.simile-widgets.org/timeline/2.3.1/timeline-api.js?bundle=true');
-    }
-    queue_js_string('SimileAjax.History.enabled = false; // window.jQuery = SimileAjax.jQuery;');
-}
-
-/**
- * Returns the value of an element set in the Timeline config options.
- *
- * @param Record $record
- * @param string The Timeline option name.
- * @param array An array of options.
- * @return string|array|null
- */
-/**
- * Get metadata for a record according to the parameters of a timeline.
- *
- * @uses Omeka_View_Helper_Metadata::metadata()
- * @param Omeka_Record_AbstractRecord|string $record The record to get metadata
- * for. If an Omeka_Record_AbstractRecord, that record is used. If a string,
- * that string is used to look up a record in the current view.
- * @param mixed $metadata The metadata to get. If an array is given, this is
- * Element metadata, identified by array('Element Set', 'Element'). If a string,
- * the metadata is a record-specific "property."
- * @param array $options Options for getting the metadata.
- * @param Timeline|null $timeline The timeline where the parameters
- * are set. If null, use the current timeline.
- * @return mixed
- */
-function timeline_metadata($record, $metadata, $options = [], $timeline = null)
-{
-    $timeline = $timeline ?: get_current_record('timeline');
-    if (is_string($metadata)) {
-        $elementId = $timeline->getProperty($metadata);
-        if (!empty($elementId)) {
-            $element = $record->getElementById($elementId);
-            if (!empty($element)) {
-                $metadata = [$element->getElementSet()->name, $element->name];
+        $items = $this->getController()->api()
+            ->search('items', ['timeline_slug' => $timeline->slug()])
+            ->getContent();
+        foreach ($items as $item) {
+            // All items without dates are already automatically removed.
+            $itemDates = $item->value($propertyItemDate, ['all' => true, 'type' => 'literal', 'default' => []]);
+            $itemTitle = $item->value($propertyItemTitle, ['type' => 'literal', 'default' => '']);
+            if ($itemTitle) {
+                $itemTitle = strip_tags($itemTitle->value());
+            }
+            $itemDescription = $item->value($propertyItemDescription, ['type' => 'literal', 'default' => '']);
+            if ($itemDescription) {
+                $itemDescription = $this->snippet($itemDescription->value(), 200);
+            }
+            $itemDatesEnd = $propertyItemDateEnd
+                ? $item->value($propertyItemDateEnd, ['all' => true, 'type' => 'literal', 'default' => []])
+                : [];
+            $itemLink = $item->url();
+            $media = $item->primaryMedia();
+            $mediaUrl = $media ? $media->thumbnailUrl('square') : null;
+            foreach ($itemDates as $key => $valueItemDate) {
+                $event = [];
+                $itemDate = $valueItemDate->value();
+                if (empty($itemDatesEnd[$key])) {
+                    list($dateStart, $dateEnd) = $this->convertAnyDate($itemDate, $this->renderYear);
+                } else {
+                    list($dateStart, $dateEnd) = $this->convertTwoDates($itemDate, $itemDatesEnd[$key]->value(), $this->renderYear);
+                }
+                if (empty($dateStart)) {
+                    continue;
+                }
+                $event['start'] = $dateStart;
+                if (!is_null($dateEnd)) {
+                    $event['end'] = $dateEnd;
+                }
+                $event['title'] = $itemTitle;
+                $event['link'] = $itemLink;
+                $event['classname'] = $this->itemClass($item);
+                if ($mediaUrl) {
+                    $event['image'] = $mediaUrl;
+                }
+                $event['description'] = $itemDescription;
+                $events[] = $event;
             }
         }
-        // Avoid some useless process.
-        elseif ($metadata == 'item_date_end') {
-            return [];
+
+        $data = [];
+        $data['dateTimeFormat'] = 'iso8601';
+        $data['events'] = $events;
+
+        return $data;
+    }
+
+    /**
+     * Returns a string for timeline_json 'classname' attribute for an item.
+     *
+     * Default fields included are: 'item', item type name, all DC:Type values.
+     *
+     * @return string
+     */
+    protected function itemClass($item)
+    {
+        $classes = ['item'];
+
+        $type = $item->resourceClass() ? $item->resourceClass()->label() : null;
+
+        if ($type) {
+            $classes[] = $this->textToId($type);
         }
-    }
-    return metadata($record, $metadata, $options);
-}
-
-/**
- * Returns the URI for a timeline's json output.
- *
- * @since 1.0
- * @param Timeline|null
- * @return string URL the items output uri for the timeline-json output.
- */
-function timeline_json_uri_for_timeline($timeline = null)
-{
-    $timeline = $timeline ?: get_current_record('timeline');
-    return record_url($timeline, 'items') . '?output=timeline-json';
-}
-
-/**
- * Construct id for container div.
- *
- * @since 1.0
- * @param Timeline|null
- * @return string HTML
- */
-function timeline_id($timeline = null)
-{
-    $timeline = $timeline ?: get_current_record('timeline');
-    return text_to_id(html_escape($timeline->title) . ' ' . $timeline->id, 'timeline');
-}
-
-/**
- * Displays random featured timelines
- *
- * @param int Maximum number of random featured timelines to display.
- * @return string HTML
- */
-function timeline_display_random_featured_timelines($num = 1)
-{
-    $html = '';
-
-    $timelines = get_db()->getTable('Timeline')->findBy(['sort_field' => 'random', 'featured' => 1], $num);
-
-    if ($timelines) {
-        foreach ($timelines as $timeline) {
-            $html .= '<h3>' . link_to_timeline(null, [], 'show', $timeline) . '</h3>'
-                . '<div class="description timeline-description">'
-                    . timeline('description', ['snippet' => 150], $timeline)
-                    . '</div>';
-        }
-        return $html;
-    }
-}
-
-/**
- * Returns a string for timeline_json 'classname' attribute for an item.
- *
- * Default fields included are: 'item', item type name, all DC:Type values.
- *
- * Output can be filtered using the 'timeline_item_class' filter.
- *
- * @return string
- */
-function timeline_item_class($item = null)
-{
-    $classArray = ['item'];
-
-    if ($itemTypeName = metadata($item, 'item_type_name')) {
-        $classArray[] = text_to_id($itemTypeName);
-    }
-
-    if ($dcTypes = metadata($item, ['Dublin Core', 'Type'], ['all' => true])) {
+        $dcTypes = $item->value('dcterms:type', [
+            'all' => true,
+            'type' => 'literal',
+            'default' => [],
+        ]);
         foreach ($dcTypes as $type) {
-            $classArray[] = text_to_id($type);
+            $classes[] = $this->textToId($type->value());
         }
+
+        $classAttribute = implode(' ', $classes);
+        return $classAttribute;
     }
 
-    $classAttribute = implode(' ', $classArray);
-    $classAttribute = apply_filters('timeline_item_class', $classAttribute);
-    return $classAttribute;
-}
-
-/**
- * Generates an ISO-8601 date from a date string
- *
- * @see Zend_Date
- * @param string $date
- * @param string renderYear Force the format of a single number as a year.
- * @return string ISO-8601 date
- */
-function timeline_convert_date($date, $renderYear = null)
-{
-    if (empty($renderYear)) {
-        $renderYear = timeline_get_option('render_year');
-    }
-
-    // Check if the date is a single number.
-    if (preg_match('/^-?\d{1,4}$/', $date)) {
-        // Normalize the year.
-        $date = $date < 0
-            ? '-' . str_pad(substring($date, 1), 4, "0", STR_PAD_LEFT)
-            : str_pad($date, 4, "0", STR_PAD_LEFT);
-        switch ($renderYear) {
-            case 'january_1':
-                $date_out = $date . '-01-01' . 'T00:00:00+00:00';
-                break;
-            case 'july_1':
-                $date_out = $date . '-07-01' . 'T00:00:00+00:00';
-                break;
-            case 'december_31':
-                $date_out = $date . '-12-31' . 'T00:00:00+00:00';
-                break;
-            case 'june_30':
-                $date_out = $date . '-06-30' . 'T00:00:00+00:00';
-                break;
-            case 'full_year':
-                // Render a year as a range: use timeline_convert_single_date().
-            case 'skip':
-            default:
-                $date_out = false;
-                break;
+    /**
+     * Generates an ISO-8601 date from a date string
+     *
+     * @param string $date
+     * @param string renderYear Force the format of a single number as a year.
+     * @return string ISO-8601 date
+     */
+    protected function convertDate($date, $renderYear = null)
+    {
+        if (empty($renderYear)) {
+            $renderYear = $this->renderYear;
         }
+
+        // Check if the date is a single number.
+        if (preg_match('/^-?\d{1,4}$/', $date)) {
+            // Normalize the year.
+            $date = $date < 0
+                ? '-' . str_pad(substring($date, 1), 4, '0', STR_PAD_LEFT)
+                : str_pad($date, 4, '0', STR_PAD_LEFT);
+            switch ($renderYear) {
+                case self::RENDER_YEAR_JANUARY_1:
+                    $date_out = $date . '-01-01' . 'T00:00:00+00:00';
+                    break;
+                case self::RENDER_YEAR_JULY_1:
+                    $date_out = $date . '-07-01' . 'T00:00:00+00:00';
+                    break;
+                case self::RENDER_YEAR_DECEMBER_31:
+                    $date_out = $date . '-12-31' . 'T00:00:00+00:00';
+                    break;
+                case self::RENDER_YEAR_JUNE_30:
+                    $date_out = $date . '-06-30' . 'T00:00:00+00:00';
+                    break;
+                case self::RENDER_YEAR_FULL_YEAR:
+                    // Render a year as a range: use timeline_convert_single_date().
+                case self::RENDER_YEAR_SKIP:
+                default:
+                    $date_out = false;
+                    break;
+            }
+            return $date_out;
+        }
+
+        try {
+            $dateTime = new DateTime($date);
+
+            $date_out = $dateTime->format(DateTime::ISO8601);
+            $date_out = preg_replace('/^(-?)(\d{3}-)/', '${1}0\2', $date_out);
+            $date_out = preg_replace('/^(-?)(\d{2}-)/', '${1}00\2', $date_out);
+            $date_out = preg_replace('/^(-?)(\d{1}-)/', '${1}000\2', $date_out);
+        } catch (Exception $e) {
+            $date_out = null;
+        }
+
         return $date_out;
     }
 
-    $newDate = null;
-    try {
-        $newDate = new Zend_Date($date, Zend_Date::ISO_8601);
-    } catch (Exception $e) {
-        try {
-            $newDate = new Zend_Date($date);
-        } catch (Exception $e) {
+    /**
+     * Generates an array of one or two ISO-8601 dates from a string.
+     *
+     * @todo manage the case where the start is empty and the end is set.
+     *
+     * @param string $date
+     * @param string renderYear Force the format of a single number as a year.
+     * @return array Array of two dates.
+     */
+    protected function convertAnyDate($date, $renderYear = null)
+    {
+        return $this->convertTwoDates($date, null, $renderYear);
+    }
+
+    /**
+     * Generates an array of one or two ISO-8601 dates from two strings.
+     *
+     * @todo manage the case where the start is empty and the end is set.
+     *
+     * @param string $date
+     * @param string $dateEnd
+     * @param string renderYear Force the format of a single number as a year.
+     * @return array Array of two dates.
+     */
+    protected function convertTwoDates($date, $dateEnd, $renderYear = null)
+    {
+        if (empty($renderYear)) {
+            $renderYear = $this->renderYear;
+        }
+
+        $dateArray = array_map('trim', explode('/', $date));
+
+        // A range of dates.
+        if (count($dateArray) == 2) {
+            return $this->convertRangeDates($dateArray, $renderYear);
+        }
+
+        $dateEndArray = explode('/', $dateEnd);
+        $dateEnd = trim(reset($dateEndArray));
+
+        // A single date, or a range when the two dates are years and when the
+        // render is "full_year".
+        if (empty($dateEnd)) {
+            return $this->convertSingleDate($dateArray[0], $renderYear);
+        }
+
+        return $this->convertRangeDates([$dateArray[0], $dateEnd], $renderYear);
+    }
+
+    /**
+     * Generates an ISO-8601 date from a date string, with an exception for
+     * "full_year" render, that returns two dates.
+     *
+     * @param string $date
+     * @param string renderYear Force the format of a single number as a year.
+     * @return array Array of two dates.
+     */
+    protected function convertSingleDate($date, $renderYear = null)
+    {
+        if (empty($renderYear)) {
+            $renderYear = $this->renderYear;
+        }
+
+        // Manage a special case for render "full_year" with a single number.
+        if ($renderYear == self::RENDER_YEAR_FULL_YEAR && preg_match('/^-?\d{1,4}$/', $date)) {
+            $dateStartValue = $this->convertDate($date, self::RENDER_YEAR_JANUARY_1);
+            $dateEndValue = $this->convertDate($date, self::RENDER_YEAR_DECEMBER_31);
+            return [$dateStartValue, $dateEndValue];
+        }
+
+        // Only one date.
+        $dateStartValue = $this->convertDate($date, $renderYear);
+        return [$dateStartValue, null];
+    }
+
+    /**
+     * Generates two ISO-8601 dates from an array of two strings.
+     *
+     * By construction, no "full_year" is returned.
+     *
+     * @param array $dates
+     * @param string renderYear Force the format of a single number as a year.
+     * @return array $dates
+     */
+    protected function convertRangeDates($dates, $renderYear = null)
+    {
+        if (!is_array($dates)) {
+            return [null, null];
+        }
+
+        if (empty($renderYear)) {
+            $renderYear = $this->renderYear;
+        }
+
+        $dateStart = $dates[0];
+        $dateEnd = $dates[1];
+
+        // Check if the date are two numbers (years).
+        if ($renderYear == self::RENDER_YEAR_SKIP) {
+            $dateStartValue = $this->convertDate($dateStart, $renderYear);
+            $dateEndValue = $this->convertDate($dateEnd, $renderYear);
+            return [$dateStartValue, $dateEndValue];
+        }
+
+        // Check if there is one number and one date.
+        if (!preg_match('/^-?\d{1,4}$/', $dateStart)) {
+            if (!preg_match('/^-?\d{1,4}$/', $dateEnd)) {
+                // TODO Check order to force the start or the end.
+                $dateStartValue = $this->convertDate($dateStart, $renderYear);
+                $dateEndValue = $this->convertDate($dateEnd, $renderYear);
+                return [$dateStartValue, $dateEndValue];
+            }
+            // Force the format for the end.
+            $dateStartValue = $this->convertDate($dateStart, $renderYear);
+            if ($renderYear == self::RENDER_YEAR_FULL_YEAR) {
+                $renderYear = self::RENDER_YEAR_DECEMBER_31;
+            }
+            $dateEndValue = $this->convertDate($dateEnd, $renderYear);
+            return [$dateStartValue, $dateEndValue];
+        }
+        // The start is a year.
+        elseif (!preg_match('/^-?\d{1,4}$/', $dateEnd)) {
+            // Force the format of the start.
+            $dateEndValue = $this->convertDate($dateEnd, $renderYear);
+            if ($renderYear == self::RENDER_YEAR_FULL_YEAR) {
+                $renderYear = self::RENDER_YEAR_JANUARY_1;
+            }
+            $dateStartValue = $this->convertDate($dateStart, $renderYear);
+            return [$dateStartValue, $dateEndValue];
+        }
+
+        $dateStart = (integer) $dateStart;
+        $dateEnd = (integer) $dateEnd;
+
+        // Same years.
+        if ($dateStart == $dateEnd) {
+            $dateStartValue = $this->convertDate($dateStart, self::RENDER_YEAR_JANUARY_1);
+            $dateEndValue = $this->convertDate($dateEnd, self::RENDER_YEAR_DECEMBER_31);
+            return [$dateStartValue, $dateEndValue];
+        }
+
+        // The start and the end are years, so reorder them (may be useless).
+        if ($dateStart > $dateEnd) {
+            $kdate = $dateEnd;
+            $dateEnd = $dateStart;
+            $dateStart = $kdate;
+        }
+
+        switch ($renderYear) {
+            case self::RENDER_YEAR_JULY_1:
+                $dateStartValue = $this->convertDate($dateStart, self::RENDER_YEAR_JULY_1);
+                $dateEndValue = $this->convertDate($dateEnd, self::RENDER_YEAR_JUNE_30);
+                return [$dateStartValue, $dateEndValue];
+            case self::RENDER_YEAR_JANUARY_1:
+                $dateStartValue = $this->convertDate($dateStart, self::RENDER_YEAR_JANUARY_1);
+                $dateEndValue = $this->convertDate($dateEnd, self::RENDER_YEAR_JANUARY_1);
+                return [$dateStartValue, $dateEndValue];
+            case self::RENDER_YEAR_FULL_YEAR:
+            default:
+                $dateStartValue = $this->convertDate($dateStart, self::RENDER_YEAR_JANUARY_1);
+                $dateEndValue = $this->convertDate($dateEnd, self::RENDER_YEAR_DECEMBER_31);
+                return [$dateStartValue, $dateEndValue];
         }
     }
 
-    if (is_null($newDate)) {
-        $date_out = false;
-    } else {
-        $date_out = $newDate->get('c');
-        $date_out = preg_replace('/^(-?)(\d{3}-)/', '${1}0\2', $date_out);
-        $date_out = preg_replace('/^(-?)(\d{2}-)/', '${1}00\2', $date_out);
-        $date_out = preg_replace('/^(-?)(\d{1}-)/', '${1}000\2', $date_out);
-    }
-    return $date_out;
-}
-
-/**
- * Generates an array of one or two ISO-8601 dates from a string.
- *
- * @todo manage the case where the start is empty and the end is set.
- *
- * @see Zend_Date
- * @param string $date
- * @param string renderYear Force the format of a single number as a year.
- * @return array Array of two dates.
- */
-function timeline_convert_any_date($date, $renderYear = null)
-{
-    return timeline_convert_two_dates($date, null, $renderYear);
-}
-
-/**
- * Generates an array of one or two ISO-8601 dates from two strings.
- *
- * @todo manage the case where the start is empty and the end is set.
- *
- * @see Zend_Date
- * @param string $date
- * @param string $dateEnd
- * @param string renderYear Force the format of a single number as a year.
- * @return array Array of two dates.
- */
-function timeline_convert_two_dates($date, $dateEnd, $renderYear = null)
-{
-    if (empty($renderYear)) {
-        $renderYear = timeline_get_option('render_year');
+    /**
+     * Remove html tags and truncate a string to the specified length.
+     *
+     * @param string $string
+     * @param int $length
+     * @return string
+     */
+    protected function snippet($string, $length)
+    {
+        $str = strip_tags($string);
+        return strlen($str) <= $length ? $str : substr($str, 0, $length - 1) . '&hellip;';
     }
 
-    $dateArray = array_map('trim', explode('/', $date));
-
-    // A range of dates.
-    if (count($dateArray) == 2) {
-        return timeline_convert_range_dates($dateArray, $renderYear);
+    /**
+     * Convert a word or phrase to a valid HTML ID.
+     *
+     * For example: 'Foo Bar' becomes 'foo-bar'.
+     *
+     * This function converts to lowercase, replaces whitespace with hyphens,
+     * removes all non-alphanumerics, removes leading or trailing delimiters,
+     * and optionally prepends a piece of text.
+     *
+     * @see Omeka Classic application/libraries/globals.php text_to_id()
+     *
+     * @package Omeka\Function\Text
+     * @param string $text The text to convert
+     * @param string $prepend Another string to prepend to the ID
+     * @param string $delimiter The delimiter to use (- by default)
+     * @return string
+     */
+    protected function textToId($text, $prepend = null, $delimiter = '-')
+    {
+        $text = strtolower($text);
+        $id = preg_replace('/\s/', $delimiter, $text);
+        $id = preg_replace('/[^\w\-]/', '', $id);
+        $id = trim($id, $delimiter);
+        return $prepend ? $prepend . $delimiter . $id : $id;
     }
-
-    $dateEndArray = explode('/', $dateEnd);
-    $dateEnd = trim(reset($dateEndArray));
-
-    // A single date, or a range when the two dates are years and when the
-    // render is "full_year".
-    if (empty($dateEnd)) {
-        return timeline_convert_single_date($dateArray[0], $renderYear);
-    }
-
-    return timeline_convert_range_dates([$dateArray[0], $dateEnd], $renderYear);
-}
-
-/**
- * Generates an ISO-8601 date from a date string, with an exception for
- * "full_year" render, that returns two dates.
- *
- * @see Zend_Date
- * @param string $date
- * @param string renderYear Force the format of a single number as a year.
- * @return array Array of two dates.
- */
-function timeline_convert_single_date($date, $renderYear = null)
-{
-    if (empty($renderYear)) {
-        $renderYear = timeline_get_option('render_year');
-    }
-
-    // Manage a special case for render "full_year" with a single number.
-    if ($renderYear == 'full_year' && preg_match('/^-?\d{1,4}$/', $date)) {
-        $dateStartValue = timeline_convert_date($date, 'january_1');
-        $dateEndValue = timeline_convert_date($date, 'december_31');
-        return [$dateStartValue, $dateEndValue];
-    }
-
-    // Only one date.
-    $dateStartValue = timeline_convert_date($date, $renderYear);
-    return [$dateStartValue, null];
-}
-
-/**
- * Generates two ISO-8601 dates from an array of two strings.
- *
- * By construction, no "full_year" is returned.
- *
- * @see Zend_Date
- * @param array $dates
- * @param string renderYear Force the format of a single number as a year.
- * @return array $dates
- */
-function timeline_convert_range_dates($dates, $renderYear = null)
-{
-    if (!is_array($dates)) {
-        return [null, null];
-    }
-
-    if (empty($renderYear)) {
-        $renderYear = timeline_get_option('render_year');
-    }
-
-    $dateStart = $dates[0];
-    $dateEnd = $dates[1];
-
-    // Check if the date are two numbers (years).
-    if ($renderYear == 'skip') {
-        $dateStartValue = timeline_convert_date($dateStart, $renderYear);
-        $dateEndValue = timeline_convert_date($dateEnd, $renderYear);
-        return [$dateStartValue, $dateEndValue];
-    }
-
-    // Check if there is one number and one date.
-    if (!preg_match('/^-?\d{1,4}$/', $dateStart)) {
-        if (!preg_match('/^-?\d{1,4}$/', $dateEnd)) {
-            // TODO Check order to force the start or the end.
-            $dateStartValue = timeline_convert_date($dateStart, $renderYear);
-            $dateEndValue = timeline_convert_date($dateEnd, $renderYear);
-            return [$dateStartValue, $dateEndValue];
-        }
-        // Force the format for the end.
-        $dateStartValue = timeline_convert_date($dateStart, $renderYear);
-        if ($renderYear == 'full_year') {
-            $renderYear = 'december_31';
-        }
-        $dateEndValue = timeline_convert_date($dateEnd, $renderYear);
-        return [$dateStartValue, $dateEndValue];
-    }
-    // The start is a year.
-    elseif (!preg_match('/^-?\d{1,4}$/', $dateEnd)) {
-        // Force the format of the start.
-        $dateEndValue = timeline_convert_date($dateEnd, $renderYear);
-        if ($renderYear == 'full_year') {
-            $renderYear = 'january_1';
-        }
-        $dateStartValue = timeline_convert_date($dateStart, $renderYear);
-        return [$dateStartValue, $dateEndValue];
-    }
-
-    $dateStart = (integer) $dateStart;
-    $dateEnd = (integer) $dateEnd;
-
-    // Same years.
-    if ($dateStart == $dateEnd) {
-        $dateStartValue = timeline_convert_date($dateStart, 'january_1');
-        $dateEndValue = timeline_convert_date($dateEnd, 'december_31');
-        return [$dateStartValue, $dateEndValue];
-    }
-
-    // The start and the end are years, so reorder them (may be useless).
-    if ($dateStart > $dateEnd) {
-        $kdate = $dateEnd;
-        $dateEnd = $dateStart;
-        $dateStart = $kdate;
-    }
-
-    switch ($renderYear) {
-        case 'july_1':
-            $dateStartValue = timeline_convert_date($dateStart, 'july_1');
-            $dateEndValue = timeline_convert_date($dateEnd, 'june_30');
-            return [$dateStartValue, $dateEndValue];
-        case 'january_1':
-            $dateStartValue = timeline_convert_date($dateStart, 'january_1');
-            $dateEndValue = timeline_convert_date($dateEnd, 'january_1');
-            return [$dateStartValue, $dateEndValue];
-        case 'full_year':
-        default:
-            $dateStartValue = timeline_convert_date($dateStart, 'january_1');
-            $dateEndValue = timeline_convert_date($dateEnd, 'december_31');
-            return [$dateStartValue, $dateEndValue];
-    }
-}
-
-/**
- * Gets the value for an option set in the timeline option array.
- *
- * Useless now because each timeline has parameters available via getProperty().
- *
- * @param string The Timeline option name.
- * @return string
- */
-function timeline_get_option($name = null)
-{
-    if ($name) {
-        $options = get_option('timeline_defaults');
-        $options = json_decode($options, true);
-        return isset($options[$name]) ? $options[$name] : null;
-    }
-    return false;
-}
-
-/**
- * Returns the value of an element set in the Timeline config options.
- *
- * @deprecated since 2.1.9
- * @see timeline_metadata()
- * @param string The Timeline option name.
- * @param array An array of options.
- * @param Item
- * @return string|array|null
- */
-function timeline_get_item_text($optionName, $options = [], $item = null)
-{
-    $element = get_db()->getTable('Element')->find(timeline_get_option($optionName));
-    return metadata($item, [$element->getElementSet()->name, $element->name], $options);
 }

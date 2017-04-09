@@ -1,6 +1,7 @@
 <?php
 namespace Timeline;
 
+use Omeka\Api\Exception;
 use Omeka\Module\AbstractModule;
 use Timeline\Form\Config as ConfigForm;
 use Zend\EventManager\Event;
@@ -89,6 +90,15 @@ SQL;
         }
     }
 
+    public function attachListeners(SharedEventManagerInterface $sharedEventManager)
+    {
+        $sharedEventManager->attach(
+            'Omeka\Api\Adapter\ItemAdapter',
+            'api.search.query',
+            [$this, 'filterItems']
+        );
+    }
+
     public function getConfigForm(PhpRenderer $renderer)
     {
         $services = $this->getServiceLocator();
@@ -111,6 +121,32 @@ SQL;
         foreach ($this->settings as $settingKey => $settingValue) {
             if (isset($post[$settingKey])) {
                 $settings->set($settingKey, $post[$settingKey]);
+            }
+        }
+    }
+
+    public function filterItems(Event $event)
+    {
+        $query = $event->getParam('request')->getContent();
+        if (isset($query['timeline_slug'])) {
+            // See Omeka\Api\Adapter\ItemAdapter for "site_id".
+            $qb = $event->getParam('queryBuilder');
+            $timelineAdapter = $this->getServiceLocator()
+                ->get('Omeka\ApiAdapterManager')
+                ->get('timelines');
+            try {
+                $timeline = $timelineAdapter->findEntity(['slug' => $query['timeline_slug']]);
+                $params = $timeline->getItemPool();
+                if (is_array($params)) {
+                    // Avoid potential infinite recursion.
+                    unset($params['timeline_slug']);
+                } else {
+                    $params = [];
+                }
+                $itemAdapter = $event->getTarget();
+                $itemAdapter->buildQuery($qb, $params);
+            } catch (Exception\NotFoundException $e) {
+                $timeline = null;
             }
         }
     }

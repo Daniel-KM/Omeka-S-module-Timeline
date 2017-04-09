@@ -10,7 +10,7 @@
 }
 
 .neatlinetime-timeline .timeline-copyright {
-    display:none;
+    display: none;
 }
 
 /* Resets the background for all timeline bands to white, so we know what the base is. */
@@ -50,7 +50,7 @@
 
 /* Hide the icons for events on the top band.*/
 .neatlinetime-timeline .timeline-event-icon img {
-    display:none;
+    display: none;
 }
 
 /*
@@ -158,26 +158,26 @@ elements inside the event body.
 }
 
 div.simileAjax-bubble-close {
-    right:      10px !important;
-    top:        10px !important;
+    right: 10px !important;
+    top: 10px !important;
 }
 .simileAjax-bubble-close-pngTranslucent {
-    background-image:  url('../images/close-button.png') !important;
+    background-image: url('../img/close-button.png') !important;
 }
 
 .simileAjax-bubble-arrow-point-left-pngTranslucent {
-    background-image:  url('../images/bubble-arrow-point-left.png') !important;
+    background-image: url('../img/bubble-arrow-point-left.png') !important;
 }
 
 .simileAjax-bubble-arrow-point-right-pngTranslucent {
-    background-image:  url('../images/bubble-arrow-point-right.png') !important;
+    background-image: url('../img/bubble-arrow-point-right.png') !important;
 }
 
 .simileAjax-bubble-arrow-point-up-pngTranslucent {
-    background-image:  url('../images/bubble-arrow-point-up.png') !important;
+    background-image: url('../img/bubble-arrow-point-up.png') !important;
 }
 
 .simileAjax-bubble-arrow-point-down-pngTranslucent {
-    background-image:  url('../images/bubble-arrow-point-down.png') !important;
+    background-image: url('../img/bubble-arrow-point-down.png') !important;
     background-position: top center !important;
 }

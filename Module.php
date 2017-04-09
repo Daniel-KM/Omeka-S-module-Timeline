@@ -33,6 +33,8 @@ class Module extends AbstractModule
             'render_year' => 'skip',
             'center_date' => '',
             'viewer' => '{}',
+            // The id of dcterms:date in the standard install of Omeka S.
+            'item_date_id' => 7,
         ],
     ];
 
@@ -118,6 +120,14 @@ SQL;
 
         $post = $controller->getRequest()->getPost()->toArray();
 
+        $vocabulary = strtok($post['timeline_defaults']['item_date'], ':');
+        $name = strtok(':');
+        $property = $this->getServiceLocator()->get('Omeka\ApiManager')
+            ->search('properties', ['vocabulary_prefix' => $vocabulary, 'local_name' => $name])
+            ->getContent();
+        $property = reset($property);
+        $post['timeline_defaults']['item_date_id'] = (string) $property->id();
+
         foreach ($this->settings as $settingKey => $settingValue) {
             if (isset($post[$settingKey])) {
                 $settings->set($settingKey, $post[$settingKey]);
@@ -143,6 +153,11 @@ SQL;
                 } else {
                     $params = [];
                 }
+
+                // Add the param for the date: return only if not empty.
+                $itemDateId = $timeline->getParameters()['item_date_id'];
+                $params['has_property'][$itemDateId] = 1;
+
                 $itemAdapter = $event->getTarget();
                 $itemAdapter->buildQuery($qb, $params);
             } catch (Exception\NotFoundException $e) {

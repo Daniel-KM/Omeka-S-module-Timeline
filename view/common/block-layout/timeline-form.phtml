@@ -1,13 +1,12 @@
-<?php
-$formStem = $block->getFormStem();
-$options = $block->getOptions();
-?>
-<div class="timeline-id">
-    <?php
-    echo $this->formLabel($formStem . '[options][timeline-id]',
-        __('Select a timeline'));
-    echo $this->formSelect($formStem . '[options][timeline-id]',
-        @$options['timeline-id'], array(),
-        get_table_options('Timeline'));
-    ?>
+<div class="field">
+    <div class="field-meta">
+        <label><?php echo $this->translate('Select Timeline'); ?></label>
+        <div class="field-description"></div>
+    </div>
+    <div class="inputs">
+        <?php
+        $element = $form->get('o:block[__blockIndex__][o:data][timeline_slug]');
+        echo $this->formRow($element);
+        ?>
+    </div>
 </div>

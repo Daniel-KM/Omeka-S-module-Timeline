@@ -1,15 +1,9 @@
 <?php
-if (!array_key_exists('timeline-id', $options)) {
-    return;
-}
-$timeline = get_db()->getTable('Timeline')->find($options['timeline-id']);
-if (empty($timeline)) {
-    return;
-}
-set_current_record('timeline', $timeline);
-$library = get_option('timeline_library') ?: 'simile';
-$libraryPartial = $library == 'simile' ? '_timeline' : '_timeline_' . $library;
-echo $this->partial('timelines/' . $libraryPartial . '.php',
-    array(
-        'timeline' => $timeline,
-));
+$library = $this->setting('timeline_library');
+echo $this->partial('common/timeline_header', ['external' => $external]);
+?>
+<?php echo $this->pageTitle($timeline->title(), 3); ?>
+<div class="timeline-render">
+<?php echo $this->partial('common/timeline_' . $library, ['timeline' => $timeline]); ?>
+</div>
+<?php echo $timeline->description(); ?>

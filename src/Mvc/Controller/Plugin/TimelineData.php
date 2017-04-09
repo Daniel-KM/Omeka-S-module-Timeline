@@ -28,12 +28,12 @@ class TimelineData extends AbstractPlugin
     {
         $events = [];
 
-        $this->renderYear = $timeline->parameters()['render_year'];
+        $this->renderYear = $timeline->args()['render_year'];
 
-        $propertyItemTitle = $timeline->parameters()['item_title'];
-        $propertyItemDescription = $timeline->parameters()['item_description'];
-        $propertyItemDate = $timeline->parameters()['item_date'];
-        $propertyItemDateEnd = $timeline->parameters()['item_date_end'];
+        $propertyItemTitle = $timeline->args()['item_title'];
+        $propertyItemDescription = $timeline->args()['item_description'];
+        $propertyItemDate = $timeline->args()['item_date'];
+        $propertyItemDateEnd = $timeline->args()['item_date_end'];
 
         $items = $this->getController()->api()
             ->search('items', ['timeline_slug' => $timeline->slug()])

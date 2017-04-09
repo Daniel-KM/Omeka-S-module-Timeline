@@ -25,7 +25,7 @@ class Timeline extends Form
         // $infoFieldset = $this->get('timeline_info');
 
         $this->add([
-            'name' => 'o-module-timeline:title',
+            'name' => 'o:title',
             'type' => 'Text',
             'options' => [
                 'label' => 'Title', // @translate
@@ -37,7 +37,7 @@ class Timeline extends Form
         ]);
 
         $this->add([
-            'name' => 'o-module-timeline:slug',
+            'name' => 'o:slug',
             'type' => 'Text',
             'options' => [
                 'label' => 'Slug', // @translate
@@ -48,7 +48,7 @@ class Timeline extends Form
         ]);
 
         $this->add([
-            'name' => 'o-module-timeline:description',
+            'name' => 'o:description',
             'type' => Ckeditor::class,
             'options' => [
                 'label' => 'Description', // @translate
@@ -61,17 +61,17 @@ class Timeline extends Form
         ]);
 
         $this->add([
-            'name' => 'o-module-timeline:parameters',
+            'name' => 'o:args',
             'type' => 'Fieldset',
             'options' => [
-                'label' => 'Specific parameters', // @translate
+                'label' => 'Specific Parameters', // @translate
                 'info' => 'Set the specific parameters of the timeline.' // @translate
                     . ' ' . 'If not set, the defaults set in the config page will apply.', // @translate
             ],
         ]);
-        $parametersFieldset = $this->get('o-module-timeline:parameters');
+        $argsFieldset = $this->get('o:args');
 
-        $parametersFieldset->add([
+        $argsFieldset->add([
             'name' => 'item_title',
             'type' => 'Timeline\Form\Element\PropertySelect',
             'options' => [
@@ -83,7 +83,7 @@ class Timeline extends Form
             ],
         ]);
 
-        $parametersFieldset->add([
+        $argsFieldset->add([
             'name' => 'item_description',
             'type' => 'Timeline\Form\Element\PropertySelect',
             'options' => [
@@ -95,7 +95,7 @@ class Timeline extends Form
             ],
         ]);
 
-        $parametersFieldset->add([
+        $argsFieldset->add([
             'name' => 'item_date',
             'type' => 'Timeline\Form\Element\PropertySelect',
             'options' => [
@@ -107,7 +107,7 @@ class Timeline extends Form
             ],
         ]);
 
-        $parametersFieldset->add([
+        $argsFieldset->add([
             'name' => 'item_date_end',
             'type' => 'Timeline\Form\Element\PropertySelect',
             'options' => [
@@ -120,7 +120,7 @@ class Timeline extends Form
             ],
         ]);
 
-        $parametersFieldset->add([
+        $argsFieldset->add([
             'name' => 'render_year',
             'type' => 'Radio',
             'options' => [
@@ -135,7 +135,7 @@ class Timeline extends Form
             ],
         ]);
 
-        $parametersFieldset->add([
+        $argsFieldset->add([
             'name' => 'center_date',
             'type' => 'Text',
             'options' => [
@@ -149,7 +149,7 @@ class Timeline extends Form
             ],
         ]);
 
-        $parametersFieldset->add([
+        $argsFieldset->add([
             'name' => 'viewer',
             'type' => 'Textarea',
             'options' => [
@@ -165,7 +165,7 @@ class Timeline extends Form
         // FIXME Parameters are not validated inside a fieldset, but they should.
         $inputFilter = $this->getInputFilter();
         $inputFilter->add([
-            'name' => 'o-module-timeline:parameters',
+            'name' => 'o:args',
             'required' => false,
         ]);
     }

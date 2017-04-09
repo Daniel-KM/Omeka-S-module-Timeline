@@ -60,7 +60,7 @@ CREATE TABLE `timeline` (
   `title` varchar(190) COLLATE utf8mb4_unicode_ci NOT NULL,
   `description` longtext COLLATE utf8mb4_unicode_ci,
   `is_public` tinyint(1) NOT NULL,
-  `parameters` longtext COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '(DC2Type:json_array)',
+  `args` longtext COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '(DC2Type:json_array)',
   `item_pool` longtext COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '(DC2Type:json_array)',
   `created` datetime NOT NULL,
   `modified` datetime DEFAULT NULL,
@@ -156,7 +156,7 @@ SQL;
                 }
 
                 // Add the param for the date: return only if not empty.
-                $itemDateId = $timeline->getParameters()['item_date_id'];
+                $itemDateId = $timeline->getArgs()['item_date_id'];
                 $params['has_property'][$itemDateId] = 1;
 
                 $itemAdapter = $event->getTarget();

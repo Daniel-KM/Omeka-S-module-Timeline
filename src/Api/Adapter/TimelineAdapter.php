@@ -18,6 +18,7 @@ class TimelineAdapter extends AbstractEntityAdapter
     protected $sortFields = [
         'id' => 'id',
         'slug' => 'slug',
+        'title' => 'title',
         'is_public' => 'isPublic',
         'created' => 'created',
         'modified' => 'modified',
@@ -45,13 +46,13 @@ class TimelineAdapter extends AbstractEntityAdapter
         $this->hydrateOwner($request, $entity);
         $title = null;
 
-        if ($this->shouldHydrate($request, 'o-module-timeline:title')) {
-            $title = trim($request->getValue('o-module-timeline:title', ''));
+        if ($this->shouldHydrate($request, 'o:title')) {
+            $title = trim($request->getValue('o:title', ''));
             $entity->setTitle($title);
         }
-        if ($this->shouldHydrate($request, 'o-module-timeline:slug')) {
+        if ($this->shouldHydrate($request, 'o:slug')) {
             $default = null;
-            $slug = trim($request->getValue('o-module-timeline:slug', ''));
+            $slug = trim($request->getValue('o:slug', ''));
             if ($slug === ''
                 && $request->getOperation() === Request::CREATE
                 && is_string($title)
@@ -61,23 +62,31 @@ class TimelineAdapter extends AbstractEntityAdapter
             }
             $entity->setSlug($slug);
         }
-        if ($this->shouldHydrate($request, 'o-module-timeline:description')) {
-            $description = trim($request->getValue('o-module-timeline:description', ''));
+        if ($this->shouldHydrate($request, 'o:description')) {
+            $description = trim($request->getValue('o:description', ''));
             $entity->setDescription($description);
         }
-        if ($this->shouldHydrate($request, 'o-module-timeline:is_public')) {
-            $entity->setIsPublic($request->getValue('o-module-timeline:is_public', true));
+        if ($this->shouldHydrate($request, 'o:is_public')) {
+            $entity->setIsPublic($request->getValue('o:is_public', true));
         }
-        if ($this->shouldHydrate($request, 'o-module-timeline:parameters')) {
-            $settings = $this->getServiceLocator()->get('Omeka\Settings');
-            $parameters = $request->getValue(
-                'o-module-timeline:parameters',
-                $settings->get('timeline_default')
-            );
-            $entity->setParameters($parameters);
+        if ($this->shouldHydrate($request, 'o:args')) {
+            $services = $this->getServiceLocator();
+            $settings = $services->get('Omeka\Settings');
+            $args = $request->getValue('o:args', $settings->get('timeline_default'));
+            if (empty($args['viewer'])) {
+                $args['viewer'] = '{}';
+            }
+            $vocabulary = strtok($args['item_date'], ':');
+            $name = strtok(':');
+            $property = $services->get('Omeka\ApiManager')
+                ->search('properties', ['vocabulary_prefix' => $vocabulary, 'local_name' => $name])
+                ->getContent();
+            $property = reset($property);
+            $args['item_date_id'] = (string) $property->id();
+            $entity->setArgs($args);
         }
-        if ($this->shouldHydrate($request, 'o-module-timeline:item_pool')) {
-            $entity->setItemPool($request->getValue('o-module-timeline:item_pool', []));
+        if ($this->shouldHydrate($request, 'o:item_pool')) {
+            $entity->setItemPool($request->getValue('o:item_pool', []));
         }
     }
 
@@ -85,24 +94,24 @@ class TimelineAdapter extends AbstractEntityAdapter
     {
         $title = $entity->getTitle();
         if (!is_string($title) || $title === '') {
-            $errorStore->addError('o-module-timeline:title', 'A timeline must have a title.'); // @translate
+            $errorStore->addError('o:title', 'A timeline must have a title.'); // @translate
         }
         $slug = $entity->getSlug();
         if (!is_string($slug) || $slug === '') {
-            $errorStore->addError('o-module-timeline:slug', 'The slug cannot be empty.'); // @translate
+            $errorStore->addError('o:slug', 'The slug cannot be empty.'); // @translate
         }
         if (preg_match('/[^a-zA-Z0-9_-]/u', $slug)) {
-            $errorStore->addError('o-module-timeline:slug', 'A slug can only contain letters, numbers, underscores, and hyphens.'); // @translate
+            $errorStore->addError('o:slug', 'A slug can only contain letters, numbers, underscores, and hyphens.'); // @translate
         }
         if (!$this->isUnique($entity, ['slug' => $slug])) {
-            $errorStore->addError('o-module-timeline:slug', new Message(
+            $errorStore->addError('o:slug', new Message(
                 'The slug "%s" is already taken.', // @translate
                 $slug
             ));
         }
 
         if (!is_array($entity->getItemPool())) {
-            $errorStore->addError('o-module-timeline:item_pool', 'A timeline must have item pool data.'); // @translate
+            $errorStore->addError('o:item_pool', 'A timeline must have item pool data.'); // @translate
         }
     }
 

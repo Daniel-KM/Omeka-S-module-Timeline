@@ -28,7 +28,7 @@ class TimelineController extends AbstractActionController
         $form = $this->getForm(TimelineForm::class);
 
         $defaults = [];
-        $defaults['o-module-timeline:parameters'] = $this->settings()->get('timeline_defaults');
+        $defaults['o:args'] = $this->settings()->get('timeline_defaults');
         $form->setData($defaults);
 
         if ($this->getRequest()->isPost()) {
@@ -70,7 +70,7 @@ class TimelineController extends AbstractActionController
         $form = $this->getForm(TimelineForm::class);
 
         $data = $timeline->jsonSerialize();
-        $data['item_pool'] = $data['o-module-timeline:item_pool'];
+        $data['item_pool'] = $data['o:item_pool'];
         $form->setData($data);
 
         if ($this->getRequest()->isPost()) {
@@ -187,16 +187,16 @@ class TimelineController extends AbstractActionController
      */
     protected function cleanData($data)
     {
-        $data['o-module-timeline:item_pool'] = json_decode($data['item_pool'], true);
-        if (empty($data['o-module-timeline:parameters']['viewer'])) {
-            $data['o-module-timeline:parameters']['viewer'] = '{}';
+        $data['o:item_pool'] = json_decode($data['item_pool'], true) ?: [];
+        if (empty($data['o:args']['viewer'])) {
+            $data['o:args']['viewer'] = '{}';
         }
-        $vocabulary = strtok($data['o-module-timeline:parameters']['item_date'], ':');
+        $vocabulary = strtok($data['o:args']['item_date'], ':');
         $name = strtok(':');
         $property = $this->api()
             ->searchOne('properties', ['vocabulary_prefix' => $vocabulary, 'local_name' => $name])
             ->getContent();
-        $data['o-module-timeline:parameters']['item_date_id'] = (string) $property->id();
+        $data['o:args']['item_date_id'] = (string) $property->id();
         return $data;
     }
 }

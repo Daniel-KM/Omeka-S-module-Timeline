@@ -88,14 +88,14 @@ if ($owner = $timeline->owner()) {
     <div class="meta-group">
         <h4><?php echo $this->translate('Parameters'); ?></h4>
         <?php
-            $timelineParameters = $timeline->parameters();
-            unset($timelineParameters['viewer']);
-            unset($timelineParameters['item_date_id']);
-            foreach ($timelineParameters as $parameterKey => $parameterValue):
-                $parameterName = ucfirst(str_replace('_', ' ', $parameterKey));
+            $timelineArgs = $timeline->args();
+            unset($timelineArgs['viewer']);
+            unset($timelineArgs['item_date_id']);
+            foreach ($timelineArgs as $argKey => $argValue):
+                $argName = ucfirst(str_replace('_', ' ', $argKey));
         ?>
         <div class="value">
-            <em><strong><?php echo $this->translate($parameterName); ?>:&nbsp;</em></strong><?php echo $parameterValue; ?></div>
+            <em><strong><?php echo $this->translate($argName); ?>:&nbsp;</em></strong><?php echo $argValue; ?></div>
         <?php endforeach; ?>
     </div>
     <div class="meta-group">

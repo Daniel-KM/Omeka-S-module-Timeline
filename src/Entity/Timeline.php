@@ -43,7 +43,7 @@ class Timeline extends AbstractEntity
     /**
      * @Column(type="json_array")
      */
-    protected $parameters;
+    protected $args;
 
     /**
      * @Column(type="json_array")
@@ -111,14 +111,14 @@ class Timeline extends AbstractEntity
         return (bool) $this->isPublic;
     }
 
-    public function setParameters($parameters)
+    public function setArgs($args)
     {
-        $this->parameters = $parameters;
+        $this->args = $args;
     }
 
-    public function getParameters()
+    public function getArgs()
     {
-        return $this->parameters;
+        return $this->args;
     }
 
     public function setItemPool($itemPool)

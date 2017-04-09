@@ -64,10 +64,10 @@ class Timeline extends \Timeline\Entity\Timeline implements \Doctrine\ORM\Proxy\
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', 'id', 'slug', 'title', 'description', 'isPublic', 'parameters', 'itemPool', 'owner', 'created', 'modified'];
+            return ['__isInitialized__', 'id', 'slug', 'title', 'description', 'isPublic', 'args', 'itemPool', 'owner', 'created', 'modified'];
         }
 
-        return ['__isInitialized__', 'id', 'slug', 'title', 'description', 'isPublic', 'parameters', 'itemPool', 'owner', 'created', 'modified'];
+        return ['__isInitialized__', 'id', 'slug', 'title', 'description', 'isPublic', 'args', 'itemPool', 'owner', 'created', 'modified'];
     }
 
     /**
@@ -279,23 +279,23 @@ class Timeline extends \Timeline\Entity\Timeline implements \Doctrine\ORM\Proxy\
     /**
      * {@inheritDoc}
      */
-    public function setParameters($parameters)
+    public function setArgs($args)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setParameters', [$parameters]);
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setArgs', [$args]);
 
-        return parent::setParameters($parameters);
+        return parent::setArgs($args);
     }
 
     /**
      * {@inheritDoc}
      */
-    public function getParameters()
+    public function getArgs()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getParameters', []);
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getArgs', []);
 
-        return parent::getParameters();
+        return parent::getArgs();
     }
 
     /**

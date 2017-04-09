@@ -34,16 +34,28 @@ class TimelineRepresentation extends AbstractEntityRepresentation
             ];
         }
 
+        // TODO Describe parameters of the timeline?
+        // $url = $this->getViewHelper('Url');
+        // $args = $this->args();
+        // $args['item_date_id'] = [
+        //     '@id' => $url(
+        //         'api/default',
+        //         ['resource' => 'properties', 'id' => (integer) $args['item_date_id']],
+        //         ['force_canonical' => true]
+        //     ),
+        //     'o:id' => $args['item_date_id'],
+        // ];
+
         return [
-            'o-module-timeline:slug' => $this->slug(),
-            'o-module-timeline:title' => $this->title(),
-            'o-module-timeline:description' => $this->description(),
-            'o-module-timeline:is_public' => $this->isPublic(),
-            'o-module-timeline:parameters' => $this->parameters(),
-            'o-module-timeline:item_pool' => $this->itemPool(),
-            'o-module-timeline:owner' => $owner,
-            'o-module-timeline:created' => $created,
-            'o-module-timeline:modified' => $modified,
+            'o:slug' => $this->slug(),
+            'o:title' => $this->title(),
+            'o:description' => $this->description(),
+            'o:is_public' => $this->isPublic(),
+            'o:args' => $this->args(),
+            'o:item_pool' => $this->itemPool(),
+            'o:owner' => $owner,
+            'o:created' => $created,
+            'o:modified' => $modified,
         ];
     }
 
@@ -67,9 +79,9 @@ class TimelineRepresentation extends AbstractEntityRepresentation
         return $this->resource->isPublic();
     }
 
-    public function parameters()
+    public function args()
     {
-        return $this->resource->getParameters();
+        return $this->resource->getArgs();
     }
 
     public function itemPool()

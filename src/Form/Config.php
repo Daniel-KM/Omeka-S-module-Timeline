@@ -75,9 +75,9 @@ class Config extends Form
                     . ' ' . 'They can be overridden in the form of each timeline.', // @translate
             ],
         ]);
-        $parametersFieldset = $this->get('timeline_defaults');
+        $argsFieldset = $this->get('timeline_defaults');
 
-        $parametersFieldset->add([
+        $argsFieldset->add([
             'name' => 'item_title',
             'type' => 'Select',
             'options' => [
@@ -91,7 +91,7 @@ class Config extends Form
             ],
         ]);
 
-        $parametersFieldset->add([
+        $argsFieldset->add([
             'name' => 'item_description',
             'type' => 'Select',
             'options' => [
@@ -105,7 +105,7 @@ class Config extends Form
             ],
         ]);
 
-        $parametersFieldset->add([
+        $argsFieldset->add([
             'name' => 'item_date',
             'type' => 'Select',
             'options' => [
@@ -120,7 +120,7 @@ class Config extends Form
             ],
         ]);
 
-        $parametersFieldset->add([
+        $argsFieldset->add([
             'name' => 'item_date_end',
             'type' => 'Select',
             'options' => [
@@ -137,7 +137,7 @@ class Config extends Form
             ],
         ]);
 
-        $parametersFieldset->add([
+        $argsFieldset->add([
             'type' => 'Radio',
             'name' => 'render_year',
             'options' => [
@@ -155,7 +155,7 @@ class Config extends Form
             ],
         ]);
 
-        $parametersFieldset->add([
+        $argsFieldset->add([
             'name' => 'center_date',
             'type' => 'Text',
             'options' => [
@@ -169,7 +169,7 @@ class Config extends Form
             ],
         ]);
 
-        $parametersFieldset->add([
+        $argsFieldset->add([
             'name' => 'viewer',
             'type' => 'Textarea',
             'options' => [

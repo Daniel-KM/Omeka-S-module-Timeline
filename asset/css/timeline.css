@@ -3,10 +3,14 @@
  */
 
 /* Timeline container div */
-.timeline {
+.timeline.timeline-container {
     height: 400px;
     margin-bottom: 20px;
     border: 1px solid rgba(90,80,100, 0.5);
+}
+
+.timeline .timeline-date-label {
+    line-height: normal;
 }
 
 .timeline .timeline-copyright {

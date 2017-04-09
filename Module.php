@@ -100,6 +100,16 @@ SQL;
             'api.search.query',
             [$this, 'filterItems']
         );
+        // Add the Timeline term definition.
+        $sharedEventManager->attach(
+            '*',
+            'api.context',
+            function (Event $event) {
+                $context = $event->getParam('context');
+                $context['o-module-timeline'] = 'https://omeka.org/s/vocabs/module/timeline#';
+                $event->setParam('context', $context);
+            }
+        );
     }
 
     public function getConfigForm(PhpRenderer $renderer)

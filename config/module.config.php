@@ -29,11 +29,10 @@ return [
         ],
     ],
     'form_elements' => [
-        'invokables' => [
-            'Timeline\Form\Add' => 'Timeline\Form\Add',
-        ],
         'factories' => [
             'Timeline\Form\Config' => 'Timeline\Service\Form\ConfigFactory',
+            'Timeline\Form\Element\PropertySelect' => 'Timeline\Service\Form\Element\PropertySelectFactory',
+            'Timeline\Form\Timeline' => 'Timeline\Service\Form\TimelineFactory',
         ],
     ],
     'navigation' => [

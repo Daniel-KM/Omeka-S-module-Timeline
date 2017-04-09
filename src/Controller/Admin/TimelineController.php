@@ -1,127 +1,202 @@
 <?php
-/**
- * Timeline Controller
- */
-class TimelinesController extends Omeka_Controller_AbstractActionController
+namespace Timeline\Controller\Admin;
+
+use Omeka\Form\ConfirmForm;
+use Omeka\Stdlib\Message;
+use Zend\Mvc\Controller\AbstractActionController;
+use Zend\View\Model\ViewModel;
+use Timeline\Form\Timeline as TimelineForm;
+use Zend\View\Model\JsonModel;
+
+class TimelineController extends AbstractActionController
 {
-    /**
-     * The number of records to browse per page.
-     *
-     * @var string
-     */
-    protected $_browseRecordsPerPage = 100;
-
-    protected $_autoCsrfProtection = true;
-
-    /**
-     * Initialization.
-     *
-     * @todo Add our own setting for recordsPerPage instead of using setting
-     * intended for Omeka Items.
-     */
-    public function init()
-    {
-        $this->_helper->db->setDefaultModelName('Timeline');
-    }
-
-    /**
-     * The browse action.
-     */
     public function browseAction()
     {
-        if (!$this->getParam('sort_field')) {
-            $this->setParam('sort_field', 'added');
-            $this->setParam('sort_dir', 'd');
-        }
+        $this->setBrowseDefaults('created');
+        $response = $this->api()->search('timelines', $this->params()->fromQuery());
+        $this->paginator($response->getTotalResults(), $this->params()->fromQuery('page'));
 
-        parent::browseAction();
+        $view = new ViewModel;
+        $timelines = $response->getContent();
+        $view->setVariable('timelines', $timelines);
+        $view->setVariable('resources', $timelines);
+        return $view;
     }
 
     public function addAction()
     {
-        $form = new Timeline_Form_TimelineAdd;
-        $defaults = json_decode(get_option('timeline_defaults'), true) ?: [];
-        $form->setDefaults($defaults);
-        $this->view->form = $form;
-        parent::addAction();
+        $form = $this->getForm(TimelineForm::class);
+
+        $defaults = [];
+        $defaults['o-module-timeline:parameters'] = $this->settings()->get('timeline_defaults');
+        $form->setData($defaults);
+
+        if ($this->getRequest()->isPost()) {
+            $data = $this->params()->fromPost();
+            $data = $this->cleanData($data);
+            $form->setData($data);
+            if ($form->isValid()) {
+                $response = $this->api($form)->create('timelines', $data);
+                if ($response) {
+                    $message = new Message(
+                        'Timeline successfully created. %s', // @translate
+                        sprintf(
+                            '<a href="%s">%s</a>',
+                            htmlspecialchars($this->url()->fromRoute(null, [], true)),
+                            'Add another timeline?' // @translate
+                    ));
+                    $message->setEscapeHtml(false);
+                    $this->messenger()->addSuccess($message);
+                    return $this->redirect()->toUrl($response->getContent()->url());
+                }
+            } else {
+                $this->messenger()->addFormErrors($form);
+            }
+        }
+
+        $view = new ViewModel;
+        $view->setVariable('form', $form);
+        return $view;
     }
 
     public function editAction()
     {
-        $timeline = $this->_helper->db->findById();
+        $response = $this->api()->read(
+            'timelines',
+            ['slug' => $this->params('timeline-slug')]
+        );
+        $timeline = $response->getContent();
 
-        $form = new Timeline_Form_TimelineAdd;
-        // Set the existings values.
-        $parameters = $timeline->getParameters();
-        $existing = [
-            'title' => $timeline->title,
-            'description' => $timeline->description,
-            'public' => $timeline->public,
-            'featured' => $timeline->featured,
-        ];
-        $form->setDefaults(array_merge($parameters, $existing));
-        $this->view->form = $form;
-        parent::editAction();
-    }
+        $form = $this->getForm(TimelineForm::class);
 
-    public function queryAction()
-    {
-        $timeline = $this->_helper->db->findById();
+        $data = $timeline->jsonSerialize();
+        $data['item_pool'] = $data['o-module-timeline:item_pool'];
+        $form->setData($data);
 
-        if (isset($_GET['search'])) {
-            $timeline->setQuery($_GET);
-            $timeline->save();
-            $this->_helper->flashMessenger($this->_getEditSuccessMessage($timeline), 'success');
-            $this->_helper->redirector->gotoRoute(['action' => 'show']);
-        } else {
-            $query = $timeline->getQuery();
-            // Some parts of the advanced search check $_GET, others check
-            // $_REQUEST, so we set both to be able to edit a previous query.
-            $_GET = $query;
-            $_REQUEST = $query;
+        if ($this->getRequest()->isPost()) {
+            $data = $this->params()->fromPost();
+            $data = $this->cleanData($data);
+            $form->setData($data);
+            if ($form->isValid()) {
+                $response = $this->api($form)->update('timelines', ['slug' => $this->params('timeline-slug')], $data);
+                if ($response) {
+                    $this->messenger()->addSuccess('Timeline successfully updated.'); // @translate
+                    // Explicitly re-read the site URL instead of using
+                    // refresh() so we catch updates to the slug.
+                    return $this->redirect()->toUrl($timeline->url());
+                }
+            } else {
+                $this->messenger()->addFormErrors($form);
+            }
         }
 
-        $this->view->timeline = $timeline;
+        $view = new ViewModel;
+        $view->setVariable('timeline', $timeline);
+        $view->setVariable('resource', $timeline);
+        $view->setVariable('form', $form);
+        return $view;
+    }
+
+    public function showAction()
+    {
+        $response = $this->api()->read(
+            'timelines',
+            ['slug' => $this->params('timeline-slug')]
+        );
+        $timeline = $response->getContent();
+
+        $config = $this->getEvent()->getApplication()->getServiceManager()->get('Config');
+        $external = $config['assets']['use_externals'];
+
+        $view = new ViewModel;
+        $view->setVariable('timeline', $timeline);
+        $view->setVariable('resource', $timeline);
+        $view->setVariable('itemCount', $timeline->itemCount());
+        $view->setVariable('external', $external);
+        return $view;
+    }
+
+    public function showDetailsAction()
+    {
+        $response = $this->api()->read(
+            'timelines',
+            ['slug' => $this->params('timeline-slug')]
+        );
+        $timeline = $response->getContent();
+
+        $view = new ViewModel;
+        $view->setTerminal(true);
+        $view->setVariable('resource', $timeline);
+        return $view;
+    }
+
+    public function deleteAction()
+    {
+        if ($this->getRequest()->isPost()) {
+            $form = $this->getForm(ConfirmForm::class);
+            $form->setData($this->getRequest()->getPost());
+            if ($form->isValid()) {
+                $response = $this->api($form)->delete('timelines', ['slug' => $this->params('timeline-slug')]);
+                if ($response) {
+                    $this->messenger()->addSuccess('Timeline successfully deleted.'); // @translate
+                }
+            } else {
+                $this->messenger()->addFormErrors($form);
+            }
+        }
+        return $this->redirect()->toRoute('admin/timeline');
+    }
+
+    public function deleteConfirmAction()
+    {
+        $response = $this->api()->read(
+            'timelines',
+            ['slug' => $this->params('timeline-slug')]
+        );
+        $timeline = $response->getContent();
+
+        $view = new ViewModel;
+        $view->setTerminal(true);
+        $view->setTemplate('common/delete-confirm-details');
+        $view->setVariable('resource', $timeline);
+        $view->setVariable('resourceLabel', 'timeline');
+        $view->setVariable('partialPath', 'timeline/admin/timeline/show-details');
+        return $view;
     }
 
     public function itemsAction()
     {
-        $timeline = $this->_helper->db->findById();
-        $items = $timeline->getItems();
+        $response = $this->api()->read(
+            'timelines',
+            ['slug' => $this->params('timeline-slug')]
+        );
+        $timeline = $response->getContent();
 
-        $this->view->timeline = $timeline;
-        $this->view->items = $items;
+        $data = $this->timelineData($timeline);
+
+        $view = new JsonModel();
+        $view->setVariables($data);
+        return $view;
     }
 
     /**
-     * Sets the add success message
+     * Helper to clean data before save.
+     *
+     * @param array $data
+     * @return array
      */
-    protected function _getAddSuccessMessage($timeline)
+    protected function cleanData($data)
     {
-        return __('The timeline "%s" was successfully added!', $timeline->title);
-    }
-
-    /**
-     * Sets the edit success message.
-     */
-    protected function _getEditSuccessMessage($timeline)
-    {
-        return __('The timeline "%s" was successfully changed!', $timeline->title);
-    }
-
-    /**
-     * Sets the delete success message
-     */
-    protected function _getDeleteSuccessMessage($timeline)
-    {
-        return __('The timeline "%s" was successfully deleted!', $timeline->title);
-    }
-
-    /**
-     * Sets the delete confirm message
-     */
-    protected function _getDeleteConfirmMessage($timeline)
-    {
-        return __('This will delete the timeline "%s" and its associated metadata. This will not delete any items associated with this timeline.', $timeline->title);
+        $data['o-module-timeline:item_pool'] = json_decode($data['item_pool'], true);
+        if (empty($data['o-module-timeline:parameters']['viewer'])) {
+            $data['o-module-timeline:parameters']['viewer'] = '{}';
+        }
+        $vocabulary = strtok($data['o-module-timeline:parameters']['item_date'], ':');
+        $name = strtok(':');
+        $property = $this->api()
+            ->searchOne('properties', ['vocabulary_prefix' => $vocabulary, 'local_name' => $name])
+            ->getContent();
+        $data['o-module-timeline:parameters']['item_date_id'] = (string) $property->id();
+        return $data;
     }
 }

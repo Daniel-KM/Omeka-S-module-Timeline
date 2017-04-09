@@ -26,7 +26,6 @@ class TimelinesController extends Omeka_Controller_AbstractActionController
 
     /**
      * The browse action.
-     *
      */
     public function browseAction()
     {
@@ -41,7 +40,7 @@ class TimelinesController extends Omeka_Controller_AbstractActionController
     public function addAction()
     {
         $form = new Timeline_Form_TimelineAdd;
-        $defaults = json_decode(get_option('timeline_defaults'), true) ?: array();
+        $defaults = json_decode(get_option('timeline_defaults'), true) ?: [];
         $form->setDefaults($defaults);
         $this->view->form = $form;
         parent::addAction();
@@ -54,12 +53,12 @@ class TimelinesController extends Omeka_Controller_AbstractActionController
         $form = new Timeline_Form_TimelineAdd;
         // Set the existings values.
         $parameters = $timeline->getParameters();
-        $existing = array(
+        $existing = [
             'title' => $timeline->title,
             'description' => $timeline->description,
             'public' => $timeline->public,
             'featured' => $timeline->featured,
-        );
+        ];
         $form->setDefaults(array_merge($parameters, $existing));
         $this->view->form = $form;
         parent::editAction();
@@ -69,13 +68,12 @@ class TimelinesController extends Omeka_Controller_AbstractActionController
     {
         $timeline = $this->_helper->db->findById();
 
-        if(isset($_GET['search'])) {
+        if (isset($_GET['search'])) {
             $timeline->setQuery($_GET);
             $timeline->save();
             $this->_helper->flashMessenger($this->_getEditSuccessMessage($timeline), 'success');
-            $this->_helper->redirector->gotoRoute(array('action' => 'show'));
-        }
-        else {
+            $this->_helper->redirector->gotoRoute(['action' => 'show']);
+        } else {
             $query = $timeline->getQuery();
             // Some parts of the advanced search check $_GET, others check
             // $_REQUEST, so we set both to be able to edit a previous query.

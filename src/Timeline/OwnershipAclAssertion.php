@@ -5,7 +5,7 @@
  * Lovingly stolen from Omeka's Item_OwnershipAclAssertion class, licensed
  * under the GPL3.
  */
-class NeatlineTime_OwnershipAclAssertion implements Zend_Acl_Assert_Interface
+class Timeline_OwnershipAclAssertion implements Zend_Acl_Assert_Interface
 {
     /**
      * Assert whether or not the ACL should allow access.

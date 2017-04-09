@@ -1,5 +1,6 @@
 <?php
 namespace Timeline;
+
 use Omeka\Module\AbstractModule;
 
 if (!defined('TIMELINE_HELPERS_DIR')) {
@@ -14,7 +15,7 @@ require_once TIMELINE_HELPERS_DIR . DIRECTORY_SEPARATOR . 'Functions.php';
  */
 class Module extends AbstractModule
 {
-    protected $_hooks = array(
+    protected $_hooks = [
         'initialize',
         'install',
         'upgrade',
@@ -27,9 +28,9 @@ class Module extends AbstractModule
         'public_head',
         'admin_head',
         'exhibit_builder_page_head',
-    );
+    ];
 
-    protected $_filters = array(
+    protected $_filters = [
         'admin_navigation_main',
         'public_navigation_main',
         'public_navigation_items',
@@ -37,18 +38,18 @@ class Module extends AbstractModule
         'action_contexts',
         'exhibit_layouts',
         'items_browse_params',
-    );
+    ];
 
     /**
      * @var array Options and their default values.
      */
-    protected $_options = array(
+    protected $_options = [
         // Can be 'simile' or 'knightlab'.
         'timeline_library' => 'simile',
         // Can be "browse", "main" or empty.
         'timeline_link_to_nav' => 'browse',
         'timeline_link_to_nav_main' => '',
-        'timeline_defaults' => array(
+        'timeline_defaults' => [
             // Numbers are the id of elements of a standard install of Omeka.
             'item_title' => 50,
             'item_description' => 41,
@@ -57,8 +58,8 @@ class Module extends AbstractModule
             'render_year' => 'skip',
             'center_date' => '',
             'viewer' => '{}',
-        ),
-    );
+        ],
+    ];
 
     /**
      * Timeline initialize hook
@@ -168,11 +169,11 @@ class Module extends AbstractModule
             'timelineActionRoute',
             new Zend_Controller_Router_Route(
                 'timeline/timelines/:action/:id',
-                array(
+                [
                     'module' => 'timeline',
-                    'controller' => 'timelines'
-                ),
-                array('id' => '\d+')
+                    'controller' => 'timelines',
+                ],
+                ['id' => '\d+']
             )
         );
 
@@ -180,10 +181,10 @@ class Module extends AbstractModule
             'timelineDefaultRoute',
             new Zend_Controller_Router_Route(
                 'timeline/timelines/:action',
-                array(
+                [
                     'module' => 'timeline',
-                    'controller' => 'timelines'
-                )
+                    'controller' => 'timelines',
+                ]
             )
         );
 
@@ -191,11 +192,11 @@ class Module extends AbstractModule
             'timelineRedirectRoute',
             new Zend_Controller_Router_Route(
                 'timeline',
-                array(
+                [
                     'module' => 'timeline',
                     'controller' => 'timelines',
-                    'action' => 'browse'
-                )
+                    'action' => 'browse',
+                ]
             )
         );
 
@@ -203,21 +204,19 @@ class Module extends AbstractModule
             'timelinePaginationRoute',
             new Zend_Controller_Router_Route(
                 'timeline/timelines/:page',
-                array(
+                [
                     'module' => 'timeline',
                     'controller' => 'timelines',
                     'action' => 'browse',
-                    'page' => '1'
-                ),
-                array('page' => '\d+')
+                    'page' => '1',
+                ],
+                ['page' => '\d+']
             )
         );
     }
 
     /**
      * Shows plugin configuration page.
-     *
-     * @return void
      */
     public function hookConfigForm($args)
     {
@@ -232,15 +231,13 @@ class Module extends AbstractModule
         $view = $args['view'];
         echo $view->partial(
             'plugins/timeline-config-form.php',
-            array(
+            [
                 'defaults' => $defaults,
-            ));
+            ]);
     }
 
     /**
      * Processes the configuration form.
-     *
-     * @return void
      */
     public function hookConfig($args)
     {
@@ -293,8 +290,6 @@ class Module extends AbstractModule
      * Load all assets.
      *
      * Replace queue_timeline_assets()
-     *
-     * @return void
      */
     private function _head($args)
     {
@@ -342,12 +337,12 @@ class Module extends AbstractModule
      */
     public function filterAdminNavigationMain($nav)
     {
-        $nav[] = array(
+        $nav[] = [
             'label' => __('Timelines'),
             'uri' => url('timeline'),
             'resource' => 'Timeline_Timelines',
-            'privilege' => 'browse'
-        );
+            'privilege' => 'browse',
+        ];
         return $nav;
     }
 
@@ -361,10 +356,10 @@ class Module extends AbstractModule
      */
     public function filterPublicNavigationMain($nav)
     {
-        $nav[] = array(
+        $nav[] = [
             'label' => __('Timelines'),
-            'uri' => url('timeline')
-        );
+            'uri' => url('timeline'),
+        ];
         return $nav;
     }
 
@@ -373,18 +368,18 @@ class Module extends AbstractModule
         $linkToNav = get_option('timeline_link_to_nav');
         switch ($linkToNav) {
             case 'browse':
-                $navArray['Browse Timeline'] = array(
+                $navArray['Browse Timeline'] = [
                     'label' => __('Browse Timelines'),
                     'uri' => url('timeline'),
-                );
+                ];
                 break;
             case 'main':
                 $linkToNavMain = get_option('timeline_link_to_nav_main');
                 if ($linkToNavMain) {
-                    $navArray['Browse Timeline'] = array(
+                    $navArray['Browse Timeline'] = [
                         'label' => __('Browse Timeline'),
                         'uri' => url('timeline/timelines/show/' . $linkToNavMain),
-                    );
+                    ];
                 }
                 break;
             default:
@@ -397,10 +392,10 @@ class Module extends AbstractModule
      */
     public function filterResponseContexts($contexts)
     {
-        $contexts['timeline-json'] = array(
-            'suffix'  => 'timeline-json',
-            'headers' => array('Content-Type' => 'text/javascript')
-        );
+        $contexts['timeline-json'] = [
+            'suffix' => 'timeline-json',
+            'headers' => ['Content-Type' => 'text/javascript'],
+        ];
         return $contexts;
     }
 
@@ -424,10 +419,10 @@ class Module extends AbstractModule
      */
     public function filterExhibitLayouts($layouts)
     {
-        $layouts['timeline'] = array(
+        $layouts['timeline'] = [
             'name' => __('Timelines'),
-            'description' => __('Embed a Timeline timeline.')
-        );
+            'description' => __('Embed a Timeline timeline.'),
+        ];
         return $layouts;
     }
 
@@ -459,11 +454,11 @@ class Module extends AbstractModule
         if (empty($timeline)) {
             return $params;
         }
-        $params['advanced'][] = array(
+        $params['advanced'][] = [
             'joiner' => 'and',
             'element_id' => $timeline->getProperty('item_date'),
-            'type' =>'is not empty',
-        );
+            'type' => 'is not empty',
+        ];
         return $params;
     }
 }

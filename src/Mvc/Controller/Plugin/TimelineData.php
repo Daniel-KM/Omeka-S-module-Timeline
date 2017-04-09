@@ -1,6 +1,6 @@
 <?php
 /**
- * NeatlineTime helper functions
+ * Timeline helper functions
  */
 
 /**
@@ -13,7 +13,7 @@
  * @return string
  * @deprecated
  */
-function timeline($fieldname, $options = array(), $timeline = null)
+function timeline($fieldname, $options = [], $timeline = null)
 {
     $timeline = $timeline ?: get_current_record('timeline');
     return metadata($timeline, $fieldname, $options);
@@ -30,7 +30,7 @@ function timeline($fieldname, $options = array(), $timeline = null)
  * @return string HTML
  * @deprecated
  */
-function link_to_timeline($text = null, $props = array(), $action = 'show', $timeline = null)
+function link_to_timeline($text = null, $props = [], $action = 'show', $timeline = null)
 {
     $timeline = $timeline ?: get_current_record('timeline');
     $text = $text ?: $timeline->title;
@@ -38,25 +38,24 @@ function link_to_timeline($text = null, $props = array(), $action = 'show', $tim
 }
 
 /**
- * Queues JavaScript and CSS for NeatlineTime in the page header.
+ * Queues JavaScript and CSS for Timeline in the page header.
  *
- * @see NeatlineTimePlugin::_head()
+ * @see TimelinePlugin::_head()
  * @since 1.0
- * @return void.
  */
 function queue_timeline_assets()
 {
-    $library = get_option('neatline_time_library');
+    $library = get_option('timeline_library');
     if ($library == 'knightlab') {
         queue_css_url('//cdn.knightlab.com/libs/timeline3/latest/css/timeline.css');
         queue_js_url('//cdn.knightlab.com/libs/timeline3/latest/js/timeline.js');
         return;
     }
 
-    // Default neatline library.
-    queue_css_file('neatlinetime-timeline');
+    // Default timeline library.
+    queue_css_file('timeline');
 
-    queue_js_file('neatline-time-scripts');
+    queue_js_file('timeline');
 
     // Check useInternalJavascripts in config.ini.
     $config = Zend_Registry::get('bootstrap')->getResource('Config');
@@ -80,10 +79,10 @@ function queue_timeline_assets()
 }
 
 /**
- * Returns the value of an element set in the NeatlineTime config options.
+ * Returns the value of an element set in the Timeline config options.
  *
  * @param Record $record
- * @param string The NeatlineTime option name.
+ * @param string The Timeline option name.
  * @param array An array of options.
  * @return string|array|null
  */
@@ -102,7 +101,7 @@ function queue_timeline_assets()
  * are set. If null, use the current timeline.
  * @return mixed
  */
-function neatlinetime_metadata($record, $metadata, $options = array(), $timeline = null)
+function timeline_metadata($record, $metadata, $options = [], $timeline = null)
 {
     $timeline = $timeline ?: get_current_record('timeline');
     if (is_string($metadata)) {
@@ -110,12 +109,12 @@ function neatlinetime_metadata($record, $metadata, $options = array(), $timeline
         if (!empty($elementId)) {
             $element = $record->getElementById($elementId);
             if (!empty($element)) {
-                $metadata = array($element->getElementSet()->name, $element->name);
+                $metadata = [$element->getElementSet()->name, $element->name];
             }
         }
         // Avoid some useless process.
         elseif ($metadata == 'item_date_end') {
-            return array();
+            return [];
         }
     }
     return metadata($record, $metadata, $options);
@@ -128,7 +127,7 @@ function neatlinetime_metadata($record, $metadata, $options = array(), $timeline
  * @param Timeline|null
  * @return string URL the items output uri for the timeline-json output.
  */
-function neatlinetime_json_uri_for_timeline($timeline = null)
+function timeline_json_uri_for_timeline($timeline = null)
 {
     $timeline = $timeline ?: get_current_record('timeline');
     return record_url($timeline, 'items') . '?output=timeline-json';
@@ -153,7 +152,7 @@ function timeline_id($timeline = null)
  * @param int Maximum number of random featured timelines to display.
  * @return string HTML
  */
-function neatlinetime_display_random_featured_timelines($num = 1)
+function timeline_display_random_featured_timelines($num = 1)
 {
     $html = '';
 
@@ -161,9 +160,9 @@ function neatlinetime_display_random_featured_timelines($num = 1)
 
     if ($timelines) {
         foreach ($timelines as $timeline) {
-            $html .= '<h3>' . link_to_timeline(null, array(), 'show', $timeline) . '</h3>'
+            $html .= '<h3>' . link_to_timeline(null, [], 'show', $timeline) . '</h3>'
                 . '<div class="description timeline-description">'
-                    . timeline('description', array('snippet' => 150), $timeline)
+                    . timeline('description', ['snippet' => 150], $timeline)
                     . '</div>';
         }
         return $html;
@@ -171,30 +170,30 @@ function neatlinetime_display_random_featured_timelines($num = 1)
 }
 
 /**
- * Returns a string for neatline_json 'classname' attribute for an item.
+ * Returns a string for timeline_json 'classname' attribute for an item.
  *
  * Default fields included are: 'item', item type name, all DC:Type values.
  *
- * Output can be filtered using the 'neatlinetime_item_class' filter.
+ * Output can be filtered using the 'timeline_item_class' filter.
  *
  * @return string
  */
-function neatlinetime_item_class($item = null)
+function timeline_item_class($item = null)
 {
-    $classArray = array('item');
+    $classArray = ['item'];
 
     if ($itemTypeName = metadata($item, 'item_type_name')) {
         $classArray[] = text_to_id($itemTypeName);
     }
 
-    if ($dcTypes = metadata($item, array('Dublin Core', 'Type'), array('all' => true))) {
+    if ($dcTypes = metadata($item, ['Dublin Core', 'Type'], ['all' => true])) {
         foreach ($dcTypes as $type) {
             $classArray[] = text_to_id($type);
         }
     }
 
     $classAttribute = implode(' ', $classArray);
-    $classAttribute = apply_filters('neatlinetime_item_class', $classAttribute);
+    $classAttribute = apply_filters('timeline_item_class', $classAttribute);
     return $classAttribute;
 }
 
@@ -206,10 +205,10 @@ function neatlinetime_item_class($item = null)
  * @param string renderYear Force the format of a single number as a year.
  * @return string ISO-8601 date
  */
-function neatlinetime_convert_date($date, $renderYear = null)
+function timeline_convert_date($date, $renderYear = null)
 {
     if (empty($renderYear)) {
-        $renderYear = neatlinetime_get_option('render_year');
+        $renderYear = timeline_get_option('render_year');
     }
 
     // Check if the date is a single number.
@@ -232,7 +231,7 @@ function neatlinetime_convert_date($date, $renderYear = null)
                 $date_out = $date . '-06-30' . 'T00:00:00+00:00';
                 break;
             case 'full_year':
-                // Render a year as a range: use neatlinetime_convert_single_date().
+                // Render a year as a range: use timeline_convert_single_date().
             case 'skip':
             default:
                 $date_out = false;
@@ -272,9 +271,9 @@ function neatlinetime_convert_date($date, $renderYear = null)
  * @param string renderYear Force the format of a single number as a year.
  * @return array Array of two dates.
  */
-function neatlinetime_convert_any_date($date, $renderYear = null)
+function timeline_convert_any_date($date, $renderYear = null)
 {
-    return neatlinetime_convert_two_dates($date, null, $renderYear);
+    return timeline_convert_two_dates($date, null, $renderYear);
 }
 
 /**
@@ -288,17 +287,17 @@ function neatlinetime_convert_any_date($date, $renderYear = null)
  * @param string renderYear Force the format of a single number as a year.
  * @return array Array of two dates.
  */
-function neatlinetime_convert_two_dates($date, $dateEnd, $renderYear = null)
+function timeline_convert_two_dates($date, $dateEnd, $renderYear = null)
 {
     if (empty($renderYear)) {
-        $renderYear = neatlinetime_get_option('render_year');
+        $renderYear = timeline_get_option('render_year');
     }
 
     $dateArray = array_map('trim', explode('/', $date));
 
     // A range of dates.
     if (count($dateArray) == 2) {
-        return neatlinetime_convert_range_dates($dateArray, $renderYear);
+        return timeline_convert_range_dates($dateArray, $renderYear);
     }
 
     $dateEndArray = explode('/', $dateEnd);
@@ -307,10 +306,10 @@ function neatlinetime_convert_two_dates($date, $dateEnd, $renderYear = null)
     // A single date, or a range when the two dates are years and when the
     // render is "full_year".
     if (empty($dateEnd)) {
-        return neatlinetime_convert_single_date($dateArray[0], $renderYear);
+        return timeline_convert_single_date($dateArray[0], $renderYear);
     }
 
-    return neatlinetime_convert_range_dates(array($dateArray[0], $dateEnd), $renderYear);
+    return timeline_convert_range_dates([$dateArray[0], $dateEnd], $renderYear);
 }
 
 /**
@@ -322,22 +321,22 @@ function neatlinetime_convert_two_dates($date, $dateEnd, $renderYear = null)
  * @param string renderYear Force the format of a single number as a year.
  * @return array Array of two dates.
  */
-function neatlinetime_convert_single_date($date, $renderYear = null)
+function timeline_convert_single_date($date, $renderYear = null)
 {
     if (empty($renderYear)) {
-        $renderYear = neatlinetime_get_option('render_year');
+        $renderYear = timeline_get_option('render_year');
     }
 
     // Manage a special case for render "full_year" with a single number.
     if ($renderYear == 'full_year' && preg_match('/^-?\d{1,4}$/', $date)) {
-        $dateStartValue = neatlinetime_convert_date($date, 'january_1');
-        $dateEndValue = neatlinetime_convert_date($date, 'december_31');
-        return array($dateStartValue, $dateEndValue);
+        $dateStartValue = timeline_convert_date($date, 'january_1');
+        $dateEndValue = timeline_convert_date($date, 'december_31');
+        return [$dateStartValue, $dateEndValue];
     }
 
     // Only one date.
-    $dateStartValue = neatlinetime_convert_date($date, $renderYear);
-    return array($dateStartValue, null);
+    $dateStartValue = timeline_convert_date($date, $renderYear);
+    return [$dateStartValue, null];
 }
 
 /**
@@ -350,14 +349,14 @@ function neatlinetime_convert_single_date($date, $renderYear = null)
  * @param string renderYear Force the format of a single number as a year.
  * @return array $dates
  */
-function neatlinetime_convert_range_dates($dates, $renderYear = null)
+function timeline_convert_range_dates($dates, $renderYear = null)
 {
     if (!is_array($dates)) {
-        return array(null, null);
+        return [null, null];
     }
 
     if (empty($renderYear)) {
-        $renderYear = neatlinetime_get_option('render_year');
+        $renderYear = timeline_get_option('render_year');
     }
 
     $dateStart = $dates[0];
@@ -365,32 +364,36 @@ function neatlinetime_convert_range_dates($dates, $renderYear = null)
 
     // Check if the date are two numbers (years).
     if ($renderYear == 'skip') {
-        $dateStartValue = neatlinetime_convert_date($dateStart, $renderYear);
-        $dateEndValue = neatlinetime_convert_date($dateEnd, $renderYear);
-        return array($dateStartValue, $dateEndValue);
+        $dateStartValue = timeline_convert_date($dateStart, $renderYear);
+        $dateEndValue = timeline_convert_date($dateEnd, $renderYear);
+        return [$dateStartValue, $dateEndValue];
     }
 
     // Check if there is one number and one date.
     if (!preg_match('/^-?\d{1,4}$/', $dateStart)) {
         if (!preg_match('/^-?\d{1,4}$/', $dateEnd)) {
             // TODO Check order to force the start or the end.
-            $dateStartValue = neatlinetime_convert_date($dateStart, $renderYear);
-            $dateEndValue = neatlinetime_convert_date($dateEnd, $renderYear);
-            return array($dateStartValue, $dateEndValue);
+            $dateStartValue = timeline_convert_date($dateStart, $renderYear);
+            $dateEndValue = timeline_convert_date($dateEnd, $renderYear);
+            return [$dateStartValue, $dateEndValue];
         }
         // Force the format for the end.
-        $dateStartValue = neatlinetime_convert_date($dateStart, $renderYear);
-        if ($renderYear == 'full_year') $renderYear = 'december_31';
-        $dateEndValue = neatlinetime_convert_date($dateEnd, $renderYear);
-        return array($dateStartValue, $dateEndValue);
+        $dateStartValue = timeline_convert_date($dateStart, $renderYear);
+        if ($renderYear == 'full_year') {
+            $renderYear = 'december_31';
+        }
+        $dateEndValue = timeline_convert_date($dateEnd, $renderYear);
+        return [$dateStartValue, $dateEndValue];
     }
     // The start is a year.
     elseif (!preg_match('/^-?\d{1,4}$/', $dateEnd)) {
         // Force the format of the start.
-        $dateEndValue = neatlinetime_convert_date($dateEnd, $renderYear);
-        if ($renderYear == 'full_year') $renderYear = 'january_1';
-        $dateStartValue = neatlinetime_convert_date($dateStart, $renderYear);
-        return array($dateStartValue, $dateEndValue);
+        $dateEndValue = timeline_convert_date($dateEnd, $renderYear);
+        if ($renderYear == 'full_year') {
+            $renderYear = 'january_1';
+        }
+        $dateStartValue = timeline_convert_date($dateStart, $renderYear);
+        return [$dateStartValue, $dateEndValue];
     }
 
     $dateStart = (integer) $dateStart;
@@ -398,9 +401,9 @@ function neatlinetime_convert_range_dates($dates, $renderYear = null)
 
     // Same years.
     if ($dateStart == $dateEnd) {
-        $dateStartValue = neatlinetime_convert_date($dateStart, 'january_1');
-        $dateEndValue = neatlinetime_convert_date($dateEnd, 'december_31');
-        return array($dateStartValue, $dateEndValue);
+        $dateStartValue = timeline_convert_date($dateStart, 'january_1');
+        $dateEndValue = timeline_convert_date($dateEnd, 'december_31');
+        return [$dateStartValue, $dateEndValue];
     }
 
     // The start and the end are years, so reorder them (may be useless).
@@ -412,33 +415,33 @@ function neatlinetime_convert_range_dates($dates, $renderYear = null)
 
     switch ($renderYear) {
         case 'july_1':
-            $dateStartValue = neatlinetime_convert_date($dateStart, 'july_1');
-            $dateEndValue = neatlinetime_convert_date($dateEnd, 'june_30');
-            return array($dateStartValue, $dateEndValue);
+            $dateStartValue = timeline_convert_date($dateStart, 'july_1');
+            $dateEndValue = timeline_convert_date($dateEnd, 'june_30');
+            return [$dateStartValue, $dateEndValue];
         case 'january_1':
-            $dateStartValue = neatlinetime_convert_date($dateStart, 'january_1');
-            $dateEndValue = neatlinetime_convert_date($dateEnd, 'january_1');
-            return array($dateStartValue, $dateEndValue);
+            $dateStartValue = timeline_convert_date($dateStart, 'january_1');
+            $dateEndValue = timeline_convert_date($dateEnd, 'january_1');
+            return [$dateStartValue, $dateEndValue];
         case 'full_year':
         default:
-            $dateStartValue = neatlinetime_convert_date($dateStart, 'january_1');
-            $dateEndValue = neatlinetime_convert_date($dateEnd, 'december_31');
-            return array($dateStartValue, $dateEndValue);
+            $dateStartValue = timeline_convert_date($dateStart, 'january_1');
+            $dateEndValue = timeline_convert_date($dateEnd, 'december_31');
+            return [$dateStartValue, $dateEndValue];
     }
 }
 
 /**
- * Gets the value for an option set in the neatlinetime option array.
+ * Gets the value for an option set in the timeline option array.
  *
  * Useless now because each timeline has parameters available via getProperty().
  *
- * @param string The NeatlineTime option name.
+ * @param string The Timeline option name.
  * @return string
  */
-function neatlinetime_get_option($name = null)
+function timeline_get_option($name = null)
 {
     if ($name) {
-        $options = get_option('neatline_time_defaults');
+        $options = get_option('timeline_defaults');
         $options = json_decode($options, true);
         return isset($options[$name]) ? $options[$name] : null;
     }
@@ -446,17 +449,17 @@ function neatlinetime_get_option($name = null)
 }
 
 /**
- * Returns the value of an element set in the NeatlineTime config options.
+ * Returns the value of an element set in the Timeline config options.
  *
  * @deprecated since 2.1.9
- * @see neatlinetime_metadata()
- * @param string The NeatlineTime option name.
+ * @see timeline_metadata()
+ * @param string The Timeline option name.
  * @param array An array of options.
  * @param Item
  * @return string|array|null
  */
-function neatlinetime_get_item_text($optionName, $options = array(), $item = null)
+function timeline_get_item_text($optionName, $options = [], $item = null)
 {
-    $element = get_db()->getTable('Element')->find(neatlinetime_get_option($optionName));
-    return metadata($item, array($element->getElementSet()->name, $element->name), $options);
+    $element = get_db()->getTable('Element')->find(timeline_get_option($optionName));
+    return metadata($item, [$element->getElementSet()->name, $element->name], $options);
 }

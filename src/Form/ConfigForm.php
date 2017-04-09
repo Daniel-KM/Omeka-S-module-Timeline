@@ -1,8 +1,8 @@
 <?php
-$elements = get_table_options('Element', null, array(
-    'record_types' => array('Item', 'All'),
+$elements = get_table_options('Element', null, [
+    'record_types' => ['Item', 'All'],
     'sort' => 'alphaBySet',
-));
+]);
 // Remove the "Select Below" label.
 unset($elements['']);
 ?>
@@ -14,10 +14,10 @@ unset($elements['']);
         </div>
         <div class="inputs five columns omega">
             <?php
-            $options = array('simile' => 'Simile', 'knightlab' => 'Knightlab');
+            $options = ['simile' => 'Simile', 'knightlab' => 'Knightlab'];
             echo $this->formSelect('timeline_library',
                 get_option('timeline_library') ?: 'simile',
-                array(),
+                [],
                 $options);
             ?>
             <p class="explanation">
@@ -34,14 +34,14 @@ unset($elements['']);
         </div>
         <div class="inputs five columns omega">
             <?php
-            $options = array(
+            $options = [
                 '' => __('None'),
                 'browse' => __('Browse timelines'),
                 'main' => __('Display main timeline'),
-            );
+            ];
             echo $this->formSelect('timeline_link_to_nav',
                 get_option('timeline_link_to_nav') ?: 'browse',
-                array(),
+                [],
                 $options);
             ?>
             <p class="explanation">
@@ -60,7 +60,7 @@ unset($elements['']);
             $options = get_table_options('Timeline_Timeline');
             echo $this->formSelect('timeline_link_to_nav_main',
                 get_option('timeline_link_to_nav_main') ?: '',
-                array(),
+                [],
                 $options);
             ?>
             <p class="explanation">
@@ -82,7 +82,7 @@ unset($elements['']);
             <?php
                 echo $this->formSelect('timeline_defaults[item_title]',
                     $defaults['item_title'],
-                    array(),
+                    [],
                     $elements);
             ?>
             <p class="explanation">
@@ -98,7 +98,7 @@ unset($elements['']);
             <?php
                 echo $this->formSelect('timeline_defaults[item_description]',
                     $defaults['item_description'],
-                    array(),
+                    [],
                     $elements);
             ?>
             <p class="explanation">
@@ -114,7 +114,7 @@ unset($elements['']);
             <?php
                 echo $this->formSelect('timeline_defaults[item_date]',
                     $defaults['item_date'],
-                    array(),
+                    [],
                     $elements);
             ?>
             <p class="explanation">
@@ -129,10 +129,10 @@ unset($elements['']);
         </div>
         <div class='inputs five columns omega'>
             <?php
-                $elements = array('' =>__('None')) + $elements;
+                $elements = ['' => __('None')] + $elements;
                 echo $this->formSelect('timeline_defaults[item_date_end]',
                     $defaults['item_date_end'],
-                    array(),
+                    [],
                     $elements);
             ?>
             <p class="explanation">
@@ -149,12 +149,12 @@ unset($elements['']);
         </div>
         <div class='inputs five columns omega'>
             <?php
-            $values = array(
+            $values = [
                 'skip' => __('Skip the record'),
                 'january_1' => __('Pick first January'),
                 'july_1' => __('Pick first July'),
                 'full_year' => __('Mark entire year'),
-            );
+            ];
             echo $this->formRadio('timeline_defaults[render_year]',
                 $defaults['render_year'],
                 null,
@@ -190,10 +190,10 @@ unset($elements['']);
             <?php
             echo $this->formTextarea('timeline_defaults[viewer]',
                 $defaults['viewer'],
-                array(
+                [
                     'rows' => 10,
                     'cols' => 60,
-            ));
+            ]);
             ?>
             <p class="explanation">
                 <?php echo __('Set the default params of the viewer as json, or let empty for the included default.'); ?>

@@ -1,14 +1,57 @@
 <?php
-/**
- * The edit view for the Timelines administrative panel.
- */
+$this->ckEditor();
+$this->htmlElement('body')->appendAttribute('class', 'timelines edit');
+$this->headScript()->appendFile($this->assetUrl('js/advanced-search.js', 'Omeka'));
+$this->headScript()->appendFile($this->assetUrl('js/timeline-item-pool.js', 'Timeline'));
+$form->prepare();
+$sectionNavs = [
+    'admin' => $this->translate('Parameters'),
+    'item-pool' => $this->translate('Item Pool')
+];
+?>
+<?php echo $this->pageTitle('Edit Timeline'); ?>
+<?php echo $this->form()->openTag($form); ?>
 
-$timelineTitle = metadata($timeline, 'title') ?: __('[Untitled]');
-$title = __('Timelines | Edit "%s" Metadata', $timelineTitle);
-$head = array('bodyclass' => 'timelines primary',
-              'title' => html_escape($title));
-echo head($head);
-echo flash();
-echo $form;
+<div id="page-actions">
+    <?php if ($timeline->isPublic()): ?>
+    <a href="#" class="o-icon-public button" aria-label=" <?php echo $this->translate('Make private'); ?>" title=" <?php echo $this->translate('Make private'); ?>"></a>
+    <input type="hidden" name="o-module-timeline:is_public" value="1">
+    <?php else: ?>
+    <a href="#" class="o-icon-private button" aria-label=" <?php echo $this->translate('Make public'); ?>" title=" <?php echo $this->translate('Make public'); ?>"></a>
+    <input type="hidden" name="o-module-timeline:is_public" value="0">
+    <?php endif; ?>
+    <a href="<?php echo $timeline->url(); ?>" class="button"><?php echo $this->translate('View'); ?></a>
+    <?php if ($timeline->userIsAllowed('delete')): ?>
+    <a href="#" class="delete button"><?php echo $this->translate('Delete'); ?></a>
+    <?php endif; ?>
+    <button><?php echo $this->translate('Save'); ?></button>
+</div>
 
-echo foot();
+<?php echo $this->sectionNav($sectionNavs); ?>
+<fieldset id="admin" class="section active" aria-labelledby="admin-label">
+    <?php echo $this->formCollection($form, false); ?>
+</fieldset>
+
+<fieldset id="item-pool" class="section" aria-labelledby="item-pool-label">
+    <p><?php echo sprintf(
+        $this->translate('There are currently %s items in this timeline’s pool.'),
+        $this->hyperlink(
+            $timeline->itemCount(),
+            $this->url(
+                'admin/default',
+                ['controller' => 'item'],
+                ['query' => ['timeline_slug' => $timeline->slug()]]
+            ),
+            ['target' => '_blank']
+        )
+    ); ?></p>
+    <p><em><?php echo $this->translate('Items without a date are automatically filtered.'); ?></em></p>
+    <div id="advanced-search">
+    <?php echo $this->partial(
+        'common/advanced-search',
+        ['resourceType' => 'item', 'query' => $timeline->itemPool()]
+    ); ?>
+    </div>
+</fieldset>
+<?php echo $this->form()->closeTag(); ?>
+<?php echo $this->deleteConfirm($timeline, 'timeline'); ?>

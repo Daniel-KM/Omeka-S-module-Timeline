@@ -1,0 +1,16 @@
+<?php $parameters = $timeline->parameters(); ?>
+<div id="<?php echo $timeline->slug(); ?>" class="timeline"></div>
+<script>
+    jQuery(document).ready(function($) {
+        var params = <?php echo $parameters['viewer'] ?: '{}'; ?>;
+        if (typeof params.centerDate === 'undefined') {
+            params.centerDate = <?php echo json_encode($parameters['center_date']); ?>;
+        }
+
+        oTimeline.loadTimeline(
+            '<?php echo $timeline->slug(); ?>',
+            '<?php echo $timeline->url('items'); ?>',
+            params
+        );
+    });
+</script>

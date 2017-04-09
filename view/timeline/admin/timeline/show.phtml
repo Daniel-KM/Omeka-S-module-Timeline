@@ -1,56 +1,106 @@
 <?php
-/**
- * The show view for the Timelines administrative panel.
- */
+$this->htmlElement('body')->appendAttribute('class', 'timelines show');
+$escape = $this->plugin('escapeHtml');
 
-$timelineTitle = metadata($timeline, 'title');
-$head = array(
-    'bodyclass' => 'timelines primary',
-    'title' => __('Timelines | %s', strip_formatting($timelineTitle)),
-);
-echo head($head);
-echo flash();
+$library = $this->setting('timeline_library');
+
+switch ($library):
+case 'knightlab':
+    $this->headLink()->appendStylesheet('//cdn.knightlab.com/libs/timeline3/latest/css/timeline.css');
+    $this->headScript()->appendFile('//cdn.knightlab.com/libs/timeline3/latest/js/timeline.js');
+    break;
+case 'simile':
+default:
+    $this->headLink()->appendStylesheet($this->assetUrl('css/timeline.css', 'Timeline'));
+    $this->headScript()->appendFile($this->assetUrl('js/timeline.js', 'Timeline'));
+    if ($external) {
+        $this->headScript()->appendFile('//api.simile-widgets.org/timeline/2.3.1/timeline-api.js?bundle=true');
+        $this->headScript()->appendScript('SimileAjax.History.enabled = false; window.jQuery = SimileAjax.jQuery;');
+    } else {
+    $timelineVariables = 'Timeline_ajax_url="' . $this->assetUrl('js/simile/ajax-api/simile-ajax-api.js', 'Timeline') . '";
+            Timeline_urlPrefix="' . dirname($this->assetUrl('js/simile/timeline-api/timeline-api.js', 'Timeline')) . '/";
+            Timeline_parameters="bundle=true";';
+        $this->headScript()->appendScript($timelineVariables);
+        $this->headScript()->appendFile($this->assetUrl('js/simile/timeline-api/timeline-api.js', 'Timeline'));
+        $this->headScript()->appendScript('SimileAjax.History.enabled = false; // window.jQuery = SimileAjax.jQuery;');
+    }
+    break;
+endswitch;
+
+if ($owner = $timeline->owner()) {
+    $ownerText = $this->hyperlink(
+        $owner->name(),
+        $this->url('admin/id', [
+            'controller' => 'user',
+            'action' => 'show',
+            'id' => $owner->id()]
+        )
+    );
+} else {
+    $ownerText = $this->translate('[no owner]');
+}
 ?>
 
-<div id="primary" class="seven columns alpha">
+<?php echo $this->pageTitle(sprintf($this->translate('Timeline: “%s”'), $timeline->title())); ?>
 
-    <!-- Construct the timeline. -->
-    <?php
-    $library = get_option('timeline_library') ?: 'simile';
-    $libraryPartial = $library == 'simile' ? '_timeline' : '_timeline_' . $library;
-    echo $this->partial('timelines/' . $libraryPartial . '.php',
-        array(
-            'timeline' => $timeline,
-    )); ?>
-
-<?php
-$query = $timeline->getQuery();
-if ($query) {
-?>
-    <h2><?php echo __('Items Query'); ?></h2>
-    <p><strong><?php echo __('The &#8220;%s&#8221; timeline displays items that match the following query:', $timelineTitle); ?></strong></p>
-    <?php
-echo item_search_filters($query);
-} ?>
-
+<div id="page-actions">
+    <?php if ($timeline->userIsAllowed('delete')): ?>
+    <a href="#" class="delete button"><?php echo $this->translate('Delete'); ?></a>
+    <?php endif; ?>
+    <?php if ($timeline->userIsAllowed('update')): ?>
+        <?php echo $timeline->link($this->translate('Edit'), 'edit', ['class' => 'button']); ?>
+    <?php endif; ?>
 </div>
 
-<div class="three columns omega">
-    <div id="edit" class="panel">
-    <?php if (is_allowed($timeline, 'edit')): ?>
-        <?php echo link_to($timeline, 'edit', __('Edit Metadata'), array('class' => 'big green button')); ?>
-        <?php echo link_to($timeline, 'query', __('Edit Items Query'), array('class' => 'big green button')); ?>
-    <?php endif; ?>
-    <a href="<?php echo html_escape(public_url('timeline/timelines/show/'.timeline('id'))); ?>" class="big blue button"><?php echo __('View Public Page'); ?></a>
-    <?php echo link_to($timeline, 'delete-confirm', __('Delete'), array('class' => 'delete-confirm big red button')); ?>
+<div class="active section">
+<?php
+    echo $this->partial(
+        'timeline/site/timeline/_timeline_' . $library,
+        ['timeline' => $timeline]
+    );
+    ?>
+    <div class="meta-group">
+        <div><?php echo $timeline->description(); ?></div>
     </div>
 </div>
-<script>
-var jsonTimelineUri = '<?php echo timeline_json_uri_for_timeline(); ?>';
-$.getJSON(jsonTimelineUri, function(data) {
-    if (data.events.length > 100) {
-        alert(<?php echo json_encode(__('Adding more than 100 items to the timeline will create slow render times.')); ?>);
-    }
-});
-</script>
-<?php echo foot();
+
+<div class="sidebar active">
+    <div class="meta-group">
+        <h4><?php echo $this->translate('Visibility'); ?></h4>
+        <div class="value"><?php echo ($timeline->isPublic()) ? $this->translate('Public') : $this->translate('Private'); ?></div>
+    </div>
+    <div class="meta-group">
+        <h4><?php echo $this->translate('Owner'); ?></h4>
+        <div class="value"><?php echo $ownerText; ?></div>
+    </div>
+    <div class="meta-group">
+        <h4><?php echo $this->translate('Date Created'); ?></h4>
+        <div class="value"><?php echo $escape($this->i18n()->dateFormat($timeline->created())); ?></div>
+    </div>
+    <div class="meta-group">
+        <h4><?php echo $this->translate('Date Modified'); ?></h4>
+        <div class="value"><?php echo $escape($this->i18n()->dateFormat($timeline->modified())); ?></div>
+    </div>
+    <div class="meta-group">
+        <h4><?php echo $this->translate('Items in Pool'); ?></h4>
+        <div class="value"><?php echo $this->hyperlink($timeline->itemCount(), $this->url('admin/default', ['controller' => 'item', 'action' => 'browse'], ['query' => ['timeline_slug' => $timeline->slug()]])); ?></div>
+    </div>
+    <div class="meta-group">
+        <h4><?php echo $this->translate('Parameters'); ?></h4>
+        <?php
+            $timelineParameters = $timeline->parameters();
+            unset($timelineParameters['viewer']);
+            unset($timelineParameters['item_date_id']);
+            foreach ($timelineParameters as $parameterKey => $parameterValue):
+                $parameterName = ucfirst(str_replace('_', ' ', $parameterKey));
+        ?>
+        <div class="value">
+            <em><strong><?php echo $this->translate($parameterName); ?>:&nbsp;</em></strong><?php echo $parameterValue; ?></div>
+        <?php endforeach; ?>
+    </div>
+    <div class="meta-group">
+        <h4><?php echo $this->translate('Internal Id'); ?></h4>
+        <div class="value"><?php echo $timeline->id(); ?></div>
+    </div>
+</div>
+<?php echo $this->deleteConfirm($timeline, 'timeline'); ?>

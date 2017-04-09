@@ -6,17 +6,17 @@ $elements = get_table_options('Element', null, array(
 // Remove the "Select Below" label.
 unset($elements['']);
 ?>
-<fieldset id="fieldset-neatline-time-library"><legend><?php echo __('Javascript Library'); ?></legend>
+<fieldset id="fieldset-timeline-library"><legend><?php echo __('Javascript Library'); ?></legend>
     <div class="field">
         <div class="two columns alpha">
-            <?php echo $this->formLabel('neatline_time_library',
+            <?php echo $this->formLabel('timeline_library',
                 __('Timeline library')); ?>
         </div>
         <div class="inputs five columns omega">
             <?php
             $options = array('simile' => 'Simile', 'knightlab' => 'Knightlab');
-            echo $this->formSelect('neatline_time_library',
-                get_option('neatline_time_library') ?: 'simile',
+            echo $this->formSelect('timeline_library',
+                get_option('timeline_library') ?: 'simile',
                 array(),
                 $options);
             ?>
@@ -26,10 +26,10 @@ unset($elements['']);
         </div>
     </div>
 </fieldset>
-<fieldset id="fieldset-neatline-time-nav"><legend><?php echo __('Navigation'); ?></legend>
+<fieldset id="fieldset-timeline-nav"><legend><?php echo __('Navigation'); ?></legend>
     <div class="field">
         <div class="two columns alpha">
-            <?php echo $this->formLabel('neatline_time_link_to_nav',
+            <?php echo $this->formLabel('timeline_link_to_nav',
                 __('Add secondary link')); ?>
         </div>
         <div class="inputs five columns omega">
@@ -39,8 +39,8 @@ unset($elements['']);
                 'browse' => __('Browse timelines'),
                 'main' => __('Display main timeline'),
             );
-            echo $this->formSelect('neatline_time_link_to_nav',
-                get_option('neatline_time_link_to_nav') ?: 'browse',
+            echo $this->formSelect('timeline_link_to_nav',
+                get_option('timeline_link_to_nav') ?: 'browse',
                 array(),
                 $options);
             ?>
@@ -52,14 +52,14 @@ unset($elements['']);
     </div>
     <div class="field">
         <div class="two columns alpha">
-            <?php echo $this->formLabel('neatline_time_link_to_nav_main',
+            <?php echo $this->formLabel('timeline_link_to_nav_main',
                 __('Main timeline')); ?>
         </div>
         <div class="inputs five columns omega">
             <?php
-            $options = get_table_options('NeatlineTime_Timeline');
-            echo $this->formSelect('neatline_time_link_to_nav_main',
-                get_option('neatline_time_link_to_nav_main') ?: '',
+            $options = get_table_options('Timeline_Timeline');
+            echo $this->formSelect('timeline_link_to_nav_main',
+                get_option('timeline_link_to_nav_main') ?: '',
                 array(),
                 $options);
             ?>
@@ -69,18 +69,18 @@ unset($elements['']);
         </div>
     </div>
 </fieldset>
-<fieldset id="fieldset-neatline-time-default"><legend><?php echo __('Default Parameters'); ?></legend>
+<fieldset id="fieldset-timeline-default"><legend><?php echo __('Default Parameters'); ?></legend>
     <p class="explanation">
         <?php echo __('These parameters are used as defaults for all timelines.'); ?>
         <?php echo __('They can be overridden in the form of each timeline.'); ?>
     </p>
     <div class="field">
         <div class="two columns alpha">
-            <?php echo $this->formLabel('neatline_time_defaults[item_title]', __('Item Title')); ?>
+            <?php echo $this->formLabel('timeline_defaults[item_title]', __('Item Title')); ?>
         </div>
         <div class='inputs five columns omega'>
             <?php
-                echo $this->formSelect('neatline_time_defaults[item_title]',
+                echo $this->formSelect('timeline_defaults[item_title]',
                     $defaults['item_title'],
                     array(),
                     $elements);
@@ -92,11 +92,11 @@ unset($elements['']);
     </div>
     <div class="field">
         <div class="two columns alpha">
-            <?php echo $this->formLabel('neatline_time_defaults[item_description]', __('Item Description')); ?>
+            <?php echo $this->formLabel('timeline_defaults[item_description]', __('Item Description')); ?>
         </div>
         <div class='inputs five columns omega'>
             <?php
-                echo $this->formSelect('neatline_time_defaults[item_description]',
+                echo $this->formSelect('timeline_defaults[item_description]',
                     $defaults['item_description'],
                     array(),
                     $elements);
@@ -108,11 +108,11 @@ unset($elements['']);
     </div>
     <div class="field">
         <div class="two columns alpha">
-            <?php echo $this->formLabel('neatline_time_defaults[item_date]', __('Item Date')); ?>
+            <?php echo $this->formLabel('timeline_defaults[item_date]', __('Item Date')); ?>
         </div>
         <div class='inputs five columns omega'>
             <?php
-                echo $this->formSelect('neatline_time_defaults[item_date]',
+                echo $this->formSelect('timeline_defaults[item_date]',
                     $defaults['item_date'],
                     array(),
                     $elements);
@@ -125,12 +125,12 @@ unset($elements['']);
     </div>
     <div class="field">
         <div class="two columns alpha">
-            <?php echo $this->formLabel('neatline_time_defaults[item_date_end]', __('Item End Date')); ?>
+            <?php echo $this->formLabel('timeline_defaults[item_date_end]', __('Item End Date')); ?>
         </div>
         <div class='inputs five columns omega'>
             <?php
                 $elements = array('' =>__('None')) + $elements;
-                echo $this->formSelect('neatline_time_defaults[item_date_end]',
+                echo $this->formSelect('timeline_defaults[item_date_end]',
                     $defaults['item_date_end'],
                     array(),
                     $elements);
@@ -145,7 +145,7 @@ unset($elements['']);
     </div>
     <div class="field">
         <div class="two columns alpha">
-            <?php echo $this->formLabel('neatline_time_defaults[render_year]', __('Render Year')); ?>
+            <?php echo $this->formLabel('timeline_defaults[render_year]', __('Render Year')); ?>
         </div>
         <div class='inputs five columns omega'>
             <?php
@@ -155,7 +155,7 @@ unset($elements['']);
                 'july_1' => __('Pick first July'),
                 'full_year' => __('Mark entire year'),
             );
-            echo $this->formRadio('neatline_time_defaults[render_year]',
+            echo $this->formRadio('timeline_defaults[render_year]',
                 $defaults['render_year'],
                 null,
                 $values);
@@ -167,11 +167,11 @@ unset($elements['']);
     </div>
     <div class="field">
         <div class="two columns alpha">
-            <?php echo $this->formLabel('neatline_time_defaults[center_date]', __('Center Date')); ?>
+            <?php echo $this->formLabel('timeline_defaults[center_date]', __('Center Date')); ?>
         </div>
         <div class='inputs five columns omega'>
             <?php
-            echo $this->formText('neatline_time_defaults[center_date]',
+            echo $this->formText('timeline_defaults[center_date]',
                 $defaults['center_date'],
                 null);
             ?>
@@ -184,11 +184,11 @@ unset($elements['']);
     </div>
     <div class="field">
         <div class="two columns alpha">
-            <?php echo $this->formLabel('neatline_time_defaults[viewer]', __('Viewer')); ?>
+            <?php echo $this->formLabel('timeline_defaults[viewer]', __('Viewer')); ?>
         </div>
         <div class='inputs five columns omega'>
             <?php
-            echo $this->formTextarea('neatline_time_defaults[viewer]',
+            echo $this->formTextarea('timeline_defaults[viewer]',
                 $defaults['viewer'],
                 array(
                     'rows' => 10,

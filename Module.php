@@ -1,16 +1,16 @@
 <?php
-namespace NeatlineTime;
+namespace Timeline;
 use Omeka\Module\AbstractModule;
 
-if (!defined('NEATLINE_TIME_HELPERS_DIR')) {
-    define('NEATLINE_TIME_HELPERS_DIR', dirname(__FILE__) . DIRECTORY_SEPARATOR
+if (!defined('TIMELINE_HELPERS_DIR')) {
+    define('TIMELINE_HELPERS_DIR', dirname(__FILE__) . DIRECTORY_SEPARATOR
         . 'libraries' . DIRECTORY_SEPARATOR
-        . 'NeatlineTime');
+        . 'Timeline');
 }
-require_once NEATLINE_TIME_HELPERS_DIR . DIRECTORY_SEPARATOR . 'Functions.php';
+require_once TIMELINE_HELPERS_DIR . DIRECTORY_SEPARATOR . 'Functions.php';
 
 /**
- * NeatlineTime plugin class
+ * Timeline plugin class
  */
 class Module extends AbstractModule
 {
@@ -44,11 +44,11 @@ class Module extends AbstractModule
      */
     protected $_options = array(
         // Can be 'simile' or 'knightlab'.
-        'neatline_time_library' => 'simile',
+        'timeline_library' => 'simile',
         // Can be "browse", "main" or empty.
-        'neatline_time_link_to_nav' => 'browse',
-        'neatline_time_link_to_nav_main' => '',
-        'neatline_time_defaults' => array(
+        'timeline_link_to_nav' => 'browse',
+        'timeline_link_to_nav_main' => '',
+        'timeline_defaults' => array(
             // Numbers are the id of elements of a standard install of Omeka.
             'item_title' => 50,
             'item_description' => 41,
@@ -73,7 +73,7 @@ class Module extends AbstractModule
      */
     public function hookInstall()
     {
-        $sqlNeatlineTimeline = "CREATE TABLE IF NOT EXISTS `{$this->_db->prefix}neatline_time_timelines` (
+        $sqlTimelineline = "CREATE TABLE IF NOT EXISTS `{$this->_db->prefix}timeline_timelines` (
             `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
             `title` TINYTEXT COLLATE utf8_unicode_ci NOT NULL,
             `description` TEXT COLLATE utf8_unicode_ci NOT NULL,
@@ -90,9 +90,9 @@ class Module extends AbstractModule
             KEY `owner_id` (`owner_id`)
         ) ENGINE=innodb DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
 
-        $this->_db->query($sqlNeatlineTimeline);
+        $this->_db->query($sqlTimelineline);
 
-        $this->_options['neatline_time_defaults'] = json_encode($this->_options['neatline_time_defaults']);
+        $this->_options['timeline_defaults'] = json_encode($this->_options['timeline_defaults']);
         $this->_installOptions();
     }
 
@@ -116,13 +116,13 @@ class Module extends AbstractModule
     public function hookUninstall()
     {
         $sql = "DROP TABLE IF EXISTS
-        `{$this->_db->prefix}neatline_time_timelines`";
+        `{$this->_db->prefix}timeline_timelines`";
 
         $this->_db->query($sql);
 
         // Remove old options.
-        delete_option('neatlinetime');
-        delete_option('neatline_time_render_year');
+        delete_option('timeline');
+        delete_option('timeline_render_year');
 
         $this->_uninstallOptions();
     }
@@ -132,7 +132,7 @@ class Module extends AbstractModule
      */
     public function hookUninstallMessage()
     {
-        $string = __('<strong>Warning</strong>: Uninstalling the Neatline Time plugin
+        $string = __('<strong>Warning</strong>: Uninstalling the Timeline plugin
           will remove all custom Timeline records.');
         echo '<p>' . $string . '</p>';
     }
@@ -144,17 +144,17 @@ class Module extends AbstractModule
     {
         $acl = $args['acl'];
 
-        $acl->addResource('NeatlineTime_Timelines');
+        $acl->addResource('Timeline_Timelines');
 
         // All everyone access to browse, show, and items.
-        $acl->allow(null, 'NeatlineTime_Timelines',
-            array('show', 'browse', 'items'));
-        $acl->allow('researcher', 'NeatlineTime_Timelines',
+        $acl->allow(null, 'Timelines',
+            ['show', 'browse', 'items']);
+        $acl->allow('researcher', 'Timelines',
             'showNotPublic');
-        $acl->allow('contributor', 'NeatlineTime_Timelines',
-            array('add', 'editSelf', 'querySelf', 'itemsSelf', 'deleteSelf', 'showNotPublic'));
-        $acl->allow(array('super', 'admin', 'contributor', 'researcher'), 'NeatlineTime_Timelines',
-            array('edit', 'query', 'items', 'delete'), new Omeka_Acl_Assert_Ownership);
+        $acl->allow('contributor', 'Timelines',
+            ['add', 'editSelf', 'querySelf', 'itemsSelf', 'deleteSelf', 'showNotPublic']);
+        $acl->allow(['super', 'admin', 'contributor', 'researcher'], 'Timelines',
+            ['edit', 'query', 'items', 'delete'], new Omeka_Acl_Assert_Ownership);
     }
 
     /**
@@ -167,9 +167,9 @@ class Module extends AbstractModule
         $router->addRoute(
             'timelineActionRoute',
             new Zend_Controller_Router_Route(
-                'neatline-time/timelines/:action/:id',
+                'timeline/timelines/:action/:id',
                 array(
-                    'module' => 'neatline-time',
+                    'module' => 'timeline',
                     'controller' => 'timelines'
                 ),
                 array('id' => '\d+')
@@ -179,9 +179,9 @@ class Module extends AbstractModule
         $router->addRoute(
             'timelineDefaultRoute',
             new Zend_Controller_Router_Route(
-                'neatline-time/timelines/:action',
+                'timeline/timelines/:action',
                 array(
-                    'module' => 'neatline-time',
+                    'module' => 'timeline',
                     'controller' => 'timelines'
                 )
             )
@@ -190,9 +190,9 @@ class Module extends AbstractModule
         $router->addRoute(
             'timelineRedirectRoute',
             new Zend_Controller_Router_Route(
-                'neatline-time',
+                'timeline',
                 array(
-                    'module' => 'neatline-time',
+                    'module' => 'timeline',
                     'controller' => 'timelines',
                     'action' => 'browse'
                 )
@@ -202,9 +202,9 @@ class Module extends AbstractModule
         $router->addRoute(
             'timelinePaginationRoute',
             new Zend_Controller_Router_Route(
-                'neatline-time/timelines/:page',
+                'timeline/timelines/:page',
                 array(
-                    'module' => 'neatline-time',
+                    'module' => 'timeline',
                     'controller' => 'timelines',
                     'action' => 'browse',
                     'page' => '1'
@@ -221,17 +221,17 @@ class Module extends AbstractModule
      */
     public function hookConfigForm($args)
     {
-        $defaults = get_option('neatline_time_defaults');
+        $defaults = get_option('timeline_defaults');
         $defaults = json_decode($defaults, true);
         $defaults = empty($defaults)
             // Set default parameters.
-            ? $this->_options['neatline_time_defaults']
+            ? $this->_options['timeline_defaults']
             // Add possible new default parameters to avoid a notice.
-            : array_merge($this->_options['neatline_time_defaults'], $defaults);
+            : array_merge($this->_options['timeline_defaults'], $defaults);
 
         $view = $args['view'];
         echo $view->partial(
-            'plugins/neatline-time-config-form.php',
+            'plugins/timeline-config-form.php',
             array(
                 'defaults' => $defaults,
             ));
@@ -261,7 +261,7 @@ class Module extends AbstractModule
         $module = isset($requestParams['module']) ? $requestParams['module'] : 'default';
         $controller = isset($requestParams['controller']) ? $requestParams['controller'] : 'index';
         $action = isset($requestParams['action']) ? $requestParams['action'] : 'index';
-        if ($module != 'neatline-time' || $controller != 'timelines' || $action != 'show') {
+        if ($module != 'timeline' || $controller != 'timelines' || $action != 'show') {
             return;
         }
         $this->_head($args);
@@ -273,7 +273,7 @@ class Module extends AbstractModule
         $module = isset($requestParams['module']) ? $requestParams['module'] : 'default';
         $controller = isset($requestParams['controller']) ? $requestParams['controller'] : 'index';
         $action = isset($requestParams['action']) ? $requestParams['action'] : 'index';
-        if ($module != 'neatline-time' || $controller != 'timelines' || $action != 'show') {
+        if ($module != 'timeline' || $controller != 'timelines' || $action != 'show') {
             return;
         }
         $this->_head($args);
@@ -284,7 +284,7 @@ class Module extends AbstractModule
      */
     public function hookExhibitBuilderPageHead($args)
     {
-        if (array_key_exists('neatline-time', $args['layouts'])) {
+        if (array_key_exists('timeline', $args['layouts'])) {
             $this->_head($args);
         }
     }
@@ -298,7 +298,7 @@ class Module extends AbstractModule
      */
     private function _head($args)
     {
-        $library = get_option('neatline_time_library');
+        $library = get_option('timeline_library');
         if ($library == 'knightlab') {
             queue_css_url('//cdn.knightlab.com/libs/timeline3/latest/css/timeline.css');
             queue_js_url('//cdn.knightlab.com/libs/timeline3/latest/js/timeline.js');
@@ -306,9 +306,9 @@ class Module extends AbstractModule
         }
 
         // Default simile library.
-        queue_css_file('neatlinetime-timeline');
+        queue_css_file('timeline-timeline');
 
-        queue_js_file('neatline-time-scripts');
+        queue_js_file('timeline-scripts');
 
         // Check useInternalJavascripts in config.ini.
         $config = Zend_Registry::get('bootstrap')->getResource('Config');
@@ -343,9 +343,9 @@ class Module extends AbstractModule
     public function filterAdminNavigationMain($nav)
     {
         $nav[] = array(
-            'label' => __('Neatline Time'),
-            'uri' => url('neatline-time'),
-            'resource' => 'NeatlineTime_Timelines',
+            'label' => __('Timelines'),
+            'uri' => url('timeline'),
+            'resource' => 'Timeline_Timelines',
             'privilege' => 'browse'
         );
         return $nav;
@@ -362,28 +362,28 @@ class Module extends AbstractModule
     public function filterPublicNavigationMain($nav)
     {
         $nav[] = array(
-            'label' => __('Neatline Time'),
-            'uri' => url('neatline-time')
+            'label' => __('Timelines'),
+            'uri' => url('timeline')
         );
         return $nav;
     }
 
     public function filterPublicNavigationItems($navArray)
     {
-        $linkToNav = get_option('neatline_time_link_to_nav');
+        $linkToNav = get_option('timeline_link_to_nav');
         switch ($linkToNav) {
             case 'browse':
                 $navArray['Browse Timeline'] = array(
                     'label' => __('Browse Timelines'),
-                    'uri' => url('neatline-time'),
+                    'uri' => url('timeline'),
                 );
                 break;
             case 'main':
-                $linkToNavMain = get_option('neatline_time_link_to_nav_main');
+                $linkToNavMain = get_option('timeline_link_to_nav_main');
                 if ($linkToNavMain) {
                     $navArray['Browse Timeline'] = array(
                         'label' => __('Browse Timeline'),
-                        'uri' => url('neatline-time/timelines/show/' . $linkToNavMain),
+                        'uri' => url('timeline/timelines/show/' . $linkToNavMain),
                     );
                 }
                 break;
@@ -393,25 +393,25 @@ class Module extends AbstractModule
     }
 
     /**
-     * Adds the neatlinetime-json context to response contexts.
+     * Adds the timeline-json context to response contexts.
      */
     public function filterResponseContexts($contexts)
     {
-        $contexts['neatlinetime-json'] = array(
-            'suffix'  => 'neatlinetime-json',
+        $contexts['timeline-json'] = array(
+            'suffix'  => 'timeline-json',
             'headers' => array('Content-Type' => 'text/javascript')
         );
         return $contexts;
     }
 
     /**
-     * Adds neatlinetime-json context to the 'items' actions for the
-     * NeatlineTime_TimelinesController.
+     * Adds timeline-json context to the 'items' actions for the
+     * Timeline_TimelinesController.
      */
     public function filterActionContexts($contexts, $args)
     {
-        if ($args['controller'] instanceof NeatlineTime_TimelinesController) {
-            $contexts['items'][''] = 'neatlinetime-json';
+        if ($args['controller'] instanceof Timeline_TimelinesController) {
+            $contexts['items'][''] = 'timeline-json';
         }
         return $contexts;
     }
@@ -424,9 +424,9 @@ class Module extends AbstractModule
      */
     public function filterExhibitLayouts($layouts)
     {
-        $layouts['neatline-time'] = array(
-            'name' => __('Neatline Time'),
-            'description' => __('Embed a NeatlineTime timeline.')
+        $layouts['timeline'] = array(
+            'name' => __('Timelines'),
+            'description' => __('Embed a Timeline timeline.')
         );
         return $layouts;
     }
@@ -440,10 +440,10 @@ class Module extends AbstractModule
     public function filterItemsBrowseParams($params)
     {
         // Filter the items to return only items that have a non-empty value for
-        // the DC:Date or the specified field when using the neatlinetime-json
+        // the DC:Date or the specified field when using the timeline-json
         // context.
         $context = Zend_Controller_Action_HelperBroker::getStaticHelper('ContextSwitch')->getCurrentContext();
-        if ($context != 'neatlinetime-json') {
+        if ($context != 'timeline-json') {
             return $params;
         }
         // Check if this is a request (don't filter if this a background process).
@@ -455,7 +455,7 @@ class Module extends AbstractModule
         if (empty($id)) {
             return $params;
         }
-        $timeline = $this->_db->getTable('NeatlineTime_Timeline')->find($id);
+        $timeline = $this->_db->getTable('Timeline_Timeline')->find($id);
         if (empty($timeline)) {
             return $params;
         }

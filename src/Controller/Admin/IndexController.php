@@ -1,8 +1,8 @@
 <?php
 /**
- * Timelines Controller
+ * Timeline Controller
  */
-class NeatlineTime_TimelinesController extends Omeka_Controller_AbstractActionController
+class TimelinesController extends Omeka_Controller_AbstractActionController
 {
     /**
      * The number of records to browse per page.
@@ -21,7 +21,7 @@ class NeatlineTime_TimelinesController extends Omeka_Controller_AbstractActionCo
      */
     public function init()
     {
-        $this->_helper->db->setDefaultModelName('NeatlineTime_Timeline');
+        $this->_helper->db->setDefaultModelName('Timeline');
     }
 
     /**
@@ -40,8 +40,8 @@ class NeatlineTime_TimelinesController extends Omeka_Controller_AbstractActionCo
 
     public function addAction()
     {
-        $form = new NeatlineTime_Form_TimelineAdd;
-        $defaults = json_decode(get_option('neatline_time_defaults'), true) ?: array();
+        $form = new Timeline_Form_TimelineAdd;
+        $defaults = json_decode(get_option('timeline_defaults'), true) ?: array();
         $form->setDefaults($defaults);
         $this->view->form = $form;
         parent::addAction();
@@ -51,7 +51,7 @@ class NeatlineTime_TimelinesController extends Omeka_Controller_AbstractActionCo
     {
         $timeline = $this->_helper->db->findById();
 
-        $form = new NeatlineTime_Form_TimelineAdd;
+        $form = new Timeline_Form_TimelineAdd;
         // Set the existings values.
         $parameters = $timeline->getParameters();
         $existing = array(
@@ -83,7 +83,7 @@ class NeatlineTime_TimelinesController extends Omeka_Controller_AbstractActionCo
             $_REQUEST = $query;
         }
 
-        $this->view->neatline_time_timeline = $timeline;
+        $this->view->timeline = $timeline;
     }
 
     public function itemsAction()
@@ -91,7 +91,7 @@ class NeatlineTime_TimelinesController extends Omeka_Controller_AbstractActionCo
         $timeline = $this->_helper->db->findById();
         $items = $timeline->getItems();
 
-        $this->view->neatline_time_timeline = $timeline;
+        $this->view->timeline = $timeline;
         $this->view->items = $items;
     }
 

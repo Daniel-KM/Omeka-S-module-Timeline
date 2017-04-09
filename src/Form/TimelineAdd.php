@@ -2,7 +2,7 @@
 /**
  * Form for Timeline records.
  */
-class NeatlineTime_Form_TimelineAdd extends Omeka_Form
+class Timeline_Form_TimelineAdd extends Omeka_Form
 {
     public function init()
     {

@@ -9,13 +9,13 @@
  * @since 1.0
  * @param string
  * @param array $options
- * @param NeatlineTime_Timeline|null
+ * @param Timeline|null
  * @return string
  * @deprecated
  */
 function timeline($fieldname, $options = array(), $timeline = null)
 {
-    $timeline = $timeline ?: get_current_record('neatline_time_timeline');
+    $timeline = $timeline ?: get_current_record('timeline');
     return metadata($timeline, $fieldname, $options);
 }
 
@@ -26,13 +26,13 @@ function timeline($fieldname, $options = array(), $timeline = null)
  * @param string HTML for the text of the link.
  * @param array Attributes for the <a> tag. (optional)
  * @param string The action for the link. Default is 'show'.
- * @param NeatlineTime_Timeline|null
+ * @param Timeline|null
  * @return string HTML
  * @deprecated
  */
 function link_to_timeline($text = null, $props = array(), $action = 'show', $timeline = null)
 {
-    $timeline = $timeline ?: get_current_record('neatline_time_timeline');
+    $timeline = $timeline ?: get_current_record('timeline');
     $text = $text ?: $timeline->title;
     return link_to($timeline, $action, $text, $props);
 }
@@ -98,13 +98,13 @@ function queue_timeline_assets()
  * Element metadata, identified by array('Element Set', 'Element'). If a string,
  * the metadata is a record-specific "property."
  * @param array $options Options for getting the metadata.
- * @param NeatlineTime_Timeline|null $timeline The timeline where the parameters
+ * @param Timeline|null $timeline The timeline where the parameters
  * are set. If null, use the current timeline.
  * @return mixed
  */
 function neatlinetime_metadata($record, $metadata, $options = array(), $timeline = null)
 {
-    $timeline = $timeline ?: get_current_record('neatline_time_timeline');
+    $timeline = $timeline ?: get_current_record('timeline');
     if (is_string($metadata)) {
         $elementId = $timeline->getProperty($metadata);
         if (!empty($elementId)) {
@@ -125,26 +125,26 @@ function neatlinetime_metadata($record, $metadata, $options = array(), $timeline
  * Returns the URI for a timeline's json output.
  *
  * @since 1.0
- * @param NeatlineTime_Timeline|null
- * @return string URL the items output uri for the neatlinetime-json output.
+ * @param Timeline|null
+ * @return string URL the items output uri for the timeline-json output.
  */
 function neatlinetime_json_uri_for_timeline($timeline = null)
 {
-    $timeline = $timeline ?: get_current_record('neatline_time_timeline');
-    return record_url($timeline, 'items') . '?output=neatlinetime-json';
+    $timeline = $timeline ?: get_current_record('timeline');
+    return record_url($timeline, 'items') . '?output=timeline-json';
 }
 
 /**
  * Construct id for container div.
  *
  * @since 1.0
- * @param NeatlineTime_Timeline|null
+ * @param Timeline|null
  * @return string HTML
  */
-function neatlinetime_timeline_id($timeline = null)
+function timeline_id($timeline = null)
 {
-    $timeline = $timeline ?: get_current_record('neatline_time_timeline');
-    return text_to_id(html_escape($timeline->title) . ' ' . $timeline->id, 'neatlinetime');
+    $timeline = $timeline ?: get_current_record('timeline');
+    return text_to_id(html_escape($timeline->title) . ' ' . $timeline->id, 'timeline');
 }
 
 /**
@@ -157,7 +157,7 @@ function neatlinetime_display_random_featured_timelines($num = 1)
 {
     $html = '';
 
-    $timelines = get_db()->getTable('NeatlineTime_Timeline')->findBy(array('sort_field' => 'random', 'featured' => 1), $num);
+    $timelines = get_db()->getTable('Timeline')->findBy(['sort_field' => 'random', 'featured' => 1], $num);
 
     if ($timelines) {
         foreach ($timelines as $timeline) {

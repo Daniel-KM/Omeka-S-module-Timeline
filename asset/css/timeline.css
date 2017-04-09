@@ -3,23 +3,23 @@
  */
 
 /* Timeline container div */
-.neatlinetime-timeline {
+.timeline {
     height: 250px;
     margin-bottom: 20px;
     border: 1px solid rgba(90,80,100, 0.5);
 }
 
-.neatlinetime-timeline .timeline-copyright {
+.timeline .timeline-copyright {
     display: none;
 }
 
 /* Resets the background for all timeline bands to white, so we know what the base is. */
-.neatlinetime-timeline .timeline-band {
+.timeline .timeline-band {
     background: #fff !important;
 }
 
 /* Background colors for the top band. */
-.neatlinetime-timeline .timeline-band-0 .timeline-ether-bg{
+.timeline .timeline-band-0 .timeline-ether-bg{
     background-color:rgba(90,80,100, 0.02);
     background: -moz-linear-gradient(top,  rgba(90,80,100,0) 0%, rgba(90,80,100,0.12) 80%, rgba(90,80,100,0.15) 100%); /* FF3.6+ */
     background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(90,80,100,0)), color-stop(80%,rgba(90,80,100,0.12)), color-stop(100%,rgba(90,80,100,0.15))); /* Chrome,Safari4+ */
@@ -31,7 +31,7 @@
 }
 
 /* Background color for the bottom band. */
-.neatlinetime-timeline .timeline-band-1 .timeline-ether-bg{
+.timeline .timeline-band-1 .timeline-ether-bg{
     background-color:rgba(90,80,100, 0.9);
     background: -moz-linear-gradient(top,  rgba(90,80,100,0.9) 0%, rgba(90,80,100,0.95) 50%, rgba(90,80,100,1) 100%); /* FF3.6+ */
     background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(90,80,100,0.9)), color-stop(50%,rgba(90,80,100,0.95)), color-stop(100%,rgba(90,80,100,1))); /* Chrome,Safari4+ */
@@ -43,13 +43,13 @@
 }
 
 /* Text label for events on the top band. */
-.neatlinetime-timeline .timeline-event-label {
+.timeline .timeline-event-label {
     /*background: rgba(0,0,0, 0.05);*/
     font-size: 14px !important;
 }
 
 /* Hide the icons for events on the top band.*/
-.neatlinetime-timeline .timeline-event-icon img {
+.timeline .timeline-event-icon img {
     display: none;
 }
 
@@ -61,32 +61,32 @@ property to whatever you'd like. To change the width and height, modify
 'width' and 'height' to your liking, then make sure 'border-radius' is half
 of whatever you set for width/height, if you want a circle.
 */
-.neatlinetime-timeline .timeline-event-icon {
+.timeline .timeline-event-icon {
     background: rgba(190, 160, 5, 0.75);
     width: 6px;
     height: 6px;
     border-radius: 3px;
 }
 
-.neatlinetime-timeline .timeline-event-tape,
-.neatlinetime-timeline .timeline-small-event-tape {
+.timeline .timeline-event-tape,
+.timeline .timeline-small-event-tape {
     background: rgba(190, 160, 5, 0.75);
 }
 
-.neatlinetime-timeline .timeline-band-1 .timeline-ether-highlight {
+.timeline .timeline-band-1 .timeline-ether-highlight {
     background: rgba(255,255,255, 0.35);
 }
 
-.neatlinetime-timeline .timeline-band-1 .timeline-small-event-icon {
+.timeline .timeline-band-1 .timeline-small-event-icon {
     background: rgba(240, 200, 15, 0.75);
 }
 
 /* Styles for the month label on the top band. */
-.neatlinetime-timeline .timeline-date-label {
+.timeline .timeline-date-label {
 }
 
 /* Styles for the year label on the top band. */
-.neatlinetime-timeline .timeline-date-label-em {
+.timeline .timeline-date-label-em {
     color:rgba(190, 160, 5, 0.75);
     font-weight:bold;
     height:1.5em !important;
@@ -94,7 +94,7 @@ of whatever you set for width/height, if you want a circle.
 }
 
 /* Styles for the date label on the bottom band. */
-.neatlinetime-timeline .timeline-band-1 .timeline-date-label {
+.timeline .timeline-band-1 .timeline-date-label {
     font-size: 12px !important;
 }
 

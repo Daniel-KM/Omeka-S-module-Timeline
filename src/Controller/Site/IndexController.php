@@ -4,7 +4,7 @@
  *
  * Simply redirects to the TimelinesController.
  */
-class NeatlineTime_IndexController extends Omeka_Controller_AbstractActionController
+class Timeline_IndexController extends Omeka_Controller_AbstractActionController
 {
     /**
      * Redirect to timelines/browse.

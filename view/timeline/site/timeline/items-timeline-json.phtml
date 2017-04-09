@@ -1,0 +1,62 @@
+<?php
+/**
+ * The shared timeline-json browse view for Items.
+ *
+ * @todo Manage the case of a range where the start is unknown.
+ */
+
+$timeline = $timeline;
+if (empty($timeline)) {
+    return;
+}
+
+$timelineEvents = array();
+foreach ($items as $item) {
+    $itemTitle = strip_formatting(timeline_metadata($item, 'item_title', array(), $timeline));
+    $itemLink = record_url($item);
+    $itemDescription =  timeline_metadata($item, 'item_description', array('snippet' => '200'), $timeline);
+    $itemDates = timeline_metadata($item, 'item_date', array('all' => true, 'no_filter' => true), $timeline);
+    $itemDatesEnd = timeline_metadata($item, 'item_date_end', array('all' => true, 'no_filter' => true), $timeline);
+
+    $file = get_db()->getTable('File')->findWithImages($item->id, 0);
+    $fileUrl = $file ? metadata($file, 'square_thumbnail_uri') : null;
+
+    if (!empty($itemDates)) {
+        foreach ($itemDates as $key => $itemDate) {
+            $timelineEvent = array();
+            if (empty($itemDatesEnd[$key])) {
+                list($dateStart, $dateEnd) = timeline_convert_any_date($itemDate, $timeline->getProperty('render_year'));
+            } else {
+                list($dateStart, $dateEnd) = timeline_convert_two_dates($itemDate, $itemDatesEnd[$key], $timeline->getProperty('render_year'));
+            }
+            if ($dateStart) {
+                $timelineEvent['start'] = $dateStart;
+
+                if (!is_null($dateEnd)) {
+                    $timelineEvent['end'] = $dateEnd;
+                }
+
+                $timelineEvent['title'] = $itemTitle;
+                $timelineEvent['link'] = $itemLink;
+                $timelineEvent['classname'] = timeline_item_class($item);
+
+                if ($fileUrl) {
+                    $timelineEvent['image'] = $fileUrl;
+                }
+
+                $timelineEvent['description'] = $itemDescription;
+                $timelineEvents[] = $timelineEvent;
+            }
+        }
+    }
+}
+
+$timelineArray = array();
+$timelineArray['dateTimeFormat'] = "iso8601";
+$timelineArray['events'] = $timelineEvents;
+
+$timelineJson = version_compare(phpversion(), '5.4.0', '<')
+    ? json_encode($timelineArray)
+    : json_encode($timelineArray, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+
+echo $timelineJson;

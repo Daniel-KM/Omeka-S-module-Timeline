@@ -3,8 +3,8 @@
  * The edit query view for a specific Timeline.
  */
 
-$timelineTitle = metadata($neatline_time_timeline, 'title');
-$title = __('Neatline Time | Edit "%s" Items Query', strip_formatting($timelineTitle));
+$timelineTitle = metadata($timeline, 'title');
+$title = __('Timelines | Edit "%s" Items Query', strip_formatting($timelineTitle));
 $head = array('bodyclass' => 'timelines primary', 'title' => $title);
 echo head($head);
 ?>
@@ -14,7 +14,7 @@ echo head($head);
     });
 </script>
     <?php
-$query = $neatline_time_timeline->getQuery();
+$query = $timeline->getQuery();
 if ($query) {
 ?>
     <p><strong><?php echo __('The &#8220;%s&#8221; timeline displays items that match the following query:', $timelineTitle) ?></strong></p>

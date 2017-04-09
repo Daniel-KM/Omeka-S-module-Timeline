@@ -1,4 +1,4 @@
-var NeatlineTime = {
+var oTimeline = {
     resizeTimerID: null,
 
     resizeTimeline: function() {
@@ -61,7 +61,7 @@ var NeatlineTime = {
     },
 
     loadTimeline: function(timelineId, timelineData, params) {
-        NeatlineTime._monkeyPatchFillInfoBubble();
+        oTimeline._monkeyPatchFillInfoBubble();
         var eventSource = new Timeline.DefaultEventSource();
 
         var defaultTheme = Timeline.getDefaultTheme();

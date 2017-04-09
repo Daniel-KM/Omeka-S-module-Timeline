@@ -9,7 +9,7 @@
 
         oTimeline.loadTimeline(
             '<?php echo $timeline->slug(); ?>',
-            '<?php echo $timeline->url('items'); ?>',
+            '<?php echo $this->url('timeline-events', ['timeline-slug' => $timeline->slug()]); ?>',
             params
         );
     });

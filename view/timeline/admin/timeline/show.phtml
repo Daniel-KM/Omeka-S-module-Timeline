@@ -1,32 +1,7 @@
 <?php
-$this->htmlElement('body')->appendAttribute('class', 'timelines show');
 $escape = $this->plugin('escapeHtml');
-
+$this->htmlElement('body')->appendAttribute('class', 'timelines show');
 $library = $this->setting('timeline_library');
-
-switch ($library):
-case 'knightlab':
-    $this->headLink()->appendStylesheet('//cdn.knightlab.com/libs/timeline3/latest/css/timeline.css');
-    $this->headScript()->appendFile('//cdn.knightlab.com/libs/timeline3/latest/js/timeline.js');
-    break;
-case 'simile':
-default:
-    $this->headLink()->appendStylesheet($this->assetUrl('css/timeline.css', 'Timeline'));
-    $this->headScript()->appendFile($this->assetUrl('js/timeline.js', 'Timeline'));
-    if ($external) {
-        $this->headScript()->appendFile('//api.simile-widgets.org/timeline/2.3.1/timeline-api.js?bundle=true');
-        $this->headScript()->appendScript('SimileAjax.History.enabled = false; window.jQuery = SimileAjax.jQuery;');
-    } else {
-    $timelineVariables = 'Timeline_ajax_url="' . $this->assetUrl('js/simile/ajax-api/simile-ajax-api.js', 'Timeline') . '";
-            Timeline_urlPrefix="' . dirname($this->assetUrl('js/simile/timeline-api/timeline-api.js', 'Timeline')) . '/";
-            Timeline_parameters="bundle=true";';
-        $this->headScript()->appendScript($timelineVariables);
-        $this->headScript()->appendFile($this->assetUrl('js/simile/timeline-api/timeline-api.js', 'Timeline'));
-        $this->headScript()->appendScript('SimileAjax.History.enabled = false; // window.jQuery = SimileAjax.jQuery;');
-    }
-    break;
-endswitch;
-
 if ($owner = $timeline->owner()) {
     $ownerText = $this->hyperlink(
         $owner->name(),
@@ -39,6 +14,8 @@ if ($owner = $timeline->owner()) {
 } else {
     $ownerText = $this->translate('[no owner]');
 }
+
+echo $this->partial('common/timeline_header', ['external' => $external]);
 ?>
 
 <?php echo $this->pageTitle(sprintf($this->translate('Timeline: “%s”'), $timeline->title())); ?>
@@ -53,12 +30,7 @@ if ($owner = $timeline->owner()) {
 </div>
 
 <div class="active section">
-<?php
-    echo $this->partial(
-        'timeline/site/timeline/_timeline_' . $library,
-        ['timeline' => $timeline]
-    );
-    ?>
+    <?php echo $this->partial('common/timeline_' . $library, ['timeline' => $timeline]); ?>
     <div class="meta-group">
         <div><?php echo $timeline->description(); ?></div>
     </div>

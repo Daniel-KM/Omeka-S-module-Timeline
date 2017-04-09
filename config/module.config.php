@@ -66,6 +66,7 @@ return [
         'invokables' => [
             'Timeline\Controller\Admin\Timeline' => 'Timeline\Controller\Admin\TimelineController',
             'Timeline\Controller\Site\Timeline' => 'Timeline\Controller\Site\TimelineController',
+            'Timeline\Controller\Timeline' => 'Timeline\Controller\TimelineController',
         ],
     ],
     'controller_plugins' => [
@@ -135,15 +136,41 @@ return [
                                 'type' => 'Segment',
                                 'options' => [
                                     'route' => '/:timeline-slug',
+                                    'constraints' => [
+                                        'timeline-slug' => '[a-zA-Z0-9_-]+',
+                                    ],
                                     'defaults' => [
                                         'action' => 'show',
                                     ],
-                                    'constraints' => [
-                                        'timeline-slug' => '[a-zA-Z0-9_-]+',
+                                ],
+                                'may_terminate' => true,
+                                'child_routes' => [
+                                    'events-json' => [
+                                        'type' => 'Segment',
+                                        'options' => [
+                                            'route' => '/events.json',
+                                            'defaults' => [
+                                                'action' => 'events',
+                                            ],
+                                        ],
                                     ],
                                 ],
                             ],
                         ],
+                    ],
+                ],
+            ],
+            'timeline-events' => [
+                'type' => 'Segment',
+                'options' => [
+                    'route' => '/timeline/:timeline-slug/events.json',
+                    'constraints' => [
+                        'timeline-slug' => '[a-zA-Z0-9_-]+',
+                    ],
+                    'defaults' => [
+                        '__NAMESPACE__' => 'Timeline\Controller',
+                        'controller' => 'Timeline',
+                        'action' => 'events',
                     ],
                 ],
             ],

@@ -202,6 +202,7 @@ SQL;
             [
                 'Timeline\Controller\Admin\Timeline',
                 'Timeline\Controller\Site\Timeline',
+                'Timeline\Controller\Timeline',
             ]
         );
         $acl->allow(

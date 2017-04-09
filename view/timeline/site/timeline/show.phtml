@@ -1,22 +1,15 @@
 <?php
-/**
- * The public show view for Timelines.
- */
-
-$timelineTitle = metadata($timeline, 'title');
-$head = array(
-    'bodyclass' => 'timelines primary',
-    'title' => $timelineTitle,
-);
-echo head($head);
+$escape = $this->plugin('escapeHtml');
+$this->htmlElement('body')->appendAttribute('class', 'timeline resource show');
+$library = $this->setting('timeline_library');
+echo $this->partial('common/timeline_header', ['external' => $external]);
 ?>
-<h1><?php echo $timelineTitle; ?></h1>
-    <?php // Construct the timeline.
-    $library = get_option('timeline_library') ?: 'simile';
-    $libraryPartial = $library == 'simile' ? '_timeline' : '_timeline_' . $library;
-    echo $this->partial('timelines/' . $libraryPartial . '.php',
-        array(
-            'timeline' => $timeline,
-    )); ?>
-    <?php echo metadata($timeline, 'description'); ?>
-<?php echo foot();
+
+<?php echo $this->pageTitle($timeline->title(), 2); ?>
+<h3><?php echo $this->translate('Timeline'); ?></h3>
+<?php $this->trigger('view.show.before'); ?>
+<div class="timeline-render">
+<?php echo $this->partial('common/timeline_' . $library, ['timeline' => $timeline]); ?>
+</div>
+<?php echo $timeline->description(); ?>
+<?php $this->trigger('view.show.after'); ?>

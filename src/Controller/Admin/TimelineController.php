@@ -6,7 +6,6 @@ use Omeka\Stdlib\Message;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Timeline\Form\Timeline as TimelineForm;
-use Zend\View\Model\JsonModel;
 
 class TimelineController extends AbstractActionController
 {
@@ -111,7 +110,6 @@ class TimelineController extends AbstractActionController
         $view = new ViewModel;
         $view->setVariable('timeline', $timeline);
         $view->setVariable('resource', $timeline);
-        $view->setVariable('itemCount', $timeline->itemCount());
         $view->setVariable('external', $external);
         return $view;
     }
@@ -161,21 +159,6 @@ class TimelineController extends AbstractActionController
         $view->setVariable('resource', $timeline);
         $view->setVariable('resourceLabel', 'timeline');
         $view->setVariable('partialPath', 'timeline/admin/timeline/show-details');
-        return $view;
-    }
-
-    public function itemsAction()
-    {
-        $response = $this->api()->read(
-            'timelines',
-            ['slug' => $this->params('timeline-slug')]
-        );
-        $timeline = $response->getContent();
-
-        $data = $this->timelineData($timeline);
-
-        $view = new JsonModel();
-        $view->setVariables($data);
         return $view;
     }
 

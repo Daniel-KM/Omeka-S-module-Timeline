@@ -1,7 +1,10 @@
 <?php $escape = $this->plugin('escapeHtml'); ?>
 <div class="resource-details" data-resource-values="<?php //echo $escape($values); ?>">
     <h3 class="o-title"><?php echo $resource->link($resource->title()); ?></h3>
-    <div class="o-description"><?php echo $resource->description(); ?></div>
+    <div class="o-description"><?php
+    $description= strip_tags($resource->description());
+    echo strlen($description) <= 200 ? $description: substr($description, 0, 199) . '&hellip;';
+    ?></div>
     <div class="meta-group">
         <h4><?php echo $escape($this->translate('Visibility')); ?></h4>
         <div class="value"><?php echo ($resource->isPublic()) ? $this->translate('Public') : $this->translate('Private'); ?></div>

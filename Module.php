@@ -9,6 +9,7 @@ use Zend\Mvc\Controller\AbstractController;
 use Zend\Mvc\MvcEvent;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\View\Renderer\PhpRenderer;
+use Omeka\Permissions\Assertion\OwnsEntityAssertion;
 
 class Module extends AbstractModule
 {
@@ -42,24 +43,7 @@ class Module extends AbstractModule
     public function onBootstrap(MvcEvent $event)
     {
         parent::onBootstrap($event);
-
-        $acl = $this->getServiceLocator()->get('Omeka\Acl');
-        $acl->allow(
-            null,
-            ['Timeline\Api\Adapter\TimelineAdapter'],
-            ['search', 'read']
-        );
-
-        // All everyone access to browse, show, and items.
-        $acl->allow(null, 'Timelines',
-            ['show', 'browse', 'items']);
-        $acl->allow('researcher', 'Timelines',
-            'showNotPublic');
-        $acl->allow('contributor', 'Timelines',
-            ['add', 'editSelf', 'querySelf', 'itemsSelf', 'deleteSelf', 'showNotPublic']);
-        $acl->allow(['super', 'admin', 'contributor', 'researcher'], 'Timelines',
-            ['edit', 'query', 'items', 'delete'], new Omeka_Acl_Assert_Ownership);
-
+        $this->addAclRules();
     }
 
     public function install(ServiceLocatorInterface $serviceLocator)
@@ -127,5 +111,164 @@ DROP TABLE IF EXISTS timeline;
                 $settings->set($settingKey, $post[$settingKey]);
             }
         }
+    }
+
+    /**
+     * Add ACL rules for this module.
+     */
+    protected function addAclRules()
+    {
+        $acl = $this->getServiceLocator()->get('Omeka\Acl');
+
+        // Similar than items or item sets from Omeka\Service\AclFactory.
+        $acl->allow(
+            null,
+            [
+                'Timeline\Controller\Admin\Timeline',
+                'Timeline\Controller\Site\Timeline',
+            ]
+        );
+        $acl->allow(
+            null,
+            'Timeline\Api\Adapter\TimelineAdapter',
+            [
+                'search',
+                'read',
+            ]
+        );
+        $acl->allow(
+            null,
+            'Timeline\Entity\Timeline',
+            'read'
+        );
+
+        $acl->allow(
+            'researcher',
+            'Timeline\Controller\Admin\Timeline',
+            [
+                'index',
+                'search',
+                'browse',
+                'show',
+                'show-details',
+                'sidebar-select',
+            ]
+        );
+
+        $acl->allow(
+            'author',
+            'Timeline\Controller\Admin\Timeline',
+            [
+                'add',
+                'edit',
+                'delete',
+                'index',
+                'search',
+                'browse',
+                'show',
+                'show-details',
+                'sidebar-select',
+            ]
+        );
+        $acl->allow(
+            'author',
+            'Timeline\Api\Adapter\TimelineAdapter',
+            [
+                'create',
+                'update',
+                'delete',
+            ]
+        );
+        $acl->allow(
+            'author',
+            'Timeline\Entity\Timeline',
+            [
+                'create',
+            ]
+        );
+        $acl->allow(
+            'author',
+            'Timeline\Entity\Timeline',
+            [
+                'update',
+                'delete',
+            ],
+            new OwnsEntityAssertion
+        );
+
+        $acl->allow(
+            'reviewer',
+            'Timeline\Controller\Admin\Timeline',
+            [
+                'add',
+                'edit',
+                'delete',
+                'index',
+                'search',
+                'browse',
+                'show',
+                'show-details',
+                'sidebar-select',
+            ]
+        );
+        $acl->allow(
+            'reviewer',
+            'Timeline\Api\Adapter\TimelineAdapter',
+            [
+                'create',
+                'update',
+                'delete',
+            ]
+        );
+        $acl->allow(
+            'reviewer',
+            'Timeline\Entity\Timeline',
+            [
+                'create',
+                'update',
+            ]
+        );
+        $acl->allow(
+            'reviewer',
+            'Timeline\Entity\Timeline',
+            [
+                'delete',
+            ],
+            new OwnsEntityAssertion
+        );
+
+        $acl->allow(
+            'editor',
+            'Timeline\Controller\Admin\Timeline',
+            [
+                'add',
+                'edit',
+                'delete',
+                'index',
+                'search',
+                'browse',
+                'show',
+                'show-details',
+                'sidebar-select',
+            ]
+        );
+        $acl->allow(
+            'editor',
+            'Timeline\Api\Adapter\TimelineAdapter',
+            [
+                'create',
+                'update',
+                'delete',
+            ]
+        );
+        $acl->allow(
+            'editor',
+            'Timeline\Entity\Timeline',
+            [
+                'create',
+                'update',
+                'delete',
+            ]
+        );
     }
 }

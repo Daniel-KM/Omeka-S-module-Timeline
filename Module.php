@@ -22,9 +22,6 @@ class Module extends AbstractModule
     protected $settings = [
         // Can be 'simile' or 'knightlab'.
         'timeline_library' => 'simile',
-        // Can be "browse", "main" or empty.
-        'timeline_link_to_nav' => 'browse',
-        'timeline_link_to_nav_main' => '',
         'timeline_defaults' => [
             'item_title' => 'dcterms:title',
             'item_description' => 'dcterms:description',

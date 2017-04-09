@@ -25,31 +25,6 @@ class Config extends Form
         ]);
 
         $this->add([
-            'name' => 'timeline_link_to_nav',
-            'type' => 'Select',
-            'options' => [
-                'label' => 'Add secondary link', // @translate
-                'info' => 'The secondary link is displayed in the menu used in items/browse.' // @translate
-                    . ' ' . 'The option "Main" allows to display a main timeline.', // @translate
-                'empty_option' => 'None', // @translate
-                'value_options' => [
-                    'browse' => 'Browse timelines', // @translate
-                    'main' => 'Display main timeline', // @translate
-                ],
-            ],
-        ]);
-
-        $this->add([
-            'name' => 'timeline_link_to_nav_main',
-            'type' => 'Timeline\Form\Element\TimelineSelect',
-            'options' => [
-                'label' => 'Main timeline', // @translate
-                'info' => 'This parameter is used only when the previous one is "Display main timeline".', // @translate
-                'empty_option' => 'None', // @translate
-            ],
-        ]);
-
-        $this->add([
             'name' => 'timeline_defaults',
             'type' => 'Fieldset',
             'options' => [

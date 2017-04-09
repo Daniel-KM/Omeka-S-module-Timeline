@@ -27,13 +27,9 @@ class TimelineController extends AbstractActionController
     {
         $form = $this->getForm(TimelineForm::class);
 
-        $defaults = [];
-        $defaults['o:args'] = $this->settings()->get('timeline_defaults');
-        $defaults['o:args']['viewer'] = trim(json_encode(
-            $defaults['o:args']['viewer'],
-            JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT
-        ), '"\'');
-        $form->setData($defaults);
+        $data = [];
+        $data['o:args'] = $this->settings()->get('timeline_defaults');
+        $form->setData($data);
 
         if ($this->getRequest()->isPost()) {
             $data = $this->params()->fromPost();
@@ -75,10 +71,6 @@ class TimelineController extends AbstractActionController
 
         $data = $timeline->jsonSerialize();
         $data['item_pool'] = $data['o:item_pool'];
-        $data['o:args']['viewer'] = trim(json_encode(
-            $data['o:args']['viewer'],
-            JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT
-        ), '"\'');
         $form->setData($data);
 
         if ($this->getRequest()->isPost()) {

@@ -2,7 +2,6 @@
 namespace Timeline\Form;
 
 use Omeka\Form\Element\Ckeditor;
-use Omeka\Settings\Settings;
 use Zend\Form\Form;
 use Timeline\Mvc\Controller\Plugin\TimelineData;
 
@@ -10,8 +9,6 @@ class Timeline extends Form
 {
     public function init()
     {
-        $settings = $this->getSettings();
-
         $this->setAttribute('id', 'timeline-form');
 
         // $this->add([
@@ -154,7 +151,7 @@ class Timeline extends Form
             'type' => 'Textarea',
             'options' => [
                 'label' => 'Viewer', // @translate
-                'info' => 'Set the default params of the viewer as json, or let empty for the included default.' // @translate
+                'info' => 'Set the default params of the viewer as raw json, or let empty for the included default.' // @translate
                     . ' ' . 'Currently, only "bandInfos" and "centerDate" are managed.', // @translate
             ],
             'attributes' => [
@@ -168,21 +165,39 @@ class Timeline extends Form
             'name' => 'o:args',
             'required' => false,
         ]);
+
+        // $this->setValidationGroup(array(
+        //     'csrf',
+        //     'o:title',
+        //     'o:slug',
+        //     'o:description',
+        //     'o:args' => [
+        //         'item_title',
+        //         'item_description',
+        //         'item_date',
+        //         'item_date_end',
+        //         'render_year',
+        //         'center_date',
+        //         'viewer',
+        //     ],
+        // ));
     }
 
     /**
-     * @param Settings $settings
+     * {@inheritDoc}
+     *
+     * @param bool $onlyBase
      */
-    public function setSettings(Settings $settings)
+    public function populateValues($data, $onlyBase = false)
     {
-        $this->settings = $settings;
-    }
+        if (empty($data['o:args']['viewer'])) {
+            $data['o:args']['viewer'] = (object) [];
+        }
+        $data['o:args']['viewer'] = trim(json_encode(
+            $data['o:args']['viewer'],
+            JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT
+        ), '"\'');
 
-    /**
-     * @return Settings
-     */
-    protected function getSettings()
-    {
-        return $this->settings;
+        parent::populateValues($data);
     }
 }

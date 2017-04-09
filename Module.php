@@ -118,9 +118,17 @@ SQL;
         $formElementManager = $services->get('FormElementManager');
         $form = $formElementManager->get(ConfigForm::class);
 
+        $data = [];
+        $settings = $services->get('Omeka\Settings');
+        foreach ($this->settings as $name => $value) {
+            $data[$name] = $settings->get($name);
+        }
+        $form->setData($data);
+
         // Currently, Omeka S doesn't allow to display fieldsets in config form.
         $vars = [];
         $vars['form'] = $form;
+
         return $renderer->render('timeline/module/config.phtml', $vars);
     }
 

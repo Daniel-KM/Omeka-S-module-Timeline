@@ -1,0 +1,30 @@
+<?php $form->prepare(); ?>
+<a href="#" class="collapse" aria-label="collapse"><h4><?php echo $this->translate('Item Pool'); ?></h4></a>
+<div class="collapsible">
+    <p><?php
+        echo $this->translate('Items can be selected in the whole base or in a limited list.');
+        echo ' ' . $this->translate('The default item pool is the current site one.');
+        echo ' ' . $this->translate('Items without a date are automatically filtered.');
+        if (!is_null($itemCount)) {
+            $query = $data['item_pool'];
+            $query['has_property'][$data['args']['item_date_id']] = 1;
+            echo ' ' . sprintf(
+                $this->translate('There are currently %s items in this timeline’s pool.'),
+                $this->hyperlink(
+                    $itemCount,
+                    $this->url('admin/default', ['controller' => 'item'], ['query' => $query])
+                )
+            );
+        }
+        ?></p>
+    <div id="advanced-search">
+    <?php echo $this->partial(
+        'common/advanced-search',
+        ['resourceType' => 'item', 'query' => $data['item_pool']]
+    ); ?>
+    </div>
+</div>
+<a href="#" class="expand" aria-label="expand"><h4><?php echo $this->translate('Options'); ?></h4></a>
+<div class="collapsible">
+    <?php echo $this->formCollection($form, false); ?>
+</div>

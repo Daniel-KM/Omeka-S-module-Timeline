@@ -1,0 +1,7 @@
+<?php
+$library = $this->setting('timeline_library');
+echo $this->partial('common/timeline_header', ['external' => $external]);
+?>
+<div class="timeline-render">
+<?php echo $this->partial('common/block-layout/timeline_' . $library, ['blockId' => $blockId, 'data' => $data]); ?>
+</div>

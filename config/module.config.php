@@ -22,6 +22,9 @@ return [
         'invokables' => [
             'timelineStatic' => 'Timeline\Site\BlockLayout\TimelineStatic',
         ],
+        'factories' => [
+            'timeline' => 'Timeline\Service\BlockLayout\TimelineFactory',
+        ],
     ],
     'navigation_links' => [
         'invokables' => [
@@ -32,6 +35,7 @@ return [
         'invokables' => [
             'Timeline\Form\Config' => 'Timeline\Form\Config',
             'Timeline\Form\Timeline' => 'Timeline\Form\Timeline',
+            'Timeline\Form\TimelineBlock' => 'Timeline\Form\TimelineBlock',
         ],
         'factories' => [
             'Timeline\Form\Element\PropertySelect' => 'Timeline\Service\Form\Element\PropertySelectFactory',
@@ -66,7 +70,9 @@ return [
         'invokables' => [
             'Timeline\Controller\Admin\Timeline' => 'Timeline\Controller\Admin\TimelineController',
             'Timeline\Controller\Site\Timeline' => 'Timeline\Controller\Site\TimelineController',
-            'Timeline\Controller\Timeline' => 'Timeline\Controller\TimelineController',
+        ],
+        'factories' => [
+            'Timeline\Controller\Timeline' => 'Timeline\Service\Controller\TimelineControllerFactory',
         ],
     ],
     'controller_plugins' => [
@@ -166,6 +172,20 @@ return [
                     'route' => '/timeline/:timeline-slug/events.json',
                     'constraints' => [
                         'timeline-slug' => '[a-zA-Z0-9_-]+',
+                    ],
+                    'defaults' => [
+                        '__NAMESPACE__' => 'Timeline\Controller',
+                        'controller' => 'Timeline',
+                        'action' => 'events',
+                    ],
+                ],
+            ],
+            'timeline-block' => [
+                'type' => 'Segment',
+                'options' => [
+                    'route' => '/timeline/:block-id/events.json',
+                    'constraints' => [
+                        'block-id' => '\d+',
                     ],
                     'defaults' => [
                         '__NAMESPACE__' => 'Timeline\Controller',

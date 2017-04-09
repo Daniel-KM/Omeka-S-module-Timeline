@@ -30,11 +30,12 @@ class Module extends AbstractModule
             'item_description' => 'dcterms:description',
             'item_date' => 'dcterms:date',
             'item_date_end' => '',
-            'render_year' => 'skip',
-            'center_date' => '',
+            // 'render_year' => \Timeline\Mvc\Controller\Plugin\TimelineData::RENDER_YEAR_DEFAULT,
+            'render_year' => 'january_1',
+            'center_date' => '9999-99-99',
             'viewer' => '{}',
             // The id of dcterms:date in the standard install of Omeka S.
-            'item_date_id' => 7,
+            'item_date_id' => '7',
         ],
     ];
 

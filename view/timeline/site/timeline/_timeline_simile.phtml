@@ -2,7 +2,7 @@
 <div id="<?php echo $timeline->slug(); ?>" class="timeline"></div>
 <script>
     jQuery(document).ready(function($) {
-        var params = <?php echo $args['viewer'] ?: '{}'; ?>;
+        var params = <?php echo json_encode($args['viewer'], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT); ?>;
         if (typeof params.centerDate === 'undefined') {
             params.centerDate = <?php echo json_encode($args['center_date']); ?>;
         }

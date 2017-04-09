@@ -178,7 +178,10 @@ class Config extends Form
                     . ' ' . 'Currently, only "bandInfos" and "centerDate" are managed.', // @translate
             ],
             'attributes' => [
-                'value' => $timelineDefaults['viewer'],
+                'value' => trim(json_encode(
+                    $timelineDefaults['viewer'],
+                    JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT
+                ), '"\''),
                 'rows' => 15,
             ],
         ]);

@@ -29,6 +29,10 @@ class TimelineController extends AbstractActionController
 
         $defaults = [];
         $defaults['o:args'] = $this->settings()->get('timeline_defaults');
+        $defaults['o:args']['viewer'] = trim(json_encode(
+            $defaults['o:args']['viewer'],
+            JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT
+        ), '"\'');
         $form->setData($defaults);
 
         if ($this->getRequest()->isPost()) {
@@ -71,6 +75,10 @@ class TimelineController extends AbstractActionController
 
         $data = $timeline->jsonSerialize();
         $data['item_pool'] = $data['o:item_pool'];
+        $data['o:args']['viewer'] = trim(json_encode(
+            $data['o:args']['viewer'],
+            JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT
+        ), '"\'');
         $form->setData($data);
 
         if ($this->getRequest()->isPost()) {
@@ -188,15 +196,18 @@ class TimelineController extends AbstractActionController
     protected function cleanData($data)
     {
         $data['o:item_pool'] = json_decode($data['item_pool'], true) ?: [];
-        if (empty($data['o:args']['viewer'])) {
-            $data['o:args']['viewer'] = '{}';
-        }
+
+        $data['o:args']['viewer'] = empty($data['o:args']['viewer'])
+            ? []
+            : json_decode($data['o:args']['viewer'], true);
+
         $vocabulary = strtok($data['o:args']['item_date'], ':');
         $name = strtok(':');
         $property = $this->api()
             ->searchOne('properties', ['vocabulary_prefix' => $vocabulary, 'local_name' => $name])
             ->getContent();
         $data['o:args']['item_date_id'] = (string) $property->id();
+
         return $data;
     }
 }

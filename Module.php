@@ -33,7 +33,7 @@ class Module extends AbstractModule
             // 'render_year' => \Timeline\Mvc\Controller\Plugin\TimelineData::RENDER_YEAR_DEFAULT,
             'render_year' => 'january_1',
             'center_date' => '9999-99-99',
-            'viewer' => '{}',
+            'viewer' => [],
             // The id of dcterms:date in the standard install of Omeka S.
             'item_date_id' => '7',
         ],
@@ -130,6 +130,10 @@ SQL;
         $settings = $serviceLocator->get('Omeka\Settings');
 
         $post = $controller->getRequest()->getPost()->toArray();
+
+        $post['timeline_defaults']['viewer'] = empty($post['timeline_defaults']['viewer'])
+            ? []
+            : json_decode($post['timeline_defaults']['viewer'], true);
 
         $vocabulary = strtok($post['timeline_defaults']['item_date'], ':');
         $name = strtok(':');

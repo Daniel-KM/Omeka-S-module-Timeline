@@ -34,6 +34,8 @@ Choose which fields you want the module to use on the timeline by default.
 * Center Date: The date that is displayed by the viewer when loaded. It can
   be any date with the format `YYYY-MM-DD`. An empty string means now, a
   `0000-00-00` the earliest date and `9999-99-99` the latest date.
+* Viewer: The raw json parameters for the viewer, for example to display only
+  one row, or to change the scale.
 
 All these parameters can be customized for each timeline.
 
@@ -41,41 +43,24 @@ All these parameters can be customized for each timeline.
 Usage
 -----
 
-Once enabled, the module adds a tab to the Omeka S admin panel. From here, you
-can browse existing timelines, and add, edit, and delete timelines. A block is
-available for pages too.
+Once enabled, the module adds a new block for site pages. Simply select it and
+config it (the item pool and eventually the options).
 
-Uninstalling the module will only remove timelines added to the Omeka S archive,
-not any items displayed on those timelines.
-
-### Add a Timeline
+### Add a Timeline Block
 
 Creating a timeline is a two-step process:
 
-1. From the admin → Timeline page, click the "Add New Timeline" button to begin
-  creating a timeline.
+1. From the admin panel, edit a page, then click the "Timeline" button in the
+  list of new blocks to add.
 
-  ![Browse Timelines](https://github.com/Daniel-KM/Omeka-S-module-Timeline/blob/master/data/readme/timeline-browse-add-v3-3.png)
+2. To choose which items appear on your timeline, fill the "Item Pool" form. The
+  options are the same than in the config by default (see above).
 
-2. Give your timeline a title and description, and choose whether you wish to
-  make the timeline public and featured. Save your changes.
+  ![Timeline Block](https://github.com/Daniel-KM/Omeka-S-module-Timeline/blob/master/data/readme/timeline-block-v3-4.png)
 
-  ![Add a Timeline Form](https://github.com/Daniel-KM/Omeka-S-module-Timeline/blob/master/data/readme/timeline-form-v3-3.png)
+Ready! Open the page.
 
-3. To choose which items appear on your timeline, click the "Item Pool" tab link
-  beside your existing timeline.
-
-4. This will take you to a form similar to Omeka S’ advanced search form. From
-  here, you can perform a search for any items in your archive, and if those
-  items contain a valid date in their Dublin Core:Date field, they will be
-  displayed on the timeline.
-
-5. With a query defined, the matching items will be rendered on the timeline:
-
-  ![Timeline Show](https://github.com/Daniel-KM/Omeka-S-module-Timeline/blob/master/data/readme/timeline-show-v3-3.png)
-
-6. This timeline can be added via its url in navigation, or it can be added to
-  any page as a block.
+  ![Timeline Page](https://github.com/Daniel-KM/Omeka-S-module-Timeline/blob/master/data/readme/timeline-page-v3-4.png)
 
 
 ### Dates for Items
@@ -159,27 +144,9 @@ The default is automatically included when the field is empty.
 ```
 
 
-### Browsing timelines
+### Modifying the block template for Timeline
 
-You can browse existing timelines by clicking on the "Browse Timelines" from
-your public theme, or the "Timeline" tab in the admin panel.
-
-### Viewing specific timelines
-
-You can always see your timeline by click the title of the timeline in the
-admin. The URL for your timelines will be `timeline/:slug`, where `:slug` is the
-slug of the timeline.
-
-### Modifying theme templates for Timeline
-
-Timeline contains theme templates that control how its various pages are
-displayed in your public theme. As with other Omeka S modules, you can override
-these by copying it in your theme.
-
-The template files available in Timeline include:
-
-* timeline/browse.php - The template for browsing existing timelines.
-* timeline/show.php - The template for showing a specific timeline.
+To modify the block template, copy it in your theme (file `view/common/block-layout/timeline.phtml`).
 
 ### Modifying the viewer
 

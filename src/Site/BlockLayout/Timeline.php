@@ -19,9 +19,15 @@ class Timeline extends AbstractBlockLayout
      */
     protected $apiManager;
 
-    public function __construct(ApiManager $apiManager)
+    /**
+     * @var bool
+     */
+    protected $useExternal;
+
+    public function __construct(ApiManager $apiManager, $useExternal)
     {
         $this->apiManager = $apiManager;
+        $this->useExternal = $useExternal;
     }
 
     public function getLabel()
@@ -40,11 +46,8 @@ class Timeline extends AbstractBlockLayout
     ) {
         $data = $block ? $block->data() : [];
 
-        $services = $site->getServiceLocator();
-        $api = $services->get('Omeka\ApiManager');
-
         $form = new TimelineBlock();
-        $form->setApiManager($api);
+        $form->setApiManager($this->apiManager);
         $form->init();
 
         $addedBlock = empty($data);
@@ -53,7 +56,7 @@ class Timeline extends AbstractBlockLayout
             $data['item_pool'] = $site->itemPool();
             $itemCount = null;
         } else {
-            $itemCount = $this->itemCount($api, $data);
+            $itemCount = $this->itemCount($data);
         }
 
         $form->setData([
@@ -73,18 +76,44 @@ class Timeline extends AbstractBlockLayout
         return $view->blockTimelineForm($block);
     }
 
+    public function prepareRender(PhpRenderer $view)
+    {
+        $library = $view->setting('timeline_library');
+        switch ($library) {
+            case 'knightlab':
+                $view->headLink()->appendStylesheet('//cdn.knightlab.com/libs/timeline3/latest/css/timeline.css');
+                $view->headScript()->appendFile('//cdn.knightlab.com/libs/timeline3/latest/js/timeline.js');
+                break;
+
+            case 'simile':
+            default:
+                $view->headLink()->appendStylesheet($view->assetUrl('css/timeline.css', 'Timeline'));
+                $view->headScript()->appendFile($view->assetUrl('js/timeline.js', 'Timeline'));
+                if ($this->useExternal) {
+                    $view->headScript()->appendFile('//api.simile-widgets.org/timeline/2.3.1/timeline-api.js?bundle=true');
+                    $view->headScript()->appendScript('SimileAjax.History.enabled = false; window.jQuery = SimileAjax.jQuery;');
+                } else {
+                    $timelineVariables = 'Timeline_ajax_url="' . $view->assetUrl('js/simile/ajax-api/simile-ajax-api.js', 'Timeline') . '";' . PHP_EOL;
+                    $timelineVariables .= 'Timeline_urlPrefix="' . dirname($view->assetUrl('js/simile/timeline-api/timeline-api.js', 'Timeline')) . '/";' . PHP_EOL;
+                    $timelineVariables .= 'Timeline_parameters="bundle=true";';
+                    $view->headScript()->appendScript($timelineVariables);
+                    $view->headScript()->appendFile($view->assetUrl('js/simile/timeline-api/timeline-api.js', 'Timeline'));
+                    $view->headScript()->appendScript('SimileAjax.History.enabled = false; // window.jQuery = SimileAjax.jQuery;');
+                }
+                break;
+        }
+    }
+
     public function render(PhpRenderer $view, SitePageBlockRepresentation $block)
     {
-        $config = $block->getServiceLocator()->get('Config');
-        $external = $config['assets']['use_externals'];
-
-        // TODO Merge the library header.
-
-        return $view->partial('common/block-layout/timeline', [
-            'blockId' => $block->id(),
-            'data' => $block->data(),
-            'external' => $external,
-        ]);
+        $library = $view->setting('timeline_library');
+        return $view->partial(
+            'common/block-layout/timeline_' . $library,
+            [
+                'blockId' => $block->id(),
+                'data' => $block->data(),
+            ]
+        );
     }
 
     public function onHydrate(SitePageBlock $block, ErrorStore $errorStore)
@@ -111,17 +140,16 @@ class Timeline extends AbstractBlockLayout
     /**
      * Helper to get the item count for the item pool, filtered of empty dates.
      *
-     * @param ApiManager $api
      * @param array $data
      * @return int
      */
-    protected function itemCount(ApiManager $api, $data)
+    protected function itemCount($data)
     {
         $params = $data['item_pool'];
         // Add the param for the date: return only if not empty.
         $params['has_property'][$data['args']['item_date_id']] = 1;
         $params['limit'] = 0;
-        $itemCount = $api->search('items', $params)->getTotalResults();
+        $itemCount = $this->apiManager->search('items', $params)->getTotalResults();
         return $itemCount;
     }
 }

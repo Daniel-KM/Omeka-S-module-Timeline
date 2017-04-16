@@ -10,12 +10,15 @@ class TimelineFactory implements FactoryInterface
     /**
      * Create the Timeline block layout service.
      *
-     * @param ContainerInterface $serviceLocator
+     * @param ContainerInterface $services
      * @return Timeline
      */
-    public function __invoke(ContainerInterface $serviceLocator, $requestedName, array $options = null)
+    public function __invoke(ContainerInterface $services, $requestedName, array $options = null)
     {
-        $apiManager = $serviceLocator->get('Omeka\ApiManager');
-        return new Timeline($apiManager);
+        $apiManager = $services->get('Omeka\ApiManager');
+        $config = $services->get('Config');
+        $useExternal = $config['assets']['use_externals'];
+
+        return new Timeline($apiManager, $useExternal);
     }
 }

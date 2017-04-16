@@ -1,9 +1,0 @@
-<?php
-$library = $this->setting('timeline_library');
-echo $this->partial('common/timeline_header', ['external' => $external]);
-?>
-<?php echo $this->pageTitle($timeline->title(), 3); ?>
-<div class="timeline-render">
-<?php echo $this->partial('common/timeline_' . $library, ['timeline' => $timeline]); ?>
-</div>
-<?php echo $timeline->description(); ?>

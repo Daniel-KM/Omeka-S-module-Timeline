@@ -20,25 +20,6 @@ class TimelineController extends AbstractActionController
 
     public function eventsAction()
     {
-        if (!empty($this->params('block-id'))) {
-            return $this->dataBlock();
-        }
-
-        $response = $this->api()->read(
-            'timelines',
-            ['slug' => $this->params('timeline-slug')]
-        );
-        $timeline = $response->getContent();
-
-        $data = $this->timelineData($timeline->itemPool(), $timeline->args());
-
-        $view = new JsonModel();
-        $view->setVariables($data);
-        return $view;
-    }
-
-    protected function dataBlock()
-    {
         $blockId = (integer) $this->params('block-id');
         $block = $this->getBlock($blockId);
 

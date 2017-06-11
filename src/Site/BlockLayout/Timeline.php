@@ -65,7 +65,7 @@ class Timeline extends AbstractBlockLayout
         ]);
 
         return $view->partial(
-            'common/block-layout/timeline-form',
+            'timeline/common/block-layout/timeline-form',
             [
                 'form' => $form,
                 'data' => $data,
@@ -93,11 +93,11 @@ class Timeline extends AbstractBlockLayout
                     $view->headScript()->appendFile('//api.simile-widgets.org/timeline/2.3.1/timeline-api.js?bundle=true');
                     $view->headScript()->appendScript('SimileAjax.History.enabled = false; window.jQuery = SimileAjax.jQuery;');
                 } else {
-                    $timelineVariables = 'Timeline_ajax_url="' . $view->assetUrl('js/simile/ajax-api/simile-ajax-api.js', 'Timeline') . '";' . PHP_EOL;
-                    $timelineVariables .= 'Timeline_urlPrefix="' . dirname($view->assetUrl('js/simile/timeline-api/timeline-api.js', 'Timeline')) . '/";' . PHP_EOL;
+                    $timelineVariables = 'Timeline_ajax_url="' . $view->assetUrl('vendor/simile/ajax-api/simile-ajax-api.js', 'Timeline') . '";' . PHP_EOL;
+                    $timelineVariables .= 'Timeline_urlPrefix="' . dirname($view->assetUrl('vendor/simile/timeline-api/timeline-api.js', 'Timeline')) . '/";' . PHP_EOL;
                     $timelineVariables .= 'Timeline_parameters="bundle=true";';
                     $view->headScript()->appendScript($timelineVariables);
-                    $view->headScript()->appendFile($view->assetUrl('js/simile/timeline-api/timeline-api.js', 'Timeline'));
+                    $view->headScript()->appendFile($view->assetUrl('vendor/simile/timeline-api/timeline-api.js', 'Timeline'));
                     $view->headScript()->appendScript('SimileAjax.History.enabled = false; // window.jQuery = SimileAjax.jQuery;');
                 }
                 break;
@@ -108,7 +108,7 @@ class Timeline extends AbstractBlockLayout
     {
         $library = $view->setting('timeline_library');
         return $view->partial(
-            'common/block-layout/timeline_' . $library,
+            'timeline/common/block-layout/timeline_' . $library,
             [
                 'blockId' => $block->id(),
                 'data' => $block->data(),

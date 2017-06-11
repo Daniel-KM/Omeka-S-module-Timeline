@@ -202,7 +202,7 @@ The fact that you are presently reading this means that you have had knowledge
 of the CeCILL license and that you accept its terms.
 
 The module uses the widget [SIMILE Timeline], published under the license MIT.
-See files in `asset/js` for more info.
+See files in `asset/vendor` for more info.
 
 
 Contacts

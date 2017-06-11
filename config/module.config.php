@@ -1,4 +1,6 @@
 <?php
+namespace Timeline;
+
 return [
     'view_manager' => [
         'template_path_stack' => [
@@ -7,26 +9,26 @@ return [
     ],
     'block_layouts' => [
         'factories' => [
-            'timeline' => 'Timeline\Service\BlockLayout\TimelineFactory',
+            'timeline' => Service\BlockLayout\TimelineFactory::class,
         ],
     ],
     'form_elements' => [
         'invokables' => [
-            'Timeline\Form\Config' => 'Timeline\Form\Config',
-            'Timeline\Form\TimelineBlock' => 'Timeline\Form\TimelineBlock',
+            'Timeline\Form\Config' => Form\Config::class,
+            'Timeline\Form\TimelineBlock' => Form\TimelineBlock::class,
         ],
         'factories' => [
-            'Timeline\Form\Element\PropertySelect' => 'Timeline\Service\Form\Element\PropertySelectFactory',
+            'Timeline\Form\Element\PropertySelect' => Service\Form\Element\PropertySelectFactory::class,
         ],
     ],
     'controllers' => [
         'factories' => [
-            'Timeline\Controller\Timeline' => 'Timeline\Service\Controller\TimelineControllerFactory',
+            'Timeline\Controller\Timeline' => Service\Controller\TimelineControllerFactory::class,
         ],
     ],
     'controller_plugins' => [
         'invokables' => [
-            'timelineData' => 'Timeline\Mvc\Controller\Plugin\TimelineData',
+            'timelineData' => Mvc\Controller\Plugin\TimelineData::class,
         ],
     ],
     'router' => [

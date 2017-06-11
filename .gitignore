@@ -2,4 +2,4 @@
 .php_cs.cache
 composer.phar
 composer.lock
-vendor
+/vendor

@@ -58,7 +58,9 @@ class TimelineData extends AbstractPlugin
             $itemDatesEnd = $propertyItemDateEnd
                 ? $item->value($propertyItemDateEnd, ['all' => true, 'type' => 'literal', 'default' => []])
                 : [];
-            $itemLink = $item->url();
+            $itemLink = empty($args['site-slug'])
+                ? null
+                : $item->siteUrl($args['site-slug']);
             $media = $item->primaryMedia();
             $mediaUrl = $media ? $media->thumbnailUrl('square') : null;
             foreach ($itemDates as $key => $valueItemDate) {

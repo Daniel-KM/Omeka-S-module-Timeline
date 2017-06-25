@@ -24,6 +24,8 @@ class TimelineController extends AbstractActionController
         $block = $this->getBlock($blockId);
 
         $blockData = $block->getData();
+        // Get the site slug directly via the page.
+        $blockData['args']['site-slug'] = $block->getPage()->getSite()->getSlug();
 
         $data = $this->timelineData($blockData['item_pool'], $blockData['args']);
 
@@ -35,7 +37,7 @@ class TimelineController extends AbstractActionController
     /**
      * Helper to get a site page block.
      *
-     * @internal Site page blocks are not available via the api or the adapter.
+     * Note: Site page blocks are not available via the api or the adapter.
      * @see Omeka\Api\Adapter\AbstractEntityAdapter::findEntity()
      *
      * @param int $blockId

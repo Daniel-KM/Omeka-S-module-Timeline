@@ -33,6 +33,7 @@ return [
     ],
     'router' => [
         'routes' => [
+            // TODO Replace the timeline block route by a site and admin child routes?
             'timeline-block' => [
                 'type' => 'Segment',
                 'options' => [

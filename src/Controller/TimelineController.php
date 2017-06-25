@@ -58,8 +58,8 @@ class TimelineController extends AbstractActionController
         $entity = $qb->getQuery()->getOneOrNullResult();
         if (!$entity) {
             throw new NotFoundException(sprintf(
-                $this->getTranslator()->translate('%s entity with criteria %s not found'),
-                $this->getEntityClass(),
+                $this->translate('%s entity with criteria %s not found'),
+                $entityClass,
                 json_encode(['id' => $blockId])
             ));
         }

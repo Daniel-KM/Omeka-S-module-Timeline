@@ -154,7 +154,7 @@ class Timeline extends AbstractBlockLayout
     {
         $params = $data['item_pool'];
         // Add the param for the date: return only if not empty.
-        $params['has_property'][$data['args']['item_date_id']] = 1;
+        $params['property'][] = ['joiner' => 'and', 'property' => $data['args']['item_date_id'], 'type' => 'ex'];
         $params['limit'] = 0;
         $itemCount = $this->apiManager->search('items', $params)->getTotalResults();
         return $itemCount;

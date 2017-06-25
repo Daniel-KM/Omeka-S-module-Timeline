@@ -39,7 +39,7 @@ class TimelineData extends AbstractPlugin
         $propertyItemDateEnd = isset($args['item_date_end']) ? $args['item_date_end'] : null;
 
         $params = $itemPool;
-        $params['has_property'][$args['item_date_id']] = 1;
+        $params['property'][] = ['joiner' => 'and', 'property' => $args['item_date_id'], 'type' => 'ex'];
 
         $items = $this->getController()->api()
             ->search('items', $params)

@@ -7,7 +7,7 @@
         echo ' ' . $this->translate('Items without a date are automatically filtered.');
         if (!is_null($itemCount)) {
             $query = $data['item_pool'];
-            $query['has_property'][$data['args']['item_date_id']] = 1;
+            $query['property'][] = ['joiner' => 'and', 'property' => $data['args']['item_date_id'], 'type' => 'ex'];
             echo ' ' . sprintf(
                 $this->translate('There are currently %s items in this timeline’s pool.'),
                 $this->hyperlink(

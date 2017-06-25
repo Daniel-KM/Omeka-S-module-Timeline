@@ -87,9 +87,10 @@ class Timeline extends AbstractBlockLayout
 
             case 'simile':
             default:
+                $internalAssets = $view->setting('timeline_internal_assets');
                 $view->headLink()->appendStylesheet($view->assetUrl('css/timeline.css', 'Timeline'));
                 $view->headScript()->appendFile($view->assetUrl('js/timeline.js', 'Timeline'));
-                if ($this->useExternal) {
+                if ($this->useExternal && !$internalAssets) {
                     $view->headScript()->appendFile('//api.simile-widgets.org/timeline/2.3.1/timeline-api.js?bundle=true');
                     $view->headScript()->appendScript('SimileAjax.History.enabled = false; window.jQuery = SimileAjax.jQuery;');
                 } else {

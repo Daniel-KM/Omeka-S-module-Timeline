@@ -18,6 +18,7 @@ class Module extends AbstractModule
     protected $settings = [
         // Can be 'simile' or 'knightlab'.
         'timeline_library' => 'simile',
+        'timeline_internal_assets' => false,
         'timeline_defaults' => [
             'item_title' => 'dcterms:title',
             'item_description' => 'dcterms:description',

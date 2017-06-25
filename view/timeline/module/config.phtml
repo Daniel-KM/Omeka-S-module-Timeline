@@ -16,5 +16,15 @@
             <?php echo $this->formRadio($element); ?>
         </div>
     </div>
+    <?php $element = $form->get('timeline_internal_assets'); ?>
+        <?php echo $this->translate($element->getOption('info')); ?>
+    <div class="field">
+        <div class="field-meta">
+            <?php echo $this->formLabel($element); ?>
+        </div>
+        <div class='inputs'>
+            <?php echo $this->formCheckbox($element); ?>
+        </div>
+    </div>
 </fieldset>
 <?php echo $this->formCollection($form->get('timeline_defaults')); ?>

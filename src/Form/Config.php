@@ -25,6 +25,15 @@ class Config extends Form
         ]);
 
         $this->add([
+            'name' => 'timeline_internal_assets',
+            'type' => 'Checkbox',
+            'options' => [
+                'label' => 'Use Internal library for Simile', // @translate
+                'info' => 'The external Simile api cannot be used on a https site, so check this box if needed.', // @translate
+            ],
+        ]);
+
+        $this->add([
             'name' => 'timeline_defaults',
             'type' => 'Fieldset',
             'options' => [

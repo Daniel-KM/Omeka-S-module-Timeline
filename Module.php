@@ -4,6 +4,7 @@ namespace Timeline;
 use Omeka\Module\AbstractModule;
 use Timeline\Form\Config as ConfigForm;
 use Zend\Mvc\Controller\AbstractController;
+use Zend\Mvc\MvcEvent;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\View\Renderer\PhpRenderer;
 
@@ -34,6 +35,14 @@ class Module extends AbstractModule
     public function getConfig()
     {
         return include __DIR__ . '/config/module.config.php';
+    }
+
+    public function onBootstrap(MvcEvent $event)
+    {
+        parent::onBootstrap($event);
+
+        $acl = $this->getServiceLocator()->get('Omeka\Acl');
+        $acl->allow(null, 'Timeline\Controller\Timeline');
     }
 
     public function install(ServiceLocatorInterface $serviceLocator)

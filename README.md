@@ -18,6 +18,10 @@ Uncompress files in the module directory and rename module folder `Timeline`.
 
 Then install it like any other Omeka module and follow the config instructions.
 
+Note: If Omeka is https and if external assets are used, Simile will not load on
+recent browsers, because the online library contains an url with unsecure http.
+In that case, you need to use the internal assets in the Omeka config.
+
 Choose which fields you want the module to use on the timeline by default.
 
 * Item Title: The field you would like displayed for the item’s title in its

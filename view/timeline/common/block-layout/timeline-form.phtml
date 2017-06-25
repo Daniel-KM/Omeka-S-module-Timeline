@@ -17,12 +17,10 @@
             );
         }
         ?></p>
-    <div id="advanced-search">
-    <?php echo $this->partial(
+    <div id="advanced-search"><?php echo $this->partial(
         'common/advanced-search',
-        ['resourceType' => 'item', 'query' => $data['item_pool']]
-    ); ?>
-    </div>
+        ['query' => $data['item_pool'], 'resourceType' => 'item']
+    ); ?></div>
 </div>
 <a href="#" class="expand" aria-label="expand"><h4><?php echo $this->translate('Options'); ?></h4></a>
 <div class="collapsible">

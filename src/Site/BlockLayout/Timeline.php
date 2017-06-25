@@ -120,7 +120,14 @@ class Timeline extends AbstractBlockLayout
     {
         $data = $block->getData();
 
-        $data['item_pool'] = json_decode($data['item_pool'], true) ?: [];
+        // Set some default values in case of error.
+        $data += [
+            'item_pool' => [],
+            'args' => [
+                'item_date' => 'dcterms:date',
+                'viewer' => '{}',
+            ],
+        ];
 
         $data['args']['viewer'] = trim($data['args']['viewer']);
         if ($data['args']['viewer'] === '') {

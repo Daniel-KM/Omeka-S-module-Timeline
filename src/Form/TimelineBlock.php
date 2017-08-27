@@ -33,7 +33,7 @@ class TimelineBlock extends Form
             'type' => 'Timeline\Form\Element\PropertySelect',
             'type' => 'Select',
             'options' => [
-                'label' => 'Item Title', // @translate
+                'label' => 'Item title', // @translate
                 'empty_option' => 'Select a property...', // @translate
                 'value_options' => $properties,
             ],
@@ -47,7 +47,7 @@ class TimelineBlock extends Form
             'type' => 'Timeline\Form\Element\PropertySelect',
             'type' => 'Select',
             'options' => [
-                'label' => 'Item Description', // @translate
+                'label' => 'Item description', // @translate
                 'empty_option' => 'Select a property...', // @translate
                 'value_options' => $properties,
             ],
@@ -61,7 +61,7 @@ class TimelineBlock extends Form
             'type' => 'Timeline\Form\Element\PropertySelect',
             'type' => 'Select',
             'options' => [
-                'label' => 'Item Date', // @translate
+                'label' => 'Item date', // @translate
                 'empty_option' => 'Select a property...', // @translate
                 'value_options' => $properties,
             ],
@@ -75,7 +75,7 @@ class TimelineBlock extends Form
             'type' => 'Timeline\Form\Element\PropertySelect',
             'type' => 'Select',
             'options' => [
-                'label' => 'Item End Date', // @translate
+                'label' => 'Item end date', // @translate
                 'info' => 'If set, the process will use the other date as a start date.', // @translate
                 'empty_option' => 'None', // @translate
                 'value_options' => $properties,
@@ -90,7 +90,7 @@ class TimelineBlock extends Form
             // A radio is not possible when there are multiple timeline blocks.
             'type' => 'Select',
             'options' => [
-                'label' => 'Render Year', // @translate
+                'label' => 'Render year', // @translate
                 'info' => 'When a date is a single year, like "1066", the value should be interpreted to be displayed on the timeline.', // @translate
                 'value_options' => [
                     TimelineData::RENDER_YEAR_JANUARY_1 => 'Pick first January', // @translate
@@ -105,7 +105,7 @@ class TimelineBlock extends Form
             'name' => 'center_date',
             'type' => 'Text',
             'options' => [
-                'label' => 'Center Date', // @translate
+                'label' => 'Center date', // @translate
                 'info' => 'Set the default center date for the timeline.' // @translate
                     . ' ' . 'The format should be "YYYY-MM-DD".' // @translate
                     . ' ' . 'An empty value means "now", "0000-00-00" the earliest date, and "9999-99-99" the latest date.', // @translate

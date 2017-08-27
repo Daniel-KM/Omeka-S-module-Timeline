@@ -65,7 +65,7 @@ class Timeline extends AbstractBlockLayout
         ]);
 
         return $view->partial(
-            'timeline/common/block-layout/timeline-form',
+            'common/block-layout/timeline-form',
             [
                 'form' => $form,
                 'data' => $data,
@@ -109,7 +109,7 @@ class Timeline extends AbstractBlockLayout
     {
         $library = $view->setting('timeline_library');
         return $view->partial(
-            'timeline/common/block-layout/timeline_' . $library,
+            'common/block-layout/timeline_' . $library,
             [
                 'blockId' => $block->id(),
                 'data' => $block->data(),

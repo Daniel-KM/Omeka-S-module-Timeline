@@ -174,7 +174,7 @@ class TimelineData extends AbstractPlugin
             $date_out = preg_replace('/^(-?)(\d{3}-)/', '${1}0\2', $date_out);
             $date_out = preg_replace('/^(-?)(\d{2}-)/', '${1}00\2', $date_out);
             $date_out = preg_replace('/^(-?)(\d{1}-)/', '${1}000\2', $date_out);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $date_out = null;
         }
 

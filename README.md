@@ -82,7 +82,13 @@ To denote spans of time, separate the start and end date with a `/`:
 
   * `January 1, 2012/February 1, 2012`
 
-Timeline handles dates with years shorter than 4 digits. For these you’ll need
+A common format is managed too:
+
+  * `1939-1945`
+
+It must be `1939/1945` to be compatible with the standard ISO 8601.
+
+Timeline handles dates with years shorter than 4 digits. For these you may need
 to pad the years with enough zeros to make them have four digits. For example,
 `476` should be written `0476`.
 

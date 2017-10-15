@@ -211,7 +211,10 @@ class TimelineData extends AbstractPlugin
             $renderYear = $this->renderYear;
         }
 
-        $dateArray = array_map('trim', explode('/', $date));
+        // Manage a common issue (2016-2017).
+        $dateArray = preg_match('/^\d{4}-\d{4}$/', $date)
+            ? array_map('trim', explode('-', $date))
+            : array_map('trim', explode('/', $date));
 
         // A range of dates.
         if (count($dateArray) == 2) {

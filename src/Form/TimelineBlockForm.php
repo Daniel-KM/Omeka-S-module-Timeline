@@ -1,26 +1,20 @@
 <?php
 namespace Timeline\Form;
 
-use Omeka\Api\Manager as ApiManager;
+use Omeka\Form\Element\PropertySelect;
 use Timeline\Mvc\Controller\Plugin\TimelineData;
+use Zend\Form\Element\Select;
+use Zend\Form\Element\Text;
+use Zend\Form\Fieldset;
 use Zend\Form\Form;
 
-class TimelineBlock extends Form
+class TimelineBlockForm extends Form
 {
-    /**
-     * @var ApiManager
-     */
-    protected $apiManager;
-
     public function init()
     {
-        $this->setAttribute('id', 'timeline-form');
-
-        $properties = $this->listProperties();
-
         $this->add([
             'name' => 'o:block[__blockIndex__][o:data][args]',
-            'type' => 'Fieldset',
+            'type' => Fieldset::class,
             'options' => [
                 'label' => 'Parameters', // @translate
             ],
@@ -29,66 +23,64 @@ class TimelineBlock extends Form
 
         $argsFieldset->add([
             'name' => 'item_title',
-            // TODO Use the element directly.
-            'type' => 'Timeline\Form\Element\PropertySelect',
-            'type' => 'Select',
+            'type' => PropertySelect::class,
             'options' => [
                 'label' => 'Item title', // @translate
                 'empty_option' => 'Select a property...', // @translate
-                'value_options' => $properties,
+                'term_as_value' => true,
             ],
             'attributes' => [
                 'required' => true,
+                'class' => 'chosen-select',
             ],
         ]);
 
         $argsFieldset->add([
             'name' => 'item_description',
-            'type' => 'Timeline\Form\Element\PropertySelect',
-            'type' => 'Select',
+            'type' => PropertySelect::class,
             'options' => [
                 'label' => 'Item description', // @translate
                 'empty_option' => 'Select a property...', // @translate
-                'value_options' => $properties,
+                'term_as_value' => true,
             ],
             'attributes' => [
                 'required' => true,
+                'class' => 'chosen-select',
             ],
         ]);
 
         $argsFieldset->add([
             'name' => 'item_date',
-            'type' => 'Timeline\Form\Element\PropertySelect',
-            'type' => 'Select',
+            'type' => PropertySelect::class,
             'options' => [
                 'label' => 'Item date', // @translate
                 'empty_option' => 'Select a property...', // @translate
-                'value_options' => $properties,
+                'term_as_value' => true,
             ],
             'attributes' => [
                 'required' => true,
+                'class' => 'chosen-select',
             ],
         ]);
 
         $argsFieldset->add([
             'name' => 'item_date_end',
-            'type' => 'Timeline\Form\Element\PropertySelect',
-            'type' => 'Select',
+            'type' => PropertySelect::class,
             'options' => [
                 'label' => 'Item end date', // @translate
                 'info' => 'If set, the process will use the other date as a start date.', // @translate
                 'empty_option' => 'None', // @translate
-                'value_options' => $properties,
+                'term_as_value' => true,
             ],
             'attributes' => [
-                'required' => false,
+                'class' => 'chosen-select',
             ],
         ]);
 
         $argsFieldset->add([
             'name' => 'render_year',
             // A radio is not possible when there are multiple timeline blocks.
-            'type' => 'Select',
+            'type' => Select::class,
             'options' => [
                 'label' => 'Render year', // @translate
                 'info' => 'When a date is a single year, like "1066", the value should be interpreted to be displayed on the timeline.', // @translate
@@ -103,7 +95,7 @@ class TimelineBlock extends Form
 
         $argsFieldset->add([
             'name' => 'center_date',
-            'type' => 'Text',
+            'type' => Text::class,
             'options' => [
                 'label' => 'Center date', // @translate
                 'info' => 'Set the default center date for the timeline.' // @translate
@@ -128,57 +120,10 @@ class TimelineBlock extends Form
             ],
         ]);
 
-        // FIXME Parameters are not validated inside a fieldset, but they should.
         $inputFilter = $this->getInputFilter();
         $inputFilter->add([
             'name' => 'o:block[__blockIndex__][o:data][args]',
             'required' => false,
         ]);
-    }
-
-    /**
-     * Helper to get the list of properties by tag name instead of internal ids.
-     */
-    protected function listProperties()
-    {
-        $valueOptions = [];
-        $response = $this->getApiManager()->search('vocabularies');
-        foreach ($response->getContent() as $vocabulary) {
-            $options = [];
-            foreach ($vocabulary->properties() as $property) {
-                $options[] = [
-                    'label' => $property->label(),
-                    'value' => $property->term(),
-                    'attributes' => [
-                        'data-term' => $property->term(),
-                        'data-id' => $property->id(),
-                    ],
-                ];
-            }
-            if (!$options) {
-                continue;
-            }
-            $valueOptions[] = [
-                'label' => $vocabulary->label(),
-                'options' => $options,
-            ];
-        }
-        return $valueOptions;
-    }
-
-    /**
-     * @param ApiManager $apiManager
-     */
-    public function setApiManager(ApiManager $apiManager)
-    {
-        $this->apiManager = $apiManager;
-    }
-
-    /**
-     * @return ApiManager
-     */
-    public function getApiManager()
-    {
-        return $this->apiManager;
     }
 }

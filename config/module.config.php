@@ -17,16 +17,15 @@ return [
     ],
     'form_elements' => [
         'invokables' => [
-            'Timeline\Form\Config' => Form\Config::class,
-            'Timeline\Form\TimelineBlock' => Form\TimelineBlock::class,
+            Form\TimelineBlockForm::class => Form\TimelineBlockForm::class,
         ],
         'factories' => [
-            'Timeline\Form\Element\PropertySelect' => Service\Form\Element\PropertySelectFactory::class,
+            Form\ConfigForm::class => Service\Form\ConfigFormFactory::class,
         ],
     ],
     'controllers' => [
         'factories' => [
-            'Timeline\Controller\Timeline' => Service\Controller\TimelineControllerFactory::class,
+            Controller\TimelineController::class => Service\Controller\TimelineControllerFactory::class,
         ],
     ],
     'controller_plugins' => [
@@ -46,7 +45,7 @@ return [
                     ],
                     'defaults' => [
                         '__NAMESPACE__' => 'Timeline\Controller',
-                        'controller' => 'Timeline',
+                        'controller' => 'TimelineController',
                         'action' => 'events',
                     ],
                 ],
@@ -60,6 +59,25 @@ return [
                 'base_dir' => __DIR__ . '/../language',
                 'pattern' => '%s.mo',
                 'text_domain' => null,
+            ],
+        ],
+    ],
+    'timeline' => [
+        'settings' => [
+            // Can be 'simile' or 'knightlab'.
+            'timeline_library' => 'simile',
+            'timeline_internal_assets' => false,
+            'timeline_defaults' => [
+                'item_title' => 'dcterms:title',
+                'item_description' => 'dcterms:description',
+                'item_date' => 'dcterms:date',
+                'item_date_end' => '',
+                // 'render_year' => \Timeline\Mvc\Controller\Plugin\TimelineData::RENDER_YEAR_DEFAULT,
+                'render_year' => 'january_1',
+                'center_date' => '9999-99-99',
+                'viewer' => '{}',
+                // The id of dcterms:date in the standard install of Omeka S.
+                'item_date_id' => '7',
             ],
         ],
     ],

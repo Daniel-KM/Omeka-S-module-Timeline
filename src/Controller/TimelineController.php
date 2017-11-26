@@ -3,6 +3,7 @@ namespace Timeline\Controller;
 
 use Doctrine\ORM\EntityManager;
 use Omeka\Api\Exception\NotFoundException;
+use Omeka\Stdlib\Message;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\JsonModel;
 
@@ -38,10 +39,10 @@ class TimelineController extends AbstractActionController
      * Helper to get a site page block.
      *
      * Note: Site page blocks are not available via the api or the adapter.
-     * @see Omeka\Api\Adapter\AbstractEntityAdapter::findEntity()
+     * @see \Omeka\Api\Adapter\AbstractEntityAdapter::findEntity()
      *
      * @param int $blockId
-     * @return Omeka\Entity\SitePageBlock
+     * @return \Omeka\Entity\SitePageBlock
      */
     protected function getBlock($blockId)
     {
@@ -57,8 +58,8 @@ class TimelineController extends AbstractActionController
 
         $entity = $qb->getQuery()->getOneOrNullResult();
         if (!$entity) {
-            throw new NotFoundException(sprintf(
-                $this->translate('%s entity with criteria %s not found'),
+            throw new NotFoundException(new Message(
+                '%s entity with criteria %s not found', // @translate
                 $entityClass,
                 json_encode(['id' => $blockId])
             ));

@@ -8,9 +8,9 @@ use Omeka\Api\Representation\SitePageBlockRepresentation;
 use Omeka\Entity\SitePageBlock;
 use Omeka\Site\BlockLayout\AbstractBlockLayout;
 use Omeka\Stdlib\ErrorStore;
+use Timeline\Form\TimelineBlockForm;
+use Zend\Form\FormElementManager\FormElementManagerV3Polyfill as FormElementManager;
 use Zend\View\Renderer\PhpRenderer;
-use Zend\Form\Form;
-use Timeline\Form\TimelineBlock;
 
 class Timeline extends AbstractBlockLayout
 {
@@ -20,13 +20,24 @@ class Timeline extends AbstractBlockLayout
     protected $apiManager;
 
     /**
+     * @var FormElementManager
+     */
+    protected $formElementManager;
+
+    /**
      * @var bool
      */
     protected $useExternal;
 
-    public function __construct(ApiManager $apiManager, $useExternal)
+    /**
+     * @param ApiManager $apiManager
+     * @param FormElementManager $formElementManager
+     * @param bool $useExternal
+     */
+    public function __construct(ApiManager $apiManager, FormElementManager $formElementManager, $useExternal)
     {
         $this->apiManager = $apiManager;
+        $this->formElementManager = $formElementManager;
         $this->useExternal = $useExternal;
     }
 
@@ -46,8 +57,7 @@ class Timeline extends AbstractBlockLayout
     ) {
         $data = $block ? $block->data() : [];
 
-        $form = new TimelineBlock();
-        $form->setApiManager($this->apiManager);
+        $form = $this->formElementManager->get(TimelineBlockForm::class);
         $form->init();
 
         $addedBlock = empty($data);

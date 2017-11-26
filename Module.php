@@ -2,7 +2,7 @@
 namespace Timeline;
 
 use Omeka\Module\AbstractModule;
-use Timeline\Form\Config as ConfigForm;
+use Timeline\Form\ConfigForm;
 use Zend\Mvc\Controller\AbstractController;
 use Zend\Mvc\MvcEvent;
 use Zend\ServiceManager\ServiceLocatorInterface;
@@ -10,29 +10,6 @@ use Zend\View\Renderer\PhpRenderer;
 
 class Module extends AbstractModule
 {
-    /**
-     * Settings and their default values.
-     *
-     * @var array
-     */
-    protected $settings = [
-        // Can be 'simile' or 'knightlab'.
-        'timeline_library' => 'simile',
-        'timeline_internal_assets' => false,
-        'timeline_defaults' => [
-            'item_title' => 'dcterms:title',
-            'item_description' => 'dcterms:description',
-            'item_date' => 'dcterms:date',
-            'item_date_end' => '',
-            // 'render_year' => \Timeline\Mvc\Controller\Plugin\TimelineData::RENDER_YEAR_DEFAULT,
-            'render_year' => 'january_1',
-            'center_date' => '9999-99-99',
-            'viewer' => '{}',
-            // The id of dcterms:date in the standard install of Omeka S.
-            'item_date_id' => '7',
-        ],
-    ];
-
     public function getConfig()
     {
         return include __DIR__ . '/config/module.config.php';
@@ -43,68 +20,98 @@ class Module extends AbstractModule
         parent::onBootstrap($event);
 
         $acl = $this->getServiceLocator()->get('Omeka\Acl');
-        $acl->allow(null, 'Timeline\Controller\Timeline');
+        $acl->allow(null, \Timeline\Controller\TimelineController::class);
     }
 
     public function install(ServiceLocatorInterface $serviceLocator)
     {
-        $settings = $serviceLocator->get('Omeka\Settings');
-        foreach ($this->settings as $name => $value) {
-            $settings->set($name, $value);
-        }
+        $this->manageSettings($serviceLocator->get('Omeka\Settings'), 'install');
     }
 
     public function uninstall(ServiceLocatorInterface $serviceLocator)
     {
-        $settings = $serviceLocator->get('Omeka\Settings');
-        foreach ($this->settings as $name => $value) {
-            $settings->delete($name);
+        $this->manageSettings($serviceLocator->get('Omeka\Settings'), 'uninstall');
+    }
+
+    protected function manageSettings($settings, $process, $key = 'settings')
+    {
+        $config = require __DIR__ . '/config/module.config.php';
+        $defaultSettings = $config[strtolower(__NAMESPACE__)][$key];
+        foreach ($defaultSettings as $name => $value) {
+            switch ($process) {
+                case 'install':
+                    $settings->set($name, $value);
+                    break;
+                case 'uninstall':
+                    $settings->delete($name);
+                    break;
+            }
         }
     }
 
     public function getConfigForm(PhpRenderer $renderer)
     {
         $services = $this->getServiceLocator();
+        $config = $services->get('Config');
+        $settings = $services->get('Omeka\Settings');
         $formElementManager = $services->get('FormElementManager');
-        $form = $formElementManager->get(ConfigForm::class);
 
         $data = [];
-        $settings = $services->get('Omeka\Settings');
-        foreach ($this->settings as $name => $value) {
+        $defaultSettings = $config[strtolower(__NAMESPACE__)]['settings'];
+        foreach ($defaultSettings as $name => $value) {
             $data[$name] = $settings->get($name);
         }
+
+        $renderer->headStyle()->appendStyle('.inputs label { display: block; }');
+
+        $form = $formElementManager->get(ConfigForm::class);
+        $form->init();
         $form->setData($data);
-
-        // Currently, Omeka S doesn't allow to display fieldsets in config form.
-        $vars = [];
-        $vars['form'] = $form;
-
-        return $renderer->render('timeline/module/config.phtml', $vars);
+        $html = $renderer->formCollection($form);
+        return $html;
     }
 
     public function handleConfigForm(AbstractController $controller)
     {
-        $serviceLocator = $this->getServiceLocator();
-        $settings = $serviceLocator->get('Omeka\Settings');
+        $services = $this->getServiceLocator();
+        $config = $services->get('Config');
+        $settings = $services->get('Omeka\Settings');
 
-        $post = $controller->getRequest()->getPost()->toArray();
-
-        $post['timeline_defaults']['viewer'] = trim($post['timeline_defaults']['viewer']);
-        if ($post['timeline_defaults']['viewer'] === '') {
-            $post['timeline_defaults']['viewer'] = '{}';
+        // FIXME Why the posted params  of the form is not kept as array?
+        $params = $controller->getRequest()->getPost()->toArray();
+        foreach ($params as $name => $value) {
+            if (!in_array($name, ['timeline_library', 'timeline_internal_assets', 'csrf', 'timeline_defaults'])) {
+                $params['timeline_defaults'][$name] = $value;
+                unset($params[$name]);
+            }
         }
 
-        $vocabulary = strtok($post['timeline_defaults']['item_date'], ':');
+        $form = $this->getServiceLocator()->get('FormElementManager')
+            ->get(ConfigForm::class);
+        $form->init();
+        $form->setData($params);
+        if (!$form->isValid()) {
+            $controller->messenger()->addErrors($form->getMessages());
+            return false;
+        }
+
+        $params['timeline_defaults']['viewer'] = trim($params['timeline_defaults']['viewer']);
+        if ($params['timeline_defaults']['viewer'] === '') {
+            $params['timeline_defaults']['viewer'] = '{}';
+        }
+
+        $vocabulary = strtok($params['timeline_defaults']['item_date'], ':');
         $name = strtok(':');
         $property = $this->getServiceLocator()->get('Omeka\ApiManager')
             ->search('properties', ['vocabulary_prefix' => $vocabulary, 'local_name' => $name])
             ->getContent();
         $property = reset($property);
-        $post['timeline_defaults']['item_date_id'] = (string) $property->id();
+        $params['timeline_defaults']['item_date_id'] = (string) $property->id();
 
-        foreach ($this->settings as $settingKey => $settingValue) {
-            if (isset($post[$settingKey])) {
-                $settings->set($settingKey, $post[$settingKey]);
+        $defaultSettings = $config[strtolower(__NAMESPACE__)]['settings'];
+        foreach ($params as $name => $value) {
+            if (isset($defaultSettings[$name])) {
+                $settings->set($name, $value);
             }
         }
     }

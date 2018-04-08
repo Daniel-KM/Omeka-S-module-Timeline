@@ -16,11 +16,9 @@ return [
         ],
     ],
     'form_elements' => [
-        'invokables' => [
-            Form\TimelineBlockForm::class => Form\TimelineBlockForm::class,
-        ],
         'factories' => [
             Form\ConfigForm::class => Service\Form\ConfigFormFactory::class,
+            Form\TimelineBlockForm::class => Service\Form\TimelineBlockFormFactory::class,
         ],
     ],
     'controllers' => [

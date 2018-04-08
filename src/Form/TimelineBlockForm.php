@@ -3,13 +3,16 @@ namespace Timeline\Form;
 
 use Omeka\Form\Element\PropertySelect;
 use Timeline\Mvc\Controller\Plugin\TimelineData;
-use Zend\Form\Element\Select;
-use Zend\Form\Element\Text;
+use Zend\Form\Element;
 use Zend\Form\Fieldset;
 use Zend\Form\Form;
+use Zend\I18n\Translator\TranslatorAwareInterface;
+use Zend\I18n\Translator\TranslatorAwareTrait;
 
-class TimelineBlockForm extends Form
+class TimelineBlockForm extends Form implements TranslatorAwareInterface
 {
+    use TranslatorAwareTrait;
+
     public function init()
     {
         $this->add([
@@ -80,7 +83,7 @@ class TimelineBlockForm extends Form
         $argsFieldset->add([
             'name' => 'render_year',
             // A radio is not possible when there are multiple timeline blocks.
-            'type' => Select::class,
+            'type' => Element\Select::class,
             'options' => [
                 'label' => 'Render year', // @translate
                 'info' => 'When a date is a single year, like "1066", the value should be interpreted to be displayed on the timeline.', // @translate
@@ -95,12 +98,12 @@ class TimelineBlockForm extends Form
 
         $argsFieldset->add([
             'name' => 'center_date',
-            'type' => Text::class,
+            'type' => Element\Text::class,
             'options' => [
                 'label' => 'Center date', // @translate
-                'info' => 'Set the default center date for the timeline.' // @translate
-                    . ' ' . 'The format should be "YYYY-MM-DD".' // @translate
-                    . ' ' . 'An empty value means "now", "0000-00-00" the earliest date, and "9999-99-99" the latest date.', // @translate
+                'info' => $this->translate('Set the default center date for the timeline.') // @translate
+                    . ' ' . $this->translate('The format should be "YYYY-MM-DD".') // @translate
+                    . ' ' . $this->translate('An empty value means "now", "0000-00-00" the earliest date, and "9999-99-99" the latest date.'), // @translate
             ],
             'validators' => [
                 ['name' => 'Date'],
@@ -109,11 +112,11 @@ class TimelineBlockForm extends Form
 
         $argsFieldset->add([
             'name' => 'viewer',
-            'type' => 'Textarea',
+            'type' => Element\Textarea::class,
             'options' => [
                 'label' => 'Viewer', // @translate
-                'info' => 'Set the default params of the viewer as json, or let empty for the included default.' // @translate
-                    . ' ' . 'Currently, only "bandInfos" and "centerDate" are managed.', // @translate
+                'info' => $this->translate('Set the default params of the viewer as json, or let empty for the included default.') // @translate
+                    . ' ' . $this->translate('Currently, only "bandInfos" and "centerDate" are managed.'), // @translate
             ],
             'attributes' => [
                 'rows' => 15,
@@ -125,5 +128,11 @@ class TimelineBlockForm extends Form
             'name' => 'o:block[__blockIndex__][o:data][args]',
             'required' => false,
         ]);
+    }
+
+    protected function translate($args)
+    {
+        $translator = $this->getTranslator();
+        return $translator->translate($args);
     }
 }

@@ -15,10 +15,14 @@ class TimelineFactory implements FactoryInterface
      */
     public function __invoke(ContainerInterface $services, $requestedName, array $options = null)
     {
-        $apiManager = $services->get('Omeka\ApiManager');
+        $api = $services->get('ViewHelperManager')->get('api');
         $formElementManager = $services->get('FormElementManager');
         $config = $services->get('Config');
         $useExternal = $config['assets']['use_externals'];
-        return new Timeline($apiManager, $formElementManager, $useExternal);
+        return new Timeline(
+            $api,
+            $formElementManager,
+            $useExternal
+        );
     }
 }

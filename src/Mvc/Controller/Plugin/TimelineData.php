@@ -371,7 +371,7 @@ class TimelineData extends AbstractPlugin
      * removes all non-alphanumerics, removes leading or trailing delimiters,
      * and optionally prepends a piece of text.
      *
-     * @see Omeka Classic application/libraries/globals.php text_to_id()
+     * See Omeka Classic application/libraries/globals.php text_to_id()
      *
      * @package Omeka\Function\Text
      * @param string $text The text to convert

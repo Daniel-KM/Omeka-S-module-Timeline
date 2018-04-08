@@ -1,13 +1,13 @@
 <?php
 namespace Timeline\Site\BlockLayout;
 
-use Omeka\Api\Manager as ApiManager;
 use Omeka\Api\Representation\SiteRepresentation;
 use Omeka\Api\Representation\SitePageRepresentation;
 use Omeka\Api\Representation\SitePageBlockRepresentation;
 use Omeka\Entity\SitePageBlock;
 use Omeka\Site\BlockLayout\AbstractBlockLayout;
 use Omeka\Stdlib\ErrorStore;
+use Omeka\View\Helper\Api;
 use Timeline\Form\TimelineBlockForm;
 use Zend\Form\FormElementManager\FormElementManagerV3Polyfill as FormElementManager;
 use Zend\View\Renderer\PhpRenderer;
@@ -15,9 +15,9 @@ use Zend\View\Renderer\PhpRenderer;
 class Timeline extends AbstractBlockLayout
 {
     /**
-     * @var ApiManager
+     * @var Api
      */
-    protected $apiManager;
+    protected $api;
 
     /**
      * @var FormElementManager
@@ -30,13 +30,13 @@ class Timeline extends AbstractBlockLayout
     protected $useExternal;
 
     /**
-     * @param ApiManager $apiManager
+     * @param Api $api
      * @param FormElementManager $formElementManager
      * @param bool $useExternal
      */
-    public function __construct(ApiManager $apiManager, FormElementManager $formElementManager, $useExternal)
+    public function __construct(Api $api, FormElementManager $formElementManager, $useExternal)
     {
-        $this->apiManager = $apiManager;
+        $this->api = $api;
         $this->formElementManager = $formElementManager;
         $this->useExternal = $useExternal;
     }
@@ -55,17 +55,16 @@ class Timeline extends AbstractBlockLayout
     public function form(PhpRenderer $view, SiteRepresentation $site,
         SitePageRepresentation $page = null, SitePageBlockRepresentation $block = null
     ) {
-        $data = $block ? $block->data() : [];
-
         $form = $this->formElementManager->get(TimelineBlockForm::class);
         $form->init();
 
-        $addedBlock = empty($data);
+        $addedBlock = empty($block);
         if ($addedBlock) {
             $data['args'] = $view->setting('timeline_defaults');
             $data['item_pool'] = $site->itemPool();
             $itemCount = null;
         } else {
+            $data = $block->data();
             $itemCount = $this->itemCount($data);
         }
 
@@ -82,8 +81,6 @@ class Timeline extends AbstractBlockLayout
                 'itemCount' => $itemCount,
             ]
         );
-
-        return $view->blockTimelineForm($block);
     }
 
     public function prepareRender(PhpRenderer $view)
@@ -145,12 +142,10 @@ class Timeline extends AbstractBlockLayout
             $data['args']['viewer'] = '{}';
         }
 
-        $vocabulary = strtok($data['args']['item_date'], ':');
-        $name = strtok(':');
-        $property = $this->apiManager
-            ->search('properties', ['vocabulary_prefix' => $vocabulary, 'local_name' => $name])
+        $property = $this->api
+            ->searchOne('properties', ['term' => $data['args']['item_date']])
             ->getContent();
-        $data['args']['item_date_id'] = (string) $property[0]->id();
+        $data['args']['item_date_id'] = (string) $property->id();
 
         $block->setData($data);
     }
@@ -167,7 +162,7 @@ class Timeline extends AbstractBlockLayout
         // Add the param for the date: return only if not empty.
         $params['property'][] = ['joiner' => 'and', 'property' => $data['args']['item_date_id'], 'type' => 'ex'];
         $params['limit'] = 0;
-        $itemCount = $this->apiManager->search('items', $params)->getTotalResults();
+        $itemCount = $this->api->search('items', $params)->getTotalResults();
         return $itemCount;
     }
 }

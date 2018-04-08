@@ -63,7 +63,7 @@ return [
         ],
     ],
     'timeline' => [
-        'settings' => [
+        'config' => [
             // Can be 'simile' or 'knightlab'.
             'timeline_library' => 'simile',
             'timeline_internal_assets' => false,

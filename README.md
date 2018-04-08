@@ -241,7 +241,7 @@ Copyright
 [Timeline]: https://github.com/Daniel-KM/Omeka-S-module-Timeline
 [Omeka S]: https://omeka.org/s
 [Scholars’ Lab]: http://scholarslab.org
-[fork of NeatlineTime plugin]: https://github.com/Daniel-KM/NeatlineTime
+[fork of NeatlineTime plugin]: https://github.com/Daniel-KM/Omeka-plugin-NeatlineTime
 [Omeka Classic]: http://omeka.org
 [SIMILE Timeline]: http://www.simile-widgets.org/wiki/Timeline
 [wiki]: http://www.simile-widgets.org/wiki/Timeline

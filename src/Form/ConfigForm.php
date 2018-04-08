@@ -67,7 +67,7 @@ class ConfigForm extends Form implements TranslatorAwareInterface
             'options' => [
                 'label' => 'Item title', // @translate
                 'info' => 'The title field to use when displaying an item on a timeline. Default is "dcterms:title".', // @translate
-                'empty_option' => 'Select a property...', // @translate
+                'empty_option' => 'Select a property…', // @translate
                 'term_as_value' => true,
             ],
             'attributes' => [
@@ -82,7 +82,7 @@ class ConfigForm extends Form implements TranslatorAwareInterface
             'options' => [
                 'label' => 'Item description', // @translate
                 'info' => 'The description field to use when displaying an item on a timeline. Default is "dcterms:description".', // @translate
-                'empty_option' => 'Select a property...', // @translate
+                'empty_option' => 'Select a property…', // @translate
                 'term_as_value' => true,
             ],
             'attributes' => [
@@ -98,7 +98,7 @@ class ConfigForm extends Form implements TranslatorAwareInterface
                 'label' => 'Item date', // @translate
                 'info' => $this->translate('The date field to use to retrieve and display items on a timeline. Default is "dcterms:date".') // @translate
                     . ' ' . $this->translate('Items with empty value for this field will be skipped.'), // @translate
-                'empty_option' => 'Select a property...', // @translate
+                'empty_option' => 'Select a property…', // @translate
                 'term_as_value' => true,
             ],
             'attributes' => [

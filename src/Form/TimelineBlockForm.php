@@ -26,7 +26,7 @@ class TimelineBlockForm extends Form
             'type' => PropertySelect::class,
             'options' => [
                 'label' => 'Item title', // @translate
-                'empty_option' => 'Select a property...', // @translate
+                'empty_option' => 'Select a property…', // @translate
                 'term_as_value' => true,
             ],
             'attributes' => [
@@ -40,7 +40,7 @@ class TimelineBlockForm extends Form
             'type' => PropertySelect::class,
             'options' => [
                 'label' => 'Item description', // @translate
-                'empty_option' => 'Select a property...', // @translate
+                'empty_option' => 'Select a property…', // @translate
                 'term_as_value' => true,
             ],
             'attributes' => [
@@ -54,7 +54,7 @@ class TimelineBlockForm extends Form
             'type' => PropertySelect::class,
             'options' => [
                 'label' => 'Item date', // @translate
-                'empty_option' => 'Select a property...', // @translate
+                'empty_option' => 'Select a property…', // @translate
                 'term_as_value' => true,
             ],
             'attributes' => [

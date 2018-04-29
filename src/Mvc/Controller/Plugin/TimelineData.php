@@ -142,7 +142,7 @@ class TimelineData extends AbstractPlugin
         if (preg_match('/^-?\d{1,4}$/', $date)) {
             // Normalize the year.
             $date = $date < 0
-                ? '-' . str_pad(substring($date, 1), 4, '0', STR_PAD_LEFT)
+                ? '-' . str_pad(substr($date, 1), 4, '0', STR_PAD_LEFT)
                 : str_pad($date, 4, '0', STR_PAD_LEFT);
             switch ($renderYear) {
                 case self::RENDER_YEAR_JANUARY_1:

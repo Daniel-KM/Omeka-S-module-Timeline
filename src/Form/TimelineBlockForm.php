@@ -123,6 +123,15 @@ class TimelineBlockForm extends Form implements TranslatorAwareInterface
             ],
         ]);
 
+        $argsFieldset->add([
+            'name' => 'query',
+            'type' => Element\Text::class,
+            'options' => [
+                'label' => 'Query to limit resources', // @translate
+                'info' => 'Limit the timeline to a particular subset of resources, for example a site, via an advanced search query.', // @translate
+            ],
+        ]);
+
         $inputFilter = $this->getInputFilter();
         $inputFilter->add([
             'name' => 'o:block[__blockIndex__][o:data][args]',

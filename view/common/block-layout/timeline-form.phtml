@@ -1,28 +1,25 @@
+<?php $translate = $this->plugin('translate'); ?>
 <?php $form->prepare(); ?>
-<a href="#" class="collapse" aria-label="collapse"><h4><?php echo $this->translate('Item Pool'); ?></h4></a>
-<div class="collapsible">
+<div>
     <p><?php
-        echo $this->translate('Items can be selected in the whole base or in a limited list.');
-        echo ' ' . $this->translate('The default item pool is the current site one.');
-        echo ' ' . $this->translate('Items without a date are automatically filtered.');
+        echo $translate('Items can be selected in the whole base or in a limited list via the query below.');
+        echo ' ' . $translate('The default item pool is the current site one.');
+        echo ' ' . $translate('Items without a date are automatically filtered.');
         if (!is_null($itemCount)) {
-            $query = $data['item_pool'];
+            parse_str($data['args']['query'], $query);
             $query['property'][] = ['joiner' => 'and', 'property' => $data['args']['item_date_id'], 'type' => 'ex'];
             echo ' ' . sprintf(
-                $this->translate('There are currently %s items in this timeline’s pool.'),
+                $translate('There are currently %s items in this timeline’s pool.'),
                 $this->hyperlink(
                     $itemCount,
                     $this->url('admin/default', ['controller' => 'item'], ['query' => $query])
                 )
             );
         }
-        ?></p>
-    <div id="advanced-search"><?php echo $this->partial(
-        'common/advanced-search',
-        ['query' => $data['item_pool'], 'resourceType' => 'item']
-    ); ?></div>
+        ?>
+    </p>
 </div>
-<a href="#" class="expand" aria-label="expand"><h4><?php echo $this->translate('Options'); ?></h4></a>
+<a href="#" class="collapse" aria-label="<?php echo $translate('collapse'); ?>"><h4><?php echo $translate('Options'); ?></h4></a>
 <div class="collapsible">
-    <?php echo $this->formCollection($form, false); ?>
+    <?php echo $this->formCollection($form); ?>
 </div>

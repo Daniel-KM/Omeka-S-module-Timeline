@@ -28,7 +28,9 @@ class TimelineController extends AbstractActionController
         // Get the site slug directly via the page.
         $blockData['args']['site-slug'] = $block->getPage()->getSite()->getSlug();
 
-        $data = $this->timelineData($blockData['item_pool'], $blockData['args']);
+        $query = $blockData['args']['query'];
+        unset($blockData['args']['query']);
+        $data = $this->timelineData($query, $blockData['args']);
 
         $view = new JsonModel();
         $view->setVariables($data);

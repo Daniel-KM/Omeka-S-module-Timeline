@@ -33,6 +33,12 @@ class Module extends AbstractModule
         $this->manageSettings($serviceLocator->get('Omeka\Settings'), 'uninstall');
     }
 
+    public function upgrade($oldVersion, $newVersion,
+        ServiceLocatorInterface $serviceLocator
+    ) {
+        require_once 'data/scripts/upgrade.php';
+    }
+
     protected function manageSettings($settings, $process, $key = 'config')
     {
         $config = require __DIR__ . '/config/module.config.php';
@@ -54,7 +60,7 @@ class Module extends AbstractModule
         $services = $this->getServiceLocator();
         $config = $services->get('Config');
         $settings = $services->get('Omeka\Settings');
-        $formElementManager = $services->get('FormElementManager');
+        $form = $services->get('FormElementManager')->get(ConfigForm::class);
 
         $data = [];
         $defaultSettings = $config[strtolower(__NAMESPACE__)]['config'];
@@ -64,7 +70,6 @@ class Module extends AbstractModule
 
         $renderer->headStyle()->appendStyle('.inputs label { display: block; }');
 
-        $form = $formElementManager->get(ConfigForm::class);
         $form->init();
         $form->setData($data);
         $html = $renderer->formCollection($form);
@@ -86,8 +91,7 @@ class Module extends AbstractModule
             }
         }
 
-        $form = $this->getServiceLocator()->get('FormElementManager')
-            ->get(ConfigForm::class);
+        $form = $services->get('FormElementManager')->get(ConfigForm::class);
         $form->init();
         $form->setData($params);
         if (!$form->isValid()) {

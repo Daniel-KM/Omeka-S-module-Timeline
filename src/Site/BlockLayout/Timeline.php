@@ -46,31 +46,29 @@ class Timeline extends AbstractBlockLayout
         return 'Timeline'; // @translate
     }
 
-    public function prepareForm(PhpRenderer $view)
-    {
-        $view->headLink()->prependStylesheet($view->assetUrl('css/advanced-search.css', 'Omeka'));
-        $view->headScript()->appendFile($view->assetUrl('js/timeline-item-pool.js', 'Timeline'));
-    }
-
     public function form(PhpRenderer $view, SiteRepresentation $site,
         SitePageRepresentation $page = null, SitePageBlockRepresentation $block = null
     ) {
+        /** @var \Timeline\Form\TimelineBlockForm $form */
         $form = $this->formElementManager->get(TimelineBlockForm::class);
         $form->init();
 
         $addedBlock = empty($block);
         if ($addedBlock) {
             $data['args'] = $view->setting('timeline_defaults');
-            $data['item_pool'] = $site->itemPool();
+            $data['args']['query'] = ['site_id' => $site->id()];
             $itemCount = null;
         } else {
             $data = $block->data();
             $itemCount = $this->itemCount($data);
         }
 
+        $data['args']['query'] = is_array($data['args']['query'])
+            ? urldecode(http_build_query($data['args']['query'], "\n", '&', PHP_QUERY_RFC3986))
+            : $data['args']['query'];
+
         $form->setData([
             'o:block[__blockIndex__][o:data][args]' => $data['args'],
-            'o:block[__blockIndex__][o:data][item_pool]' => $data['item_pool'],
         ]);
 
         return $view->partial(
@@ -130,10 +128,10 @@ class Timeline extends AbstractBlockLayout
 
         // Set some default values in case of error.
         $data += [
-            'item_pool' => [],
             'args' => [
                 'item_date' => 'dcterms:date',
                 'viewer' => '{}',
+                'query' => [],
             ],
         ];
 
@@ -147,6 +145,9 @@ class Timeline extends AbstractBlockLayout
             ->getContent();
         $data['args']['item_date_id'] = (string) $property->id();
 
+        parse_str($data['args']['query'], $query);
+        $data['args']['query'] = $query;
+
         $block->setData($data);
     }
 
@@ -158,10 +159,9 @@ class Timeline extends AbstractBlockLayout
      */
     protected function itemCount($data)
     {
-        $params = $data['item_pool'];
+        $params = $data['args']['query'];
         // Add the param for the date: return only if not empty.
         $params['property'][] = ['joiner' => 'and', 'property' => $data['args']['item_date_id'], 'type' => 'ex'];
-        $params['limit'] = 0;
         $itemCount = $this->api->search('items', $params)->getTotalResults();
         return $itemCount;
     }

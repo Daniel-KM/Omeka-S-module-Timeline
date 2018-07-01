@@ -5,9 +5,9 @@ use Omeka\Api\Representation\SiteRepresentation;
 use Omeka\Api\Representation\SitePageRepresentation;
 use Omeka\Api\Representation\SitePageBlockRepresentation;
 use Omeka\Entity\SitePageBlock;
+use Omeka\Mvc\Controller\Plugin\Api;
 use Omeka\Site\BlockLayout\AbstractBlockLayout;
 use Omeka\Stdlib\ErrorStore;
-use Omeka\View\Helper\Api;
 use Timeline\Form\TimelineBlockForm;
 use Zend\Form\FormElementManager\FormElementManagerV3Polyfill as FormElementManager;
 use Zend\View\Renderer\PhpRenderer;
@@ -15,30 +15,33 @@ use Zend\View\Renderer\PhpRenderer;
 class Timeline extends AbstractBlockLayout
 {
     /**
-     * @var Api
-     */
-    protected $api;
-
-    /**
      * @var FormElementManager
      */
     protected $formElementManager;
 
     /**
-     * @var bool
+     * @var array
      */
-    protected $useExternal;
+    protected $defaultSettings = [];
 
     /**
-     * @param Api $api
-     * @param FormElementManager $formElementManager
-     * @param bool $useExternal
+     * @var Api
      */
-    public function __construct(Api $api, FormElementManager $formElementManager, $useExternal)
-    {
-        $this->api = $api;
+    protected $api;
+
+    /**
+     * @param FormElementManager $formElementManager
+     * @param array $defaultSettings
+     * @param Api $api
+     */
+    public function __construct(
+        FormElementManager $formElementManager,
+        array $defaultSettings,
+        Api $api
+    ) {
         $this->formElementManager = $formElementManager;
-        $this->useExternal = $useExternal;
+        $this->defaultSettings = $defaultSettings;
+        $this->api = $api;
     }
 
     public function getLabel()
@@ -51,31 +54,33 @@ class Timeline extends AbstractBlockLayout
     ) {
         /** @var \Timeline\Form\TimelineBlockForm $form */
         $form = $this->formElementManager->get(TimelineBlockForm::class);
-        $form->init();
 
         $addedBlock = empty($block);
         if ($addedBlock) {
-            $data['args'] = $view->setting('timeline_defaults');
-            $data['args']['query'] = ['site_id' => $site->id()];
+            $data = $this->defaultSettings;
+            $data['query'] = 'site_id=' . $site->id();
             $itemCount = null;
         } else {
-            $data = $block->data();
+            $data = $block->data() + $this->defaultSettings;
             $itemCount = $this->itemCount($data);
+            if (is_array($data['query'])) {
+                $data['query'] = urldecode(
+                    http_build_query($data['query'], "\n", '&', PHP_QUERY_RFC3986)
+                );
+            }
         }
 
-        $data['args']['query'] = is_array($data['args']['query'])
-            ? urldecode(http_build_query($data['args']['query'], "\n", '&', PHP_QUERY_RFC3986))
-            : $data['args']['query'];
-
-        $form->setData([
-            'o:block[__blockIndex__][o:data][args]' => $data['args'],
-        ]);
+        $dataToSet = [];
+        foreach ($data as $key => $value) {
+            $dataToSet['o:block[__blockIndex__][o:data][' . $key . ']'] = $value;
+        }
+        $form->setData($dataToSet);
 
         return $view->partial(
             'common/block-layout/timeline-form',
             [
                 'form' => $form,
-                'data' => $data,
+                'data' => $dataToSet,
                 'itemCount' => $itemCount,
             ]
         );
@@ -90,34 +95,42 @@ class Timeline extends AbstractBlockLayout
                 $view->headScript()->appendFile('//cdn.knightlab.com/libs/timeline3/latest/js/timeline.js');
                 break;
 
-            case 'simile':
-            default:
-                $internalAssets = $view->setting('timeline_internal_assets');
+            case 'simile_online':
                 $view->headLink()->appendStylesheet($view->assetUrl('css/timeline.css', 'Timeline'));
                 $view->headScript()->appendFile($view->assetUrl('js/timeline.js', 'Timeline'));
-                if ($this->useExternal && !$internalAssets) {
-                    $view->headScript()->appendFile('//api.simile-widgets.org/timeline/2.3.1/timeline-api.js?bundle=true');
-                    $view->headScript()->appendScript('SimileAjax.History.enabled = false; window.jQuery = SimileAjax.jQuery;');
-                } else {
-                    $timelineVariables = 'Timeline_ajax_url="' . $view->assetUrl('vendor/simile/ajax-api/simile-ajax-api.js', 'Timeline') . '";' . PHP_EOL;
-                    $timelineVariables .= 'Timeline_urlPrefix="' . dirname($view->assetUrl('vendor/simile/timeline-api/timeline-api.js', 'Timeline')) . '/";' . PHP_EOL;
-                    $timelineVariables .= 'Timeline_parameters="bundle=true";';
-                    $view->headScript()->appendScript($timelineVariables);
-                    $view->headScript()->appendFile($view->assetUrl('vendor/simile/timeline-api/timeline-api.js', 'Timeline'));
-                    $view->headScript()->appendScript('SimileAjax.History.enabled = false; // window.jQuery = SimileAjax.jQuery;');
-                }
+                $view->headScript()->appendFile('//api.simile-widgets.org/timeline/2.3.1/timeline-api.js?bundle=true');
+                $view->headScript()->appendScript('SimileAjax.History.enabled = false; window.jQuery = SimileAjax.jQuery;');
+                break;
+
+            case 'simile':
+            default:
+                $view->headLink()->appendStylesheet($view->assetUrl('css/timeline.css', 'Timeline'));
+                $view->headScript()->appendFile($view->assetUrl('js/timeline.js', 'Timeline'));
+                $timelineVariables = 'Timeline_ajax_url="' . $view->assetUrl('vendor/simile/ajax-api/simile-ajax-api.js', 'Timeline') . '";' . PHP_EOL;
+                $timelineVariables .= 'Timeline_urlPrefix="' . dirname($view->assetUrl('vendor/simile/timeline-api/timeline-api.js', 'Timeline')) . '/";' . PHP_EOL;
+                $timelineVariables .= 'Timeline_parameters="bundle=true";';
+                $view->headScript()->appendScript($timelineVariables);
+                $view->headScript()->appendFile($view->assetUrl('vendor/simile/timeline-api/timeline-api.js', 'Timeline'));
+                $view->headScript()->appendScript('SimileAjax.History.enabled = false; // window.jQuery = SimileAjax.jQuery;');
                 break;
         }
     }
 
     public function render(PhpRenderer $view, SitePageBlockRepresentation $block)
     {
-        $library = $view->setting('timeline_library');
+        $data = $block->data();
+
+        $library = $data['library'];
+        if ($library === 'simile_online') {
+            $library = 'simile';
+        }
+        unset($data['library']);
+
         return $view->partial(
             'common/block-layout/timeline_' . $library,
             [
                 'blockId' => $block->id(),
-                'data' => $block->data(),
+                'data' => $data,
             ]
         );
     }
@@ -126,27 +139,18 @@ class Timeline extends AbstractBlockLayout
     {
         $data = $block->getData();
 
-        // Set some default values in case of error.
-        $data += [
-            'args' => [
-                'item_date' => 'dcterms:date',
-                'viewer' => '{}',
-                'query' => [],
-            ],
-        ];
-
-        $data['args']['viewer'] = trim($data['args']['viewer']);
-        if ($data['args']['viewer'] === '') {
-            $data['args']['viewer'] = '{}';
+        $data['viewer'] = trim($data['viewer']);
+        if ($data['viewer'] === '') {
+            $data['viewer'] = '{}';
         }
 
         $property = $this->api
-            ->searchOne('properties', ['term' => $data['args']['item_date']])
+            ->searchOne('properties', ['term' => $data['item_date']])
             ->getContent();
-        $data['args']['item_date_id'] = (string) $property->id();
+        $data['item_date_id'] = (string) $property->id();
 
-        parse_str($data['args']['query'], $query);
-        $data['args']['query'] = $query;
+        parse_str($data['query'], $query);
+        $data['query'] = $query;
 
         $block->setData($data);
     }
@@ -159,9 +163,9 @@ class Timeline extends AbstractBlockLayout
      */
     protected function itemCount($data)
     {
-        $params = $data['args']['query'];
+        $params = $data['query'];
         // Add the param for the date: return only if not empty.
-        $params['property'][] = ['joiner' => 'and', 'property' => $data['args']['item_date_id'], 'type' => 'ex'];
+        $params['property'][] = ['joiner' => 'and', 'property' => $data['item_date_id'], 'type' => 'ex'];
         $itemCount = $this->api->search('items', $params)->getTotalResults();
         return $itemCount;
     }

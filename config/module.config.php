@@ -17,7 +17,6 @@ return [
     ],
     'form_elements' => [
         'factories' => [
-            Form\ConfigForm::class => Service\Form\ConfigFormFactory::class,
             Form\TimelineBlockForm::class => Service\Form\TimelineBlockFormFactory::class,
         ],
     ],
@@ -61,11 +60,8 @@ return [
         ],
     ],
     'timeline' => [
-        'config' => [
-            // Can be 'simile' or 'knightlab'.
-            'timeline_library' => 'simile',
-            'timeline_internal_assets' => false,
-            'timeline_defaults' => [
+        'block_settings' => [
+            'timeline' => [
                 'item_title' => 'dcterms:title',
                 'item_description' => 'dcterms:description',
                 'item_date' => 'dcterms:date',
@@ -74,6 +70,8 @@ return [
                 'render_year' => 'january_1',
                 'center_date' => '9999-99-99',
                 'viewer' => '{}',
+                'query' => [],
+                'library' => 'simile',
                 // The id of dcterms:date in the standard install of Omeka S.
                 'item_date_id' => '7',
             ],

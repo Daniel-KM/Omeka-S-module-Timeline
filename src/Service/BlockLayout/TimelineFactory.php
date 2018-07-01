@@ -15,14 +15,11 @@ class TimelineFactory implements FactoryInterface
      */
     public function __invoke(ContainerInterface $services, $requestedName, array $options = null)
     {
-        $api = $services->get('ViewHelperManager')->get('api');
-        $formElementManager = $services->get('FormElementManager');
-        $config = $services->get('Config');
-        $useExternal = $config['assets']['use_externals'];
+        $controllerPluginManager = $services->get('ControllerPluginManager');
         return new Timeline(
-            $api,
-            $formElementManager,
-            $useExternal
+            $services->get('FormElementManager'),
+            $services->get('Config')['timeline']['block_settings']['timeline'],
+            $controllerPluginManager->get('api')
         );
     }
 }

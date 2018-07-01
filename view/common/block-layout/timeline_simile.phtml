@@ -1,9 +1,9 @@
 <div id="timeline-<?php echo $blockId; ?>" class="timeline"></div>
 <script>
     jQuery(document).ready(function($) {
-        var params = <?php echo $data['args']['viewer']; ?>;
+        var params = <?php echo $data['viewer']; ?>;
         if (typeof params.centerDate === 'undefined') {
-            params.centerDate = <?php echo json_encode($data['args']['center_date']); ?>;
+            params.centerDate = <?php echo json_encode($data['center_date']); ?>;
         }
 
         oTimeline.loadTimeline(

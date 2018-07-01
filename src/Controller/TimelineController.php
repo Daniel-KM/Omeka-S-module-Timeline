@@ -26,11 +26,11 @@ class TimelineController extends AbstractActionController
 
         $blockData = $block->getData();
         // Get the site slug directly via the page.
-        $blockData['args']['site-slug'] = $block->getPage()->getSite()->getSlug();
+        $blockData['site-slug'] = $block->getPage()->getSite()->getSlug();
 
-        $query = $blockData['args']['query'];
-        unset($blockData['args']['query']);
-        $data = $this->timelineData($query, $blockData['args']);
+        $query = $blockData['query'];
+        unset($blockData['query']);
+        $data = $this->timelineData($query, $blockData);
 
         $view = new JsonModel();
         $view->setVariables($data);
@@ -48,7 +48,7 @@ class TimelineController extends AbstractActionController
      */
     protected function getBlock($blockId)
     {
-        $entityClass = 'Omeka\Entity\SitePageBlock';
+        $entityClass = \Omeka\Entity\SitePageBlock::class;
 
         $qb = $this->getEntityManager()->createQueryBuilder();
         $qb

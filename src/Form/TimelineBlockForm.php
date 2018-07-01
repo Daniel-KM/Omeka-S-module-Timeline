@@ -16,16 +16,7 @@ class TimelineBlockForm extends Form implements TranslatorAwareInterface
     public function init()
     {
         $this->add([
-            'name' => 'o:block[__blockIndex__][o:data][args]',
-            'type' => Fieldset::class,
-            'options' => [
-                'label' => 'Parameters', // @translate
-            ],
-        ]);
-        $argsFieldset = $this->get('o:block[__blockIndex__][o:data][args]');
-
-        $argsFieldset->add([
-            'name' => 'item_title',
+            'name' => 'o:block[__blockIndex__][o:data][item_title]',
             'type' => PropertySelect::class,
             'options' => [
                 'label' => 'Item title', // @translate
@@ -38,8 +29,8 @@ class TimelineBlockForm extends Form implements TranslatorAwareInterface
             ],
         ]);
 
-        $argsFieldset->add([
-            'name' => 'item_description',
+        $this->add([
+            'name' => 'o:block[__blockIndex__][o:data][item_description]',
             'type' => PropertySelect::class,
             'options' => [
                 'label' => 'Item description', // @translate
@@ -52,8 +43,8 @@ class TimelineBlockForm extends Form implements TranslatorAwareInterface
             ],
         ]);
 
-        $argsFieldset->add([
-            'name' => 'item_date',
+        $this->add([
+            'name' => 'o:block[__blockIndex__][o:data][item_date]',
             'type' => PropertySelect::class,
             'options' => [
                 'label' => 'Item date', // @translate
@@ -66,8 +57,8 @@ class TimelineBlockForm extends Form implements TranslatorAwareInterface
             ],
         ]);
 
-        $argsFieldset->add([
-            'name' => 'item_date_end',
+        $this->add([
+            'name' => 'o:block[__blockIndex__][o:data][item_date_end]',
             'type' => PropertySelect::class,
             'options' => [
                 'label' => 'Item end date', // @translate
@@ -80,8 +71,8 @@ class TimelineBlockForm extends Form implements TranslatorAwareInterface
             ],
         ]);
 
-        $argsFieldset->add([
-            'name' => 'render_year',
+        $this->add([
+            'name' => 'o:block[__blockIndex__][o:data][render_year]',
             // A radio is not possible when there are multiple timeline blocks.
             'type' => Element\Select::class,
             'options' => [
@@ -96,8 +87,8 @@ class TimelineBlockForm extends Form implements TranslatorAwareInterface
             ],
         ]);
 
-        $argsFieldset->add([
-            'name' => 'center_date',
+        $this->add([
+            'name' => 'o:block[__blockIndex__][o:data][center_date]',
             'type' => Element\Text::class,
             'options' => [
                 'label' => 'Center date', // @translate
@@ -110,8 +101,8 @@ class TimelineBlockForm extends Form implements TranslatorAwareInterface
             ],
         ]);
 
-        $argsFieldset->add([
-            'name' => 'viewer',
+        $this->add([
+            'name' => 'o:block[__blockIndex__][o:data][viewer]',
             'type' => Element\Textarea::class,
             'options' => [
                 'label' => 'Viewer', // @translate
@@ -123,8 +114,8 @@ class TimelineBlockForm extends Form implements TranslatorAwareInterface
             ],
         ]);
 
-        $argsFieldset->add([
-            'name' => 'query',
+        $this->add([
+            'name' => 'o:block[__blockIndex__][o:data][query]',
             'type' => Element\Text::class,
             'options' => [
                 'label' => 'Query to limit resources', // @translate
@@ -132,10 +123,21 @@ class TimelineBlockForm extends Form implements TranslatorAwareInterface
             ],
         ]);
 
-        $inputFilter = $this->getInputFilter();
-        $inputFilter->add([
-            'name' => 'o:block[__blockIndex__][o:data][args]',
-            'required' => false,
+        $this->add([
+            'name' => 'o:block[__blockIndex__][o:data][library]',
+            'type' => Element\Select::class,
+            'options' => [
+                'label' => 'Timeline library', // @translate
+                'info' => 'Three libraries are available: the standard open source Simile Timeline, or the online Knightlab Timeline.', // @translate
+                'value_options' => [
+                    'simile' => 'Simile (use internal assets)',
+                    'simile_online' => 'Simile online (cannot be used on a https site)',
+                    'knightlab' => 'Knightlab (require an account)',
+                ],
+            ],
+            'attributes' => [
+                'required' => true,
+            ],
         ]);
     }
 

@@ -6,8 +6,9 @@
         echo ' ' . $translate('The default item pool is the current site one.');
         echo ' ' . $translate('Items without a date are automatically filtered.');
         if (!is_null($itemCount)) {
-            parse_str($data['args']['query'], $query);
-            $query['property'][] = ['joiner' => 'and', 'property' => $data['args']['item_date_id'], 'type' => 'ex'];
+            parse_str($data['o:block[__blockIndex__][o:data][query]'], $query);
+            $itemDataId = $data['o:block[__blockIndex__][o:data][item_date_id]'];
+            $query['property'][] = ['joiner' => 'and', 'property' => $itemDataId, 'type' => 'ex'];
             echo ' ' . sprintf(
                 $translate('There are currently %s items in this timeline’s pool.'),
                 $this->hyperlink(

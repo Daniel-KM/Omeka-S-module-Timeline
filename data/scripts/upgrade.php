@@ -19,6 +19,12 @@ SQL;
         $data = json_decode($data, true);
         $data['args']['query'] = empty($data['item_pool']) ? [] : $data['item_pool'];
         unset($data['item_pool']);
+        if (empty($data['args']['query'])) {
+            $data['args']['query'] = ['item_date_id' => '7'];
+        } elseif (is_string($data['args']['query'])) {
+            parse_str($data['args']['query'], $query);
+            $data['args']['query'] = $query;
+        }
         $data = json_encode($data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
         $data = $connection->quote($data);
         $sql = <<<SQL

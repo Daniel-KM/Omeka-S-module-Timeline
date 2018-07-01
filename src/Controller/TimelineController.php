@@ -21,7 +21,7 @@ class TimelineController extends AbstractActionController
 
     public function eventsAction()
     {
-        $blockId = (integer) $this->params('block-id');
+        $blockId = (int) $this->params('block-id');
         $block = $this->getBlock($blockId);
 
         $blockData = $block->getData();

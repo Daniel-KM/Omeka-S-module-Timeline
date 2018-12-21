@@ -86,22 +86,29 @@ class Timeline extends AbstractBlockLayout
         );
     }
 
-    public function prepareRender(PhpRenderer $view)
+    public function render(PhpRenderer $view, SitePageBlockRepresentation $block)
     {
-        $library = $view->setting('timeline_library');
+        $data = $block->data();
+
+        $library = $data['library'];
+        if ($library === 'simile_online') {
+            $library = 'simile';
+        }
+        unset($data['library']);
+
         switch ($library) {
             case 'knightlab':
                 $view->headLink()->appendStylesheet('//cdn.knightlab.com/libs/timeline3/latest/css/timeline.css');
                 $view->headScript()->appendFile('//cdn.knightlab.com/libs/timeline3/latest/js/timeline.js');
                 break;
-
+        
             case 'simile_online':
                 $view->headLink()->appendStylesheet($view->assetUrl('css/timeline.css', 'Timeline'));
                 $view->headScript()->appendFile($view->assetUrl('js/timeline.js', 'Timeline'));
                 $view->headScript()->appendFile('//api.simile-widgets.org/timeline/2.3.1/timeline-api.js?bundle=true');
                 $view->headScript()->appendScript('SimileAjax.History.enabled = false; window.jQuery = SimileAjax.jQuery;');
                 break;
-
+        
             case 'simile':
             default:
                 $view->headLink()->appendStylesheet($view->assetUrl('css/timeline.css', 'Timeline'));
@@ -114,18 +121,7 @@ class Timeline extends AbstractBlockLayout
                 $view->headScript()->appendScript('SimileAjax.History.enabled = false; // window.jQuery = SimileAjax.jQuery;');
                 break;
         }
-    }
-
-    public function render(PhpRenderer $view, SitePageBlockRepresentation $block)
-    {
-        $data = $block->data();
-
-        $library = $data['library'];
-        if ($library === 'simile_online') {
-            $library = 'simile';
-        }
-        unset($data['library']);
-
+        
         return $view->partial(
             'common/block-layout/timeline_' . $library,
             [

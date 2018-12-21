@@ -69,8 +69,10 @@
 
           var timelineDivID = 'timeline-<?php echo $blockId; ?>';
 
+		  var timelineOptions = <?php echo $data['viewer']; ?>;
+          
           // initialize the timeline instance
-          window.timeline = new TL.Timeline(timelineDivID, slides);
+          window.timeline = new TL.Timeline(timelineDivID, slides, timelineOptions);
 
           function parseDate(entryDateString) {
             var entryDate = entryDateString;

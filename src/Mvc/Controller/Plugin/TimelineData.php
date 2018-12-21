@@ -51,8 +51,10 @@ class TimelineData extends AbstractPlugin
             if ($itemTitle) {
                 $itemTitle = strip_tags($itemTitle->value());
             }
-            $itemDescription = $item->value($propertyItemDescription, ['type' => 'literal', 'default' => '']);
-            if ($itemDescription) {
+            $itemDescription = $item->value($propertyItemDescription, ['default' => '']);
+            if ($itemDescription && $itemDescription->type() == 'resource:item') {
+                $itemDescription = $this->snippet($itemDescription->valueResource()->displayTitle(), 200);
+            } else {
                 $itemDescription = $this->snippet($itemDescription->value(), 200);
             }
             $itemDatesEnd = $propertyItemDateEnd

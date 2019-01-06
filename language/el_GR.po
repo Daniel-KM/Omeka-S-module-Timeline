@@ -1,0 +1,188 @@
+# Translation for the Neatline Time plugin for Omeka.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: NeatlineTime\n"
+"Report-Msgid-Bugs-To: http://github.com/scholarslab/NeatlineTime/issues\n"
+"POT-Creation-Date: 2018-12-24 12:04+0200\n"
+"PO-Revision-Date: 2018-12-24 12:42+0200\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.8.8\n"
+"Last-Translator: \n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Language: el_GR\n"
+
+#: NeatlineTimePlugin.php:205
+msgid ""
+"<strong>Warning</strong>: Uninstalling the Neatline Time plugin\n"
+"          will remove all custom Timeline records."
+msgstr ""
+"<strong>Προειδοποιηση</strong>: Απεγκαθιστώντας το πρόσθετο Neatline Time\n"
+"          θα απομακρύνει όλες τις εγγραφές του Χρονολογίου."
+
+#: NeatlineTimePlugin.php:273 NeatlineTimePlugin.php:294
+#: NeatlineTimePlugin.php:340
+msgid "Neatline Time"
+msgstr "Χρονολόγια"
+
+#: NeatlineTimePlugin.php:341
+msgid "Embed a NeatlineTime timeline."
+msgstr "Ενσωματώστε ένα Χρονολόγιο."
+
+#: config_form.php:2
+msgid "Item Date"
+msgstr "Ημερομηνία τεκμηρίου"
+
+#: config_form.php:8
+msgid ""
+"The date field to use to retrieve and display items on a timeline. Default "
+"is DC:Date."
+msgstr ""
+"Το πεδίο της ημερομηνίας που χρησιμοποιείται για να ανακτά και να "
+"παρουσιάζει τεκμήρια σε ένα χρονολόγιο. Προεπιλεγμένο είναι το πεδίο DC:"
+"Date."
+
+#: config_form.php:14
+msgid "Item Title"
+msgstr "Τίτλος Τεκμηρίου"
+
+#: config_form.php:21
+msgid ""
+"The title field to use when displaying an item on a timeline. Default is DC:"
+"Title"
+msgstr ""
+"Το πεδίο τίτλου που χρησιμοποιείται για να εμφανίζεται σε ένα τεκμήριο "
+"ενόςχρονολογίου. Προεπιλεγμένο πεδίο είναι το DC:Title. "
+
+#: config_form.php:27
+msgid "Item Description"
+msgstr "Περιγραφή τεκμηρίου"
+
+#: config_form.php:33
+msgid ""
+"The description field to use when displaying an item on a timeline. Default "
+"is DC:Description"
+msgstr ""
+"Το πεδίο περιγραφής που χρησιμοποιείται για να εμφανίζεται σε ένα τεκμήριο "
+"ενός χρονολογίου. Προεπιλεγμένο πεδίο είναι το DC:Description."
+
+#: controllers/TimelinesController.php:78
+#, php-format
+msgid "The timeline \"%s\" was successfully added!"
+msgstr "Το χρονολόγιο \"%s\" προστέθηκε επιτυχώς!"
+
+#: controllers/TimelinesController.php:86
+#, php-format
+msgid "The timeline \"%s\" was successfully changed!"
+msgstr "Το χρονολόγιο \"%s\" άλλαξε επιτυχώς!"
+
+#: controllers/TimelinesController.php:94
+#, php-format
+msgid "The timeline \"%s\" was successfully deleted!"
+msgstr "Το χρονολόγιο \"%s\" διεγράφη επιτυχώς!"
+
+#: controllers/TimelinesController.php:102
+#, php-format
+msgid ""
+"This will delete the timeline \"%s\" and its associated metadata. This will "
+"not delete any items associated with this timeline."
+msgstr ""
+"Αυτή η πράξη θα διαγράψει το χρονολόγιο \"%s\" και τα μεταδεδομένα του. "
+"Αυτή η ενέργεια δεν θα διαγράψει κάποιο από τα τεκμήρια που συνδέονται με "
+"το χρονολόγιο αυτό."
+
+#: forms/timeline.php:17
+msgid "A title for your timeline."
+msgstr "Ένας τίτλος για το χρονολόγιο."
+
+#: forms/timeline.php:23
+msgid "A description for your timeline."
+msgstr "Μια περιγραφή για το χρονολογιό."
+
+#: forms/timeline.php:29
+msgid "Status"
+msgstr "Κατάσταση δημοσίευσης"
+
+#: forms/timeline.php:30
+msgid "Whether the timeline is public or not."
+msgstr "Εάν αυτό το χρονολόγιο είναι δημόσιο ή όχι."
+
+#: forms/timeline.php:37
+msgid "Whether the timeline is featured or not."
+msgstr "Εάν το χρονολόγιο θα είναι προτεινόμενο ή όχι."
+
+#: forms/timeline.php:43
+msgid "Save Timeline"
+msgstr "Αποθηκεύστε"
+
+#: views/admin/timelines/add.php:7
+msgid "Neatline Time | Add a Timeline"
+msgstr "Χρονολόγια | Προσθέστε ένα Χρονολόγιο"
+
+#: views/admin/timelines/browse.php:7
+msgid "Neatline Time | Browse Timelines"
+msgstr "Χρονολόγια | Περιηγηθείτε σε Χρονολόγια"
+
+#: views/admin/timelines/browse.php:16 views/admin/timelines/browse.php:53
+#: views/admin/timelines/browse.php:59
+msgid "Add a Timeline"
+msgstr "Προσθέστε ενα Χρονολόγιο."
+
+#: views/admin/timelines/browse.php:34 views/admin/timelines/show.php:34
+msgid "Edit Metadata"
+msgstr "Επεξεργαστείτε τα μεταδεδομένα"
+
+#: views/admin/timelines/browse.php:37
+msgid "Edit Item Query"
+msgstr "Επεξεργαστείτε το ερώτημα."
+
+#: views/admin/timelines/browse.php:59
+msgid "There are no timelines."
+msgstr "Δεν υπάρχουν χρονολόγια"
+
+#: views/admin/timelines/edit.php:7
+#, php-format
+msgid "Neatline Time | Edit \"%s\" Metadata"
+msgstr "Χρονολόγιο | Επεξεργαστείτε τα μεταδεδομένα του \"%s\""
+
+#: views/admin/timelines/query.php:7
+#, php-format
+msgid "Neatline Time | Edit \"%s\" Items Query"
+msgstr "Χρονολόγιο | Επεξεργαστείτε το ερώτημα για το \"%s\""
+
+#: views/admin/timelines/query.php:20 views/admin/timelines/show.php:24
+#, php-format
+msgid ""
+"The &#8220;%s&#8221; timeline displays items that match the following query:"
+msgstr ""
+"Το χρονολόγιο &#8220;%s&#8221; παρουσιάσει τεκμήρια που αντιστοιχούν στο "
+"ακόλουθο ερώτημα:"
+
+#: views/admin/timelines/show.php:9
+#, php-format
+msgid "Neatline Time | %s"
+msgstr "Χρονολόγια | %s"
+
+#: views/admin/timelines/show.php:23
+msgid "Items Query"
+msgstr "Ερώτημα"
+
+#: views/admin/timelines/show.php:35
+msgid "Edit Items Query"
+msgstr "Επεξεργασία ερωτήματος"
+
+#: views/public/timelines/browse.php:7 views/public/timelines/browse.php:12
+msgid "Browse Timelines"
+msgstr "Περιήγηση Χρονολογίων"
+
+#: views/public/timelines/browse.php:24
+msgid "You have no timelines."
+msgstr "Δεν έχετε χρονολόγια."
+
+#: views/shared/exhibit_layouts/neatline-time/form.php:8
+msgid "Select a timeline"
+msgstr "Επιλέξτε ένα χρονολόγιο."

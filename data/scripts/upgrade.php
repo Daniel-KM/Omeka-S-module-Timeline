@@ -1,6 +1,16 @@
 <?php
 namespace Timeline;
 
+/**
+ * @var Module $this
+ * @var \Zend\ServiceManager\ServiceLocatorInterface $serviceLocator
+ * @var string $newVersion
+ * @var string $oldVersion
+ *
+ * @var \Doctrine\DBAL\Connection $connection
+ * @var \Doctrine\ORM\EntityManager $entityManager
+ * @var \Omeka\Api\Manager $api
+ */
 $services = $serviceLocator;
 $settings = $services->get('Omeka\Settings');
 $connection = $services->get('Omeka\Connection');
@@ -23,6 +33,7 @@ SQL;
         if (empty($data['args']['query'])) {
             $data['args']['query'] = ['item_date_id' => '7'];
         } elseif (is_string($data['args']['query'])) {
+            $query = [];
             parse_str($data['args']['query'], $query);
             $data['args']['query'] = $query;
         }

@@ -149,6 +149,7 @@ class Timeline extends AbstractBlockLayout
             ->getContent();
         $data['item_date_id'] = (string) $property->id();
 
+        $query = [];
         parse_str($data['query'], $query);
         $data['query'] = $query;
 

@@ -67,6 +67,9 @@ Ready! Open the page.
 
   ![Timeline Page](https://github.com/Daniel-KM/Omeka-S-module-Timeline/blob/master/data/readme/timeline-page-v3-4.png)
 
+**Important**: The number of items should be limited according to the memory of
+the server: currently, the json output is created in one shot, so it can't
+manage more than some dozens or hundreds of items.
 
 ### Dates for Items
 

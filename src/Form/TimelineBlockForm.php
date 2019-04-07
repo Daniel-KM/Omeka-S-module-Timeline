@@ -4,7 +4,6 @@ namespace Timeline\Form;
 use Omeka\Form\Element\PropertySelect;
 use Timeline\Mvc\Controller\Plugin\TimelineData;
 use Zend\Form\Element;
-use Zend\Form\Fieldset;
 use Zend\Form\Form;
 use Zend\I18n\Translator\TranslatorAwareInterface;
 use Zend\I18n\Translator\TranslatorAwareTrait;

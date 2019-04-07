@@ -44,6 +44,7 @@ class TimelineData extends AbstractPlugin
         $items = $this->getController()->api()
             ->search('items', $params)
             ->getContent();
+        /** @var \Omeka\Api\Representation\ItemRepresentation[] $items */
         foreach ($items as $item) {
             // All items without dates are already automatically removed.
             $itemDates = $item->value($propertyItemDate, ['all' => true, 'type' => 'literal', 'default' => []]);

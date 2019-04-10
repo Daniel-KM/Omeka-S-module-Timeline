@@ -1,5 +1,5 @@
 # Translation for the Neatline Time plugin for Omeka.
-# 
+#
 # Translators:
 # katinalynn <katina.rogers@gmail.com>, 2012
 msgid ""
@@ -84,7 +84,7 @@ msgstr "Une description de votre chronologie."
 
 #: forms/timeline.php:29
 msgid "Status"
-msgstr "Status"
+msgstr "Statut"
 
 #: forms/timeline.php:30
 msgid "Whether the timeline is public or not."

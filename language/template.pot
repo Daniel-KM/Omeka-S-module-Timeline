@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-04-01 00:00+0200\n"
+"POT-Creation-Date: 2019-04-15 00:00+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,27 +17,27 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/Form/TimelineBlockForm.php:95
+#: src/Form/TimelineBlockForm.php:94
 msgid "Set the default center date for the timeline."
 msgstr ""
 
-#: src/Form/TimelineBlockForm.php:96
+#: src/Form/TimelineBlockForm.php:95
 msgid "The format should be \"YYYY-MM-DD\"."
 msgstr ""
 
-#: src/Form/TimelineBlockForm.php:97
+#: src/Form/TimelineBlockForm.php:96
 msgid ""
 "An empty value means \"now\", \"0000-00-00\" the earliest date, and "
 "\"9999-99-99\" the latest date."
 msgstr ""
 
-#: src/Form/TimelineBlockForm.php:109
+#: src/Form/TimelineBlockForm.php:108
 msgid ""
 "Set the default params of the viewer as json, or let empty for the included "
 "default."
 msgstr ""
 
-#: src/Form/TimelineBlockForm.php:110
+#: src/Form/TimelineBlockForm.php:109
 msgid "Currently, only \"bandInfos\" and \"centerDate\" are managed."
 msgstr ""
 
@@ -64,76 +64,76 @@ msgstr ""
 msgid "collapse"
 msgstr ""
 
-#: src/Form/TimelineBlockForm.php:22
+#: src/Form/TimelineBlockForm.php:21
 msgid "Item title"
 msgstr ""
 
-#: src/Form/TimelineBlockForm.php:23 src/Form/TimelineBlockForm.php:37
-#: src/Form/TimelineBlockForm.php:51
+#: src/Form/TimelineBlockForm.php:22 src/Form/TimelineBlockForm.php:36
+#: src/Form/TimelineBlockForm.php:50
 msgid "Select a property…"
 msgstr ""
 
-#: src/Form/TimelineBlockForm.php:36
+#: src/Form/TimelineBlockForm.php:35
 msgid "Item description"
 msgstr ""
 
-#: src/Form/TimelineBlockForm.php:50
+#: src/Form/TimelineBlockForm.php:49
 msgid "Item date"
 msgstr ""
 
-#: src/Form/TimelineBlockForm.php:64
+#: src/Form/TimelineBlockForm.php:63
 msgid "Item end date"
 msgstr ""
 
-#: src/Form/TimelineBlockForm.php:65
+#: src/Form/TimelineBlockForm.php:64
 msgid "If set, the process will use the other date as a start date."
 msgstr ""
 
-#: src/Form/TimelineBlockForm.php:79
+#: src/Form/TimelineBlockForm.php:78
 msgid "Render year"
 msgstr ""
 
-#: src/Form/TimelineBlockForm.php:80
+#: src/Form/TimelineBlockForm.php:79
 msgid ""
 "When a date is a single year, like \"1066\", the value should be interpreted "
 "to be displayed on the timeline."
 msgstr ""
 
-#: src/Form/TimelineBlockForm.php:82
+#: src/Form/TimelineBlockForm.php:81
 msgid "Pick first January"
 msgstr ""
 
-#: src/Form/TimelineBlockForm.php:83
+#: src/Form/TimelineBlockForm.php:82
 msgid "Pick first July"
 msgstr ""
 
-#: src/Form/TimelineBlockForm.php:84
+#: src/Form/TimelineBlockForm.php:83
 msgid "Mark entire year"
 msgstr ""
 
-#: src/Form/TimelineBlockForm.php:85
+#: src/Form/TimelineBlockForm.php:84
 msgid "Skip the record"
 msgstr ""
 
-#: src/Form/TimelineBlockForm.php:94
+#: src/Form/TimelineBlockForm.php:93
 msgid "Center date"
 msgstr ""
 
-#: src/Form/TimelineBlockForm.php:121
+#: src/Form/TimelineBlockForm.php:120
 msgid "Query to limit resources"
 msgstr ""
 
-#: src/Form/TimelineBlockForm.php:122
+#: src/Form/TimelineBlockForm.php:121
 msgid ""
 "Limit the timeline to a particular subset of resources, for example a site, "
 "via an advanced search query."
 msgstr ""
 
-#: src/Form/TimelineBlockForm.php:130
+#: src/Form/TimelineBlockForm.php:129
 msgid "Timeline library"
 msgstr ""
 
-#: src/Form/TimelineBlockForm.php:131
+#: src/Form/TimelineBlockForm.php:130
 msgid ""
 "Three libraries are available: the standard open source Simile Timeline, or "
 "the online Knightlab Timeline."

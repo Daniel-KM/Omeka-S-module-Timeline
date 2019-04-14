@@ -49,8 +49,11 @@ class Timeline extends AbstractBlockLayout
         return 'Timeline'; // @translate
     }
 
-    public function form(PhpRenderer $view, SiteRepresentation $site,
-        SitePageRepresentation $page = null, SitePageBlockRepresentation $block = null
+    public function form(
+        PhpRenderer $view,
+        SiteRepresentation $site,
+        SitePageRepresentation $page = null,
+        SitePageBlockRepresentation $block = null
     ) {
         /** @var \Timeline\Form\TimelineBlockForm $form */
         $form = $this->formElementManager->get(TimelineBlockForm::class);

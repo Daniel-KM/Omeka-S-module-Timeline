@@ -148,7 +148,7 @@ class Timeline extends AbstractBlockLayout
         return $view->partial(
             'common/block-layout/timeline_' . $library,
             [
-                'blockId' => $block->id(),
+                'block' => $block,
                 'data' => $data,
             ]
         );

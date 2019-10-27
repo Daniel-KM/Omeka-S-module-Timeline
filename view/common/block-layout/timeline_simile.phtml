@@ -1,14 +1,28 @@
-<div id="timeline-<?php echo $blockId; ?>" class="timeline"></div>
+<?php
+/**
+ * @var \Zend\View\Renderer\PhpRenderer $this
+ * @var \Omeka\Api\Representation\SitePageBlockRepresentation $block
+ * @var array $data
+ */
+
+$escape = $this->plugin('escapeHtml');
+?>
+
+<?php if (!empty($data['heading'])): ?>
+<h2><?= $escape($data['heading']) ?></h2>
+<?php endif; ?>
+
+<div id="timeline-<?= $block->id() ?>" class="timeline"></div>
 <script>
     jQuery(document).ready(function($) {
-        var params = <?php echo $data['viewer']; ?>;
+        var params = <?= $data['viewer'] ?>;
         if (typeof params.centerDate === 'undefined') {
-            params.centerDate = <?php echo json_encode($data['center_date']); ?>;
+            params.centerDate = <?= json_encode($data['center_date']) ?>;
         }
 
         oTimeline.loadTimeline(
-            'timeline-<?php echo $blockId; ?>',
-            '<?php echo $this->url('timeline-block', ['block-id' => $blockId]); ?>',
+            'timeline-<?= $block->id() ?>',
+            <?= json_encode($this->url('timeline-block', ['block-id' => $block->id()]), 320) ?>,
             params
         );
     });

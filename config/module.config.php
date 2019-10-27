@@ -62,6 +62,7 @@ return [
     'timeline' => [
         'block_settings' => [
             'timeline' => [
+                'heading' => '',
                 'item_title' => 'dcterms:title',
                 'item_description' => 'dcterms:description',
                 'item_date' => 'dcterms:date',

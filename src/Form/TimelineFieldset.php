@@ -12,6 +12,18 @@ class TimelineFieldset extends Fieldset
     {
         $this
             ->add([
+                'name' => 'o:block[__blockIndex__][o:data][heading]',
+                'type' => Element\Text::class,
+                'options' => [
+                    'label' => 'Block title', // @translate
+                    'info' => 'Heading for the block, if any.', // @translate
+                ],
+                'attributes' => [
+                    'id' => 'timeline-heading',
+                    'required' => false,
+                ],
+            ])
+            ->add([
                 'name' => 'o:block[__blockIndex__][o:data][item_title]',
                 'type' => PropertySelect::class,
                 'options' => [

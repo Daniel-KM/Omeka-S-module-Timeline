@@ -53,10 +53,12 @@ class TimelineData extends AbstractPlugin
                 $itemTitle = strip_tags($itemTitle->value());
             }
             $itemDescription = $item->value($propertyItemDescription, ['default' => '']);
-            if ($itemDescription && $itemDescription->type() == 'resource:item') {
-                $itemDescription = $this->snippet($itemDescription->valueResource()->displayTitle(), 200);
-            } else {
-                $itemDescription = $this->snippet($itemDescription->value(), 200);
+            if ($itemDescription) {
+                if (in_array($itemDescription->type(), ['resource:item', 'resource'])) {
+                    $itemDescription = $this->snippet($itemDescription->valueResource()->displayTitle(), 200);
+                } else {
+                    $itemDescription = $this->snippet($itemDescription->value(), 200);
+                }
             }
             $itemDatesEnd = $propertyItemDateEnd
                 ? $item->value($propertyItemDateEnd, ['all' => true, 'type' => 'literal', 'default' => []])

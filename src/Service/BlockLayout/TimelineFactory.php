@@ -10,16 +10,12 @@ class TimelineFactory implements FactoryInterface
     /**
      * Create the Timeline block layout service.
      *
-     * @param ContainerInterface $services
      * @return Timeline
      */
     public function __invoke(ContainerInterface $services, $requestedName, array $options = null)
     {
-        $controllerPluginManager = $services->get('ControllerPluginManager');
         return new Timeline(
-            $services->get('FormElementManager'),
-            $services->get('Config')['timeline']['block_settings']['timeline'],
-            $controllerPluginManager->get('api')
+            $services->get('ControllerPluginManager')->get('api')
         );
     }
 }

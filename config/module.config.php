@@ -17,7 +17,7 @@ return [
     ],
     'form_elements' => [
         'factories' => [
-            Form\TimelineBlockForm::class => Service\Form\TimelineBlockFormFactory::class,
+            Form\TimelineFieldset::class => Service\Form\TimelineFieldsetFactory::class,
         ],
     ],
     'controllers' => [

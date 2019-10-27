@@ -16,8 +16,8 @@ return [
         ],
     ],
     'form_elements' => [
-        'factories' => [
-            Form\TimelineFieldset::class => Service\Form\TimelineFieldsetFactory::class,
+        'invokables' => [
+            Form\TimelineFieldset::class => Form\TimelineFieldset::class,
         ],
     ],
     'controllers' => [

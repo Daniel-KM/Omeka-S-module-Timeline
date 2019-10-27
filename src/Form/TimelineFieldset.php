@@ -4,14 +4,10 @@ namespace Timeline\Form;
 use Omeka\Form\Element\PropertySelect;
 use Timeline\Mvc\Controller\Plugin\TimelineData;
 use Zend\Form\Element;
-use Zend\Form\Form;
-use Zend\I18n\Translator\TranslatorAwareInterface;
-use Zend\I18n\Translator\TranslatorAwareTrait;
+use Zend\Form\Fieldset;
 
-class TimelineFieldset extends Form implements TranslatorAwareInterface
+class TimelineFieldset extends Fieldset
 {
-    use TranslatorAwareTrait;
-
     public function init()
     {
         $this
@@ -87,9 +83,7 @@ class TimelineFieldset extends Form implements TranslatorAwareInterface
                 'type' => Element\Text::class,
                 'options' => [
                     'label' => 'Center date', // @translate
-                    'info' => $this->translate('Set the default center date for the timeline.') // @translate
-                        . ' ' . $this->translate('The format should be "YYYY-MM-DD".') // @translate
-                        . ' ' . $this->translate('An empty value means "now", "0000-00-00" the earliest date, and "9999-99-99" the latest date.'), // @translate
+                    'info' => 'Set the default center date for the timeline. The format should be "YYYY-MM-DD". An empty value means "now", "0000-00-00" the earliest date, and "9999-99-99" the latest date.', // @translate
                 ],
                 'validators' => [
                     ['name' => 'Date'],
@@ -100,8 +94,7 @@ class TimelineFieldset extends Form implements TranslatorAwareInterface
                 'type' => Element\Textarea::class,
                 'options' => [
                     'label' => 'Viewer', // @translate
-                    'info' => $this->translate('Set the default params of the viewer as json, or let empty for the included default.') // @translate
-                        . ' ' . $this->translate('Currently, only "bandInfos" and "centerDate" are managed.'), // @translate
+                    'info' => 'Set the default params of the viewer as json, or let empty for the included default. Currently, only "bandInfos" and "centerDate" are managed.', // @translate
                 ],
                 'attributes' => [
                     'rows' => 5,
@@ -131,11 +124,5 @@ class TimelineFieldset extends Form implements TranslatorAwareInterface
                     'required' => true,
                 ],
             ]);
-    }
-
-    protected function translate($args)
-    {
-        $translator = $this->getTranslator();
-        return $translator->translate($args);
     }
 }

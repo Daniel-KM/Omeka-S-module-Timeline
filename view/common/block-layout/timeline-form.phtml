@@ -1,11 +1,21 @@
-<?php $translate = $this->plugin('translate'); ?>
-<?php $form->prepare(); ?>
+<?php
+/**
+ * @var \Zend\View\Renderer\PhpRenderer $this
+ * @var \Timeline\Form\TimelineFieldset $fieldset
+ * @var array $data
+ * @var int $itemCount
+ */
+
+$translate = $this->plugin('translate');
+?>
+
 <div>
     <p><?php
         echo $translate('Items can be selected in the whole base or in a limited list via the query below.');
         echo ' ' . $translate('The default item pool is the current site one.');
         echo ' ' . $translate('Items without a date are automatically filtered.');
         if (!is_null($itemCount)) {
+            $query = [];
             parse_str($data['o:block[__blockIndex__][o:data][query]'], $query);
             $itemDataId = $data['o:block[__blockIndex__][o:data][item_date_id]'];
             $query['property'][] = ['joiner' => 'and', 'property' => $itemDataId, 'type' => 'ex'];
@@ -20,7 +30,7 @@
         ?>
     </p>
 </div>
-<a href="#" class="collapse" aria-label="<?php echo $translate('collapse'); ?>"><h4><?php echo $translate('Options'); ?></h4></a>
+<a href="#" class="collapse" aria-label="<?= $translate('collapse') ?>"><h4><?= $translate('Options') ?></h4></a>
 <div class="collapsible">
-    <?php echo $this->formCollection($form); ?>
+    <?= $this->formCollection($fieldset) ?>
 </div>

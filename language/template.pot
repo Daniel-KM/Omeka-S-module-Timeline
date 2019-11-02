@@ -1,12 +1,14 @@
-# Translation for the Neatline Time plugin for Omeka.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: NeatlineTime\n"
-"Report-Msgid-Bugs-To: http://github.com/scholarslab/NeatlineTime/issues\n"
-"POT-Creation-Date: 2012-05-24 14:30-0500\n"
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-10-28 00:00+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -15,159 +17,125 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: NeatlineTimePlugin.php:205
+#: view/common/block-layout/timeline-form.phtml:14
 msgid ""
-"<strong>Warning</strong>: Uninstalling the Neatline Time plugin\n"
-"          will remove all custom Timeline records."
+"Items can be selected in the whole base or in a limited list via the query "
+"below."
 msgstr ""
 
-#: NeatlineTimePlugin.php:273 NeatlineTimePlugin.php:294
-#: NeatlineTimePlugin.php:340
-msgid "Neatline Time"
+#: view/common/block-layout/timeline-form.phtml:15
+msgid "The default item pool is the current site one."
 msgstr ""
 
-#: NeatlineTimePlugin.php:341
-msgid "Embed a NeatlineTime timeline."
+#: view/common/block-layout/timeline-form.phtml:16
+msgid "Items without a date are automatically filtered."
 msgstr ""
 
-#: config_form.php:2
-msgid "Item Date"
+#: view/common/block-layout/timeline-form.phtml:23
+#, php-format
+msgid "There are currently %s items in this timeline’s pool."
 msgstr ""
 
-#: config_form.php:8
+#: view/common/block-layout/timeline-form.phtml:33
+msgid "collapse"
+msgstr ""
+
+#: src/Form/TimelineFieldset.php:18
+msgid "Block title"
+msgstr ""
+
+#: src/Form/TimelineFieldset.php:19
+msgid "Heading for the block, if any."
+msgstr ""
+
+#: src/Form/TimelineFieldset.php:30
+msgid "Item title"
+msgstr ""
+
+#: src/Form/TimelineFieldset.php:31 src/Form/TimelineFieldset.php:44
+#: src/Form/TimelineFieldset.php:57
+msgid "Select a property…"
+msgstr ""
+
+#: src/Form/TimelineFieldset.php:43
+msgid "Item description"
+msgstr ""
+
+#: src/Form/TimelineFieldset.php:56
+msgid "Item date"
+msgstr ""
+
+#: src/Form/TimelineFieldset.php:69
+msgid "Item end date"
+msgstr ""
+
+#: src/Form/TimelineFieldset.php:70
+msgid "If set, the process will use the other date as a start date."
+msgstr ""
+
+#: src/Form/TimelineFieldset.php:83
+msgid "Render year"
+msgstr ""
+
+#: src/Form/TimelineFieldset.php:84
 msgid ""
-"The date field to use to retrieve and display items on a timeline. Default "
-"is DC:Date."
+"When a date is a single year, like \"1066\", the value should be interpreted "
+"to be displayed on the timeline."
 msgstr ""
 
-#: config_form.php:14
-msgid "Item Title"
+#: src/Form/TimelineFieldset.php:86
+msgid "Pick first January"
 msgstr ""
 
-#: config_form.php:21
+#: src/Form/TimelineFieldset.php:87
+msgid "Pick first July"
+msgstr ""
+
+#: src/Form/TimelineFieldset.php:88
+msgid "Mark entire year"
+msgstr ""
+
+#: src/Form/TimelineFieldset.php:89
+msgid "Skip the record"
+msgstr ""
+
+#: src/Form/TimelineFieldset.php:97
+msgid "Center date"
+msgstr ""
+
+#: src/Form/TimelineFieldset.php:98
 msgid ""
-"The title field to use when displaying an item on a timeline. Default is DC:"
-"Title"
+"Set the default center date for the timeline. The format should be \"YYYY-MM-"
+"DD\". An empty value means \"now\", \"0000-00-00\" the earliest date, and "
+"\"9999-99-99\" the latest date."
 msgstr ""
 
-#: config_form.php:27
-msgid "Item Description"
-msgstr ""
-
-#: config_form.php:33
+#: src/Form/TimelineFieldset.php:109
 msgid ""
-"The description field to use when displaying an item on a timeline. Default "
-"is DC:Description"
+"Set the default params of the viewer as json, or let empty for the included "
+"default. Currently, only \"bandInfos\" and \"centerDate\" are managed."
 msgstr ""
 
-#: controllers/TimelinesController.php:78
-#, php-format
-msgid "The timeline \"%s\" was successfully added!"
+#: src/Form/TimelineFieldset.php:119
+msgid "Query to limit resources"
 msgstr ""
 
-#: controllers/TimelinesController.php:86
-#, php-format
-msgid "The timeline \"%s\" was successfully changed!"
-msgstr ""
-
-#: controllers/TimelinesController.php:94
-#, php-format
-msgid "The timeline \"%s\" was successfully deleted!"
-msgstr ""
-
-#: controllers/TimelinesController.php:102
-#, php-format
+#: src/Form/TimelineFieldset.php:120
 msgid ""
-"This will delete the timeline \"%s\" and its associated metadata. This will "
-"not delete any items associated with this timeline."
+"Limit the timeline to a particular subset of resources, for example a site, "
+"via an advanced search query."
 msgstr ""
 
-#: forms/timeline.php:17
-msgid "A title for your timeline."
+#: src/Form/TimelineFieldset.php:127
+msgid "Timeline library"
 msgstr ""
 
-#: forms/timeline.php:23
-msgid "A description for your timeline."
-msgstr ""
-
-#: forms/timeline.php:29
-msgid "Status"
-msgstr ""
-
-#: forms/timeline.php:30
-msgid "Whether the timeline is public or not."
-msgstr ""
-
-#: forms/timeline.php:37
-msgid "Whether the timeline is featured or not."
-msgstr ""
-
-#: forms/timeline.php:43
-msgid "Save Timeline"
-msgstr ""
-
-#: views/admin/timelines/add.php:7
-msgid "Neatline Time | Add a Timeline"
-msgstr ""
-
-#: views/admin/timelines/browse.php:7
-msgid "Neatline Time | Browse Timelines"
-msgstr ""
-
-#: views/admin/timelines/browse.php:16 views/admin/timelines/browse.php:53
-#: views/admin/timelines/browse.php:59
-msgid "Add a Timeline"
-msgstr ""
-
-#: views/admin/timelines/browse.php:34 views/admin/timelines/show.php:34
-msgid "Edit Metadata"
-msgstr ""
-
-#: views/admin/timelines/browse.php:37
-msgid "Edit Item Query"
-msgstr ""
-
-#: views/admin/timelines/browse.php:59
-msgid "There are no timelines."
-msgstr ""
-
-#: views/admin/timelines/edit.php:7
-#, php-format
-msgid "Neatline Time | Edit \"%s\" Metadata"
-msgstr ""
-
-#: views/admin/timelines/query.php:7
-#, php-format
-msgid "Neatline Time | Edit \"%s\" Items Query"
-msgstr ""
-
-#: views/admin/timelines/query.php:20 views/admin/timelines/show.php:24
-#, php-format
+#: src/Form/TimelineFieldset.php:128
 msgid ""
-"The &#8220;%s&#8221; timeline displays items that match the following query:"
+"Three libraries are available: the standard open source Simile Timeline, or "
+"the online Knightlab Timeline."
 msgstr ""
 
-#: views/admin/timelines/show.php:9
-#, php-format
-msgid "Neatline Time | %s"
-msgstr ""
-
-#: views/admin/timelines/show.php:23
-msgid "Items Query"
-msgstr ""
-
-#: views/admin/timelines/show.php:35
-msgid "Edit Items Query"
-msgstr ""
-
-#: views/public/timelines/browse.php:7 views/public/timelines/browse.php:12
-msgid "Browse Timelines"
-msgstr ""
-
-#: views/public/timelines/browse.php:24
-msgid "You have no timelines."
-msgstr ""
-
-#: views/shared/exhibit_layouts/neatline-time/form.php:8
-msgid "Select a timeline"
+#: src/Site/BlockLayout/Timeline.php:36
+msgid "Timeline"
 msgstr ""

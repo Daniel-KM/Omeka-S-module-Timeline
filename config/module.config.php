@@ -16,8 +16,8 @@ return [
         ],
     ],
     'form_elements' => [
-        'factories' => [
-            Form\TimelineBlockForm::class => Service\Form\TimelineBlockFormFactory::class,
+        'invokables' => [
+            Form\TimelineFieldset::class => Form\TimelineFieldset::class,
         ],
     ],
     'controllers' => [
@@ -62,6 +62,7 @@ return [
     'timeline' => [
         'block_settings' => [
             'timeline' => [
+                'heading' => '',
                 'item_title' => 'dcterms:title',
                 'item_description' => 'dcterms:description',
                 'item_date' => 'dcterms:date',

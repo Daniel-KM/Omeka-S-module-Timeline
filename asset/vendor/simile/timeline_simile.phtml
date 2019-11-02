@@ -1,0 +1,15 @@
+<div id="timeline-<?php echo $blockId; ?>" class="timeline"></div>
+<script>
+    jQuery(document).ready(function($) {
+        var params = <?php echo $data['viewer']; ?>;
+        if (typeof params.centerDate === 'undefined') {
+            params.centerDate = <?php echo json_encode($data['center_date']); ?>;
+        }
+
+        oTimeline.loadTimeline(
+            'timeline-<?php echo $blockId; ?>',
+            '<?php echo $this->url('timeline-block', ['block-id' => $blockId]); ?>',
+            params
+        );
+    });
+</script>

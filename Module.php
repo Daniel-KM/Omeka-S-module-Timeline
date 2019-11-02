@@ -20,7 +20,9 @@ class Module extends AbstractModule
         $acl->allow(null, [\Timeline\Controller\TimelineController::class]);
     }
 
-    public function upgrade($oldVersion, $newVersion,
+    public function upgrade(
+        $oldVersion,
+        $newVersion,
         ServiceLocatorInterface $serviceLocator
     ) {
         require_once 'data/scripts/upgrade.php';

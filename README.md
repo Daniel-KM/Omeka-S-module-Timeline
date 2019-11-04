@@ -219,19 +219,13 @@ The module uses the widget [SIMILE Timeline], published under the license MIT.
 See files in `asset/vendor` for more info.
 
 
-Contacts
---------
-
-* Daniel Berthereau (see [Daniel-KM] on GitHub)
-
-
 Copyright
 ---------
 
 ### Module
 
 * Copyright The Board and Visitors of the University of Virginia, 2010–2012
-* Copyright Daniel Berthereau, 2016-2019
+* Copyright Daniel Berthereau, 2016-2019 (see [Daniel-KM] on GitHub)
 
 ### Translations
 

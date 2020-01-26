@@ -147,7 +147,7 @@ class TimelineData extends AbstractPlugin
         if (preg_match('/^-?\d{1,4}$/', $date)) {
             // Normalize the year.
             $date = $date < 0
-                ? '-' . str_pad(substr($date, 1), 4, '0', STR_PAD_LEFT)
+                ? '-' . str_pad(mb_substr($date, 1), 4, '0', STR_PAD_LEFT)
                 : str_pad($date, 4, '0', STR_PAD_LEFT);
             switch ($renderYear) {
                 case self::RENDER_YEAR_JANUARY_1:
@@ -364,7 +364,7 @@ class TimelineData extends AbstractPlugin
     protected function snippet($string, $length)
     {
         $str = strip_tags($string);
-        return strlen($str) <= $length ? $str : substr($str, 0, $length - 1) . '&hellip;';
+        return mb_strlen($str) <= $length ? $str : mb_substr($str, 0, $length - 1) . '&hellip;';
     }
 
     /**
@@ -386,7 +386,7 @@ class TimelineData extends AbstractPlugin
      */
     protected function textToId($text, $prepend = null, $delimiter = '-')
     {
-        $text = strtolower($text);
+        $text = mb_strtolower($text);
         $id = preg_replace('/\s/', $delimiter, $text);
         $id = preg_replace('/[^\w\-]/', '', $id);
         $id = trim($id, $delimiter);

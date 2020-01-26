@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-10-28 00:00+0100\n"
+"POT-Creation-Date: 2020-01-27 00:00+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -134,6 +134,16 @@ msgstr ""
 msgid ""
 "Three libraries are available: the standard open source Simile Timeline, or "
 "the online Knightlab Timeline."
+msgstr ""
+
+#: src/Controller/TimelineController.php:29
+#, php-format
+msgid "Id %d is not a timeline."
+msgstr ""
+
+#: src/Controller/TimelineController.php:74
+#, php-format
+msgid "%s entity with criteria %s not found"
 msgstr ""
 
 #: src/Site/BlockLayout/Timeline.php:36

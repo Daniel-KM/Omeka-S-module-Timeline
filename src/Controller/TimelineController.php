@@ -24,6 +24,13 @@ class TimelineController extends AbstractActionController
         $blockId = (int) $this->params('block-id');
         $block = $this->getBlock($blockId);
 
+        if ($block->getLayout() !== 'timeline') {
+            throw new NotFoundException(new Message(
+                'Id %d is not a timeline.', // @translate
+                $blockId
+            ));
+        }
+
         $blockData = $block->getData();
         // Get the site slug directly via the page.
         $blockData['site-slug'] = $block->getPage()->getSite()->getSlug();

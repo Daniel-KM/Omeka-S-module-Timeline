@@ -35,6 +35,13 @@
                     $(this)
                         .attr('for', name);
                 });
+
+            next
+                .find('.field-meta a.collapse').each(function() {
+                    $(this)
+                        .attr('class', 'expand');
+                });
+
             // Reset all values and content.
             next
                 .find('.inputs input').val('').end()

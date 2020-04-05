@@ -35,6 +35,11 @@ class TimelineExhibitData extends AbstractPlugin
     protected $endDateProperty = null;
 
     /**
+     * @var string
+     */
+    protected $creditProperty = 'dcterms:creator';
+
+    /**
      * @var bool
      */
     protected $isCosmological = false;
@@ -75,7 +80,8 @@ class TimelineExhibitData extends AbstractPlugin
         $this->escapeHtmlAttr = $controller->viewHelpers()->get('escapeHtmlAttr');
 
         $this->startDateProperty = $args['start_date_property'];
-        $this->endDateProperty = empty($args['end_date_property']) ? null : $args['end_date_property'];
+        $this->endDateProperty = $args['end_date_property'];
+        $this->creditProperty = $args['credit_property'];
         $this->isCosmologicial = (bool) $args['scale'] === 'cosmological';
         $this->siteSlug = $args['site_slug'];
 
@@ -88,6 +94,25 @@ class TimelineExhibitData extends AbstractPlugin
 
         foreach ($args['slides'] as $key => $slideData) {
             $slideData['position'] = $key + 1;
+
+            // Simplify checks.
+            $slideData += [
+                'type' => '',
+                'start_date' => '',
+                'end_date' => '',
+                'start_display_date' => '',
+                'end_display_date' => '',
+                'display_date' => '',
+                'headline' => '',
+                'html' => '',
+                'group' => '',
+                'resource' => null,
+                'content' => '',
+                'caption' => '',
+                'credit' => '',
+                'background' => null,
+                'background_color' => '',
+            ];
 
             // Prepare attachments so they will be available in all cases.
             if ($slideData['resource']) {
@@ -321,16 +346,22 @@ class TimelineExhibitData extends AbstractPlugin
         // Don't duplicate the title and the caption for item.
         if ($isMedia) {
             $media['title'] = $mainResource->displayTitle('') ?: null;
-            $media['caption'] = $mainResource->displayDescription('') ?: null;
+            $media['caption'] = $slideData['caption'] ?: $mainResource->displayDescription('');
+        } elseif ($slideData['caption']) {
+            $media['caption'] = $slideData['caption'];
         }
 
-        $value = $resource->value('dcterms:creator') ?: $mainResource->value('dcterms:creator');
-        if ($value) {
-            $media['credit'] = $value->asHtml();
+        if ($slideData['credit']) {
+            $media['credit'] = $slideData['credit'];
+        } elseif ($this->creditProperty) {
+            $value = $resource->value($this->creditProperty) ?: $mainResource->value($this->creditProperty);
+            if ($value) {
+                $media['credit'] = $value->asHtml();
+            }
         }
         $media['link'] = $mainResource->siteUrl($this->siteSlug);
 
-        $media = array_filter($media, 'strlen');
+        $media = array_filter($media);
 
         return isset($media['url']) ? $media : null;
     }
@@ -347,18 +378,23 @@ class TimelineExhibitData extends AbstractPlugin
             return null;
         }
 
-        $content = $slideData['content'];
-
         $media = [
-            'url' => $content,
+            'url' => $slideData['content'],
+            'caption' => $slideData['caption'],
+            'credit' => $slideData['credit'],
+            'thumbnail' => null,
+            'alt' => null,
+            'title' => null,
+            'link' => null,
+            'link_target' => null,
         ];
 
-        if (filter_var($content, FILTER_VALIDATE_URL)) {
-            $media['link'] = $content;
+        if (filter_var($slideData['content'], FILTER_VALIDATE_URL)) {
+            $media['link'] = $slideData['content'];
             $media['link_target'] = '_blank';
         }
 
-        return $media;
+        return array_filter($media);
     }
 
     /**

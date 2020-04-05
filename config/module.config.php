@@ -85,6 +85,7 @@ return [
                 'heading' => '',
                 'start_date_property' => 'dcterms:date',
                 'end_date_property' => '',
+                'credit_property' => 'dcterms:creator',
                 'scale' => 'human',
                 'options' => '{}',
                 'slides' => [
@@ -100,6 +101,8 @@ return [
                         'group' => '',
                         'resource' => null,
                         'content' => '',
+                        'caption' => '',
+                        'credit' => '',
                         'background' => null,
                         'background_color' => '',
                     ],

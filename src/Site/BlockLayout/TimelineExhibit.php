@@ -69,6 +69,7 @@ class TimelineExhibit extends AbstractBlockLayout
 
         // Normalize values and purify html.
         $data['slides'] = array_map(function ($v) {
+            // Simplify checks.
             $v += [
                 'type' => '',
                 'start_date' => '',
@@ -78,17 +79,28 @@ class TimelineExhibit extends AbstractBlockLayout
                 'display_date' => '',
                 'headline' => '',
                 'html' => '',
-                'group' => '',
                 'resource' => null,
                 'content' => '',
+                'caption' => '',
+                'credit' => '',
                 'background' => null,
                 'background_color' => '',
+                'group' => '',
             ];
-            $v['html'] = isset($v['html'])
-                ? $this->fixEndOfLine($this->htmlPurifier->purify($v['html']))
-                : '';
-            if ($v['resource'] == $v['content']) {
+            if ($v['html']) {
+                $v['html'] = $this->fixEndOfLine($this->htmlPurifier->purify($v['html']));
+            }
+            if ($v['content']) {
+                $v['content'] = $this->fixEndOfLine($this->htmlPurifier->purify($v['content']));
+            }
+            if ($v['resource'] == strip_tags($v['content'])) {
                 $v['content'] = '';
+            }
+            if ($v['caption']) {
+                $v['caption'] = $this->fixEndOfLine($this->htmlPurifier->purify($v['caption']));
+            }
+            if ($v['credit']) {
+                $v['credit'] = $this->fixEndOfLine($this->htmlPurifier->purify($v['credit']));
             }
             return $v;
         }, $data['slides']);
@@ -117,7 +129,17 @@ class TimelineExhibit extends AbstractBlockLayout
         $defaultSettings = $services->get('Config')['timeline']['block_settings']['timelineExhibit'];
         $fieldset = $formElementManager->get(\Timeline\Form\TimelineExhibitFieldset::class);
 
-        $data = $block ? $block->data() + $defaultSettings : $defaultSettings;
+        // Updated block with new params.
+        if ($block) {
+            $defaultSlides = $defaultSettings['slides'][0];
+            unset($defaultSettings['slides']);
+            $data = $block->data() + $defaultSettings;
+            foreach ($data['slides'] as &$slide) {
+                $slide += $defaultSlides;
+            }
+        } else {
+            $data = $defaultSettings;
+        }
 
         $dataForm = [];
         foreach ($data as $key => $value) {
@@ -208,7 +230,9 @@ class TimelineExhibit extends AbstractBlockLayout
                 . ' ' . $slide['end_display_date']
                 . ' ' . $slide['display_date']
                 . ' ' . $slide['headline']
-                . ' ' . $slide['html'];
+                . ' ' . $slide['html']
+                . ' ' . $slide['caption']
+                . ' ' . $slide['credit'];
         }
         return $fulltext;
     }

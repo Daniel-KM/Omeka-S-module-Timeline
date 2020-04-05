@@ -64,6 +64,22 @@ class TimelineExhibitFieldset extends Fieldset
                 ],
             ])
             ->add([
+                'name' => 'o:block[__blockIndex__][o:data][credit_property]',
+                'type' => PropertySelect::class,
+                'options' => [
+                    'label' => 'Credit property', // @translate
+                    'info' => 'Credit to use from the attachement when no credit is set (generally creator or rights).', // @translate
+                    'empty_option' => '',
+                    'term_as_value' => true,
+                ],
+                'attributes' => [
+                    'id' => 'timeline-exhibit-credit-property',
+                    'class' => 'chosen-select',
+                    'data-placeholder' => 'Select a property…', // @translate
+                    'value' => 'dcterms:creator',
+                ],
+            ])
+            ->add([
                 'name' => 'o:block[__blockIndex__][o:data][scale]',
                 'type' => Element\Radio::class,
                 'options' => [
@@ -282,6 +298,30 @@ class TimelineExhibitFieldset extends Fieldset
                 'attributes' => [
                     'id' => 'timeline-exhibit-content',
                     'required' => false,
+                ],
+            ])
+            ->add([
+                'name' => 'o:block[__blockIndex__][o:data][slides][__slideIndex__][caption]',
+                'type' => Element\Textarea::class,
+                'options' => [
+                    'label' => 'Caption', // @translate
+                    'info' => 'The description of the resource is used as caption if this field is empty.', // @translate
+                ],
+                'attributes' => [
+                    'id' => 'timeline-exhibit-caption',
+                    // 'class' => 'block-html full wysiwyg',
+                ],
+            ])
+            ->add([
+                'name' => 'o:block[__blockIndex__][o:data][slides][__slideIndex__][credit]',
+                'type' => Element\Textarea::class,
+                'options' => [
+                    'label' => 'Credit', // @translate
+                    'info' => 'The credit of the resource is used as caption if this field is empty.', // @translate
+                ],
+                'attributes' => [
+                    'id' => 'timeline-exhibit-credit',
+                    // 'class' => 'block-html full wysiwyg',
                 ],
             ])
             ->add([

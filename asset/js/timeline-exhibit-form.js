@@ -51,7 +51,7 @@
             // TODO Use the standard Omeka editor (trigger on body; allow caption without asset).
             next
                 .find('.cke').remove().end()
-                .find('.inputs textarea').hide().removeClass('block-html full wysiwyg')
+                .find('.inputs textarea.block-html').hide().removeClass('block-html full wysiwyg')
                 .closest('.inputs').find('.cke_textarea_inline').remove();
             window.CKEDITOR.replace(next.find('textarea').attr('name'));
 

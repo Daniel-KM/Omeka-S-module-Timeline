@@ -238,16 +238,6 @@ class TimelineExhibitFieldset extends Fieldset
                     'class' => 'block-html full wysiwyg',
                 ],
             ])
-            ->add([
-                'name' => 'o:block[__blockIndex__][o:data][slides][__slideIndex__][group]',
-                'type' => Element\Text::class,
-                'options' => [
-                    'label' => 'Group', // @translate
-                ],
-                'attributes' => [
-                    'id' => 'timeline-exhibit-group',
-                ],
-            ])
             /* // TODO Use attachement or a dynamic resource callback.
             ->add([
                 'name' => 'o:block[__blockIndex__][o:data][slides][__slideIndex__][resource]',
@@ -343,6 +333,16 @@ class TimelineExhibitFieldset extends Fieldset
                 ],
                 'attributes' => [
                     'id' => 'timeline-exhibit-background-color',
+                ],
+            ])
+            ->add([
+                'name' => 'o:block[__blockIndex__][o:data][slides][__slideIndex__][group]',
+                'type' => Element\Text::class,
+                'options' => [
+                    'label' => 'Group', // @translate
+                ],
+                'attributes' => [
+                    'id' => 'timeline-exhibit-group',
                 ],
             ])
 

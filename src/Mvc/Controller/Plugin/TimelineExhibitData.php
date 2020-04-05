@@ -105,13 +105,13 @@ class TimelineExhibitData extends AbstractPlugin
                 'display_date' => '',
                 'headline' => '',
                 'html' => '',
-                'group' => '',
                 'resource' => null,
                 'content' => '',
                 'caption' => '',
                 'credit' => '',
                 'background' => null,
                 'background_color' => '',
+                'group' => '',
             ];
 
             // Prepare attachments so they will be available in all cases.

@@ -132,9 +132,11 @@ class TimelineExhibitData extends AbstractPlugin
      */
     protected function slide(array $slideData)
     {
+        $interval = $this->intervalDate($slideData);
+
         $slide = [
-            'start_date' => $this->startDate($slideData),
-            'end_date' => $this->endDate($slideData),
+            'start_date' => $interval ? $interval['start_date'] : $this->startDate($slideData),
+            'end_date' => $interval ? $interval['end_date'] : $this->endDate($slideData),
             'text' => $this->text($slideData),
             'media' => $this->media($slideData),
             'group' => empty($slideData['group']) ? null : $slideData['group'],
@@ -175,9 +177,10 @@ class TimelineExhibitData extends AbstractPlugin
      */
     protected function era(array $slideData)
     {
+        $interval = $this->intervalDate($slideData);
         $era = [
-            'start_date' => $this->startDate($slideData),
-            'end_date' => $this->endDate($slideData),
+            'start_date' => $interval ? $interval['start_date'] : $this->startDate($slideData),
+            'end_date' => $interval ? $interval['end_date'] : $this->endDate($slideData),
             'text' => $this->text($slideData),
         ];
         $era = array_filter($era);
@@ -347,6 +350,56 @@ class TimelineExhibitData extends AbstractPlugin
                 : $this->resourceDate($slideData['resource'], $this->endDateProperty, $slideData['end_display_date']);
         }
         return $this->date($slideData['end_date'], $slideData['end_display_date']);
+    }
+
+    /**
+     * Get the start and end date from the specified value of a resource.
+     *
+     * @param array $slideData
+     * @return array|null
+     */
+    protected function intervalDate(array $slideData)
+    {
+        if (empty($this->startDateProperty) || empty($slideData['resource'])) {
+            return null;
+        }
+
+        $date = $slideData['resource']->value($this->startDateProperty, ['type' => 'numeric:interval']);
+        if (!$date) {
+            return null;
+        }
+
+        list($start, $end) = explode('/', $date->value());
+
+        $startDate = Timestamp::getDateTimeFromValue($start);
+        $interval['start_date'] = [
+            'year' => $startDate['year'],
+            'month' => $startDate['month'],
+            'day' => $startDate['day'],
+            'hour' => $startDate['hour'],
+            'minute' => $startDate['minute'],
+            'second' => $startDate['second'],
+        ];
+        if ($slideData['start_display_date']) {
+            $interval['start_date']['display_date'] = $slideData['start_display_date'];
+        }
+
+        $endDate = Timestamp::getDateTimeFromValue($end, false);
+        $interval['end_date'] = [
+            'year' => $endDate['year'],
+            'month' => $endDate['month_normalized'],
+            'day' => $endDate['day_normalized'],
+            'hour' => $endDate['hour_normalized'],
+            'minute' => $endDate['minute_normalized'],
+            'second' => $endDate['second_normalized'],
+        ];
+        if ($slideData['end_display_date']) {
+            $interval['end_date']['display_date'] = $slideData['end_display_date'];
+        }
+
+        $interval['display_date'] = $slideData['display_date']
+            ?: $startDate['date']->format($startDate['format_render']) . ' - ' . $endDate['date']->format($endDate['format_render']);
+        return $interval;
     }
 
     /**

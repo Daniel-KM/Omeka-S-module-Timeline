@@ -109,14 +109,23 @@ class TimelineExhibitData extends AbstractPlugin
 
             switch ($slideData['type']) {
                 case 'title':
-                    $timeline['title'] = $this->slide($slideData);
+                    $slide = $this->slide($slideData);
+                    if ($slide) {
+                        $timeline['title'] = $slide;
+                    }
                     break;
                 case 'era':
-                    $timeline['eras'][] = $this->era($slideData);
+                    $era = $this->era($slideData);
+                    if ($era) {
+                        $timeline['eras'][] = $era;
+                    }
                     break;
                 case 'event':
                 default:
-                    $timeline['events'][] = $this->slide($slideData);
+                    $slide = $this->slide($slideData);
+                    if ($slide) {
+                        $timeline['events'][] = $slide;
+                    }
                     break;
             }
         }

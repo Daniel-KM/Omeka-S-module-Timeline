@@ -58,7 +58,7 @@ class TimelineExhibit extends AbstractBlockLayout
         // Normalize values and purify html.
         $data['slides'] = array_map(function ($v) {
             $v += [
-                'type' => 'event',
+                'type' => '',
                 'start_date' => '',
                 'end_date' => '',
                 'start_display_date' => '',
@@ -87,7 +87,15 @@ class TimelineExhibit extends AbstractBlockLayout
             }, $data['slides'])
         );
 
-        // TODO Reorder by start date automatically.
+        // Remove empty slides.
+        $data['slides'] = array_filter($data['slides'], function($v) {
+            unset($v['type']);
+            return (bool) array_filter($v);
+        });
+
+        // TODO Reorder by start date automatically, according to property, date, item date, etc.
+        // usort($data['slides'], function ($a, $b) {
+        // }
 
         $data = $block->setData($data);
     }

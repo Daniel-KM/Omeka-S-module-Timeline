@@ -10,7 +10,23 @@ $escape = $this->plugin('escapeHtml');
 
 $url = json_encode($this->url('timeline-block', ['block-id' => $block->id()]), 320);
 $blockId = $block->id();
-$options = json_decode($options) ? $options : json_encode(['start_at_slide' => 1, 'language' => substr($this->siteSetting('locale'), 0, 2)]);
+
+// @see https://timeline.knightlab.com/docs/options.html
+$options = json_decode($options, true) ?: [];
+$options += [
+    'start_at_slide' => 0,
+    'language' => substr($this->siteSetting('locale'), 0, 2),
+];
+
+// The container size is required inline to avoid 0-height issues with some themes.
+if (isset($options['container_style'])):
+    $containerStyle = $options['container_style'];
+    unset($options['container_style']);
+else:
+    $containerStyle = 'width: 100%; height: 80vh;';
+endif;
+
+$options = json_encode($options, 320);
 
 $js = <<<JS
 jQuery(document).ready(function($) {
@@ -29,4 +45,4 @@ $this->headScript()->appendScript($js);
 <h2><?= $escape($heading) ?></h2>
 <?php endif; ?>
 
-<div id="timeline-<?= $blockId ?>" class="timeline" style="width: 100%; height: 80vh"></div>
+<div id="timeline-<?= $blockId ?>" class="timeline" style="<?= $containerStyle ?>"></div>

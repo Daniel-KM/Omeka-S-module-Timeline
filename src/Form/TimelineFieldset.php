@@ -10,6 +10,8 @@ class TimelineFieldset extends Fieldset
 {
     public function init()
     {
+        // TODO Checkbox normalize date or not.
+
         $this
             ->add([
                 'name' => 'o:block[__blockIndex__][o:data][heading]',

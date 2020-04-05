@@ -24,7 +24,8 @@ class TimelineController extends AbstractActionController
         $blockId = (int) $this->params('block-id');
         $block = $this->getBlock($blockId);
 
-        if ($block->getLayout() !== 'timeline') {
+        $layout = $block->getLayout();
+        if (!in_array($layout, ['timeline', 'timelineExhibit'])) {
             throw new NotFoundException(new Message(
                 'Id %d is not a timeline.', // @translate
                 $blockId
@@ -32,12 +33,16 @@ class TimelineController extends AbstractActionController
         }
 
         $blockData = $block->getData();
-        // Get the site slug directly via the page.
-        $blockData['site-slug'] = $block->getPage()->getSite()->getSlug();
+        $blockData['site_slug'] = $block->getPage()->getSite()->getSlug();
 
-        $query = $blockData['query'];
-        unset($blockData['query']);
-        $data = $this->timelineData($query, $blockData);
+        // Get the site slug directly via the page.
+        if ($block->getLayout() === 'timelineExhibit') {
+            $data = $this->timelineExhibitData($blockData);
+        } else {
+            $query = $blockData['query'];
+            unset($blockData['query']);
+            $data = $this->timelineData($query, $blockData);
+        }
 
         $view = new JsonModel();
         $view->setVariables($data);

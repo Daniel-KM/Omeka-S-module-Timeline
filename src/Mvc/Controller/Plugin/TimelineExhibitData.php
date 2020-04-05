@@ -389,10 +389,12 @@ class TimelineExhibitData extends AbstractPlugin
             'link_target' => null,
         ];
 
+        /* // No link.
         if (filter_var($slideData['content'], FILTER_VALIDATE_URL)) {
             $media['link'] = $slideData['content'];
             $media['link_target'] = '_blank';
         }
+        */
 
         return array_filter($media);
     }

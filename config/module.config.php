@@ -90,15 +90,15 @@ return [
                 'options' => '{}',
                 'slides' => [
                     [
+                        'resource' => null,
                         'type' => 'event',
                         'start_date' => '',
-                        'end_date' => '',
                         'start_display_date' => '',
+                        'end_date' => '',
                         'end_display_date' => '',
                         'display_date' => '',
                         'headline' => '',
                         'html' => '',
-                        'resource' => null,
                         'content' => '',
                         'caption' => '',
                         'credit' => '',

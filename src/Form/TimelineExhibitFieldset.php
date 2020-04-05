@@ -140,6 +140,20 @@ class TimelineExhibitFieldset extends Fieldset
             ]);
         $fieldsetRepeat = $fieldsetBase->get('o:block[__blockIndex__][o:data][slides][__slideIndex__]');
         $fieldsetRepeat
+            // TODO Make a quick exhibit with attachments.
+            ->add([
+                'name' => 'o:block[__blockIndex__][o:data][slides][__slideIndex__][resource]',
+                'type' => Element\Number::class,
+                'options' => [
+                    'label' => 'Resource for content', // @translate
+                ],
+                'attributes' => [
+                    'id' => 'timeline-exhibit-resource',
+                    'multiple' => false,
+                    'required' => false,
+                    'min' => 0,
+                ],
+            ])
             ->add([
                 'name' => 'o:block[__blockIndex__][o:data][slides][__slideIndex__][type]',
                 'type' => Element\Radio::class,
@@ -170,6 +184,16 @@ class TimelineExhibitFieldset extends Fieldset
                 ],
             ])
             ->add([
+                'name' => 'o:block[__blockIndex__][o:data][slides][__slideIndex__][start_display_date]',
+                'type' => Element\Text::class,
+                'options' => [
+                    'label' => 'Display date for start', // @translate
+                ],
+                'attributes' => [
+                    'id' => 'timeline-exhibit-start-display-date',
+                ],
+            ])
+            ->add([
                 'name' => 'o:block[__blockIndex__][o:data][slides][__slideIndex__][end_date]',
                 'type' => Element\Text::class,
                 'options' => [
@@ -180,16 +204,6 @@ class TimelineExhibitFieldset extends Fieldset
                 ],
                 'attributes' => [
                     'id' => 'timeline-exhibit-end-date',
-                ],
-            ])
-            ->add([
-                'name' => 'o:block[__blockIndex__][o:data][slides][__slideIndex__][start_display_date]',
-                'type' => Element\Text::class,
-                'options' => [
-                    'label' => 'Display date for start', // @translate
-                ],
-                'attributes' => [
-                    'id' => 'timeline-exhibit-start-display-date',
                 ],
             ])
             ->add([
@@ -258,19 +272,6 @@ class TimelineExhibitFieldset extends Fieldset
                 ],
             ])
             */
-            ->add([
-                'name' => 'o:block[__blockIndex__][o:data][slides][__slideIndex__][resource]',
-                'type' => Element\Number::class,
-                'options' => [
-                    'label' => 'Content', // @translate
-                ],
-                'attributes' => [
-                    'id' => 'timeline-exhibit-resource',
-                    'multiple' => false,
-                    'required' => false,
-                    'min' => 0,
-                ],
-            ])
             ->add([
                 'name' => 'o:block[__blockIndex__][o:data][slides][__slideIndex__][content]',
                 'type' => Element\Text::class,

@@ -80,15 +80,15 @@ class TimelineExhibit extends AbstractBlockLayout
         $data['slides'] = array_map(function ($v) {
             // Simplify checks.
             $v += [
+                'resource' => null,
                 'type' => 'event',
                 'start_date' => '',
-                'end_date' => '',
                 'start_display_date' => '',
+                'end_date' => '',
                 'end_display_date' => '',
                 'display_date' => '',
                 'headline' => '',
                 'html' => '',
-                'resource' => null,
                 'content' => '',
                 'caption' => '',
                 'credit' => '',
@@ -238,12 +238,12 @@ class TimelineExhibit extends AbstractBlockLayout
 
     public function getFulltextText(PhpRenderer $view, SitePageBlockRepresentation $block)
     {
-        // TODO Add resource titles and descriptions?
+        // TODO Add resource title, description, date, etc.?
         $fulltext = $block->dataValue('heading', '');
         foreach ($block->dataValue('slides', []) as $slide) {
             $fulltext .= ' ' . $slide['start_date']
-                . ' ' . $slide['end_date']
                 . ' ' . $slide['start_display_date']
+                . ' ' . $slide['end_date']
                 . ' ' . $slide['end_display_date']
                 . ' ' . $slide['display_date']
                 . ' ' . $slide['headline']

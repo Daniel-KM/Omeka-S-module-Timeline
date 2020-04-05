@@ -188,6 +188,12 @@ same for the default css. See the main [wiki], an [example of use] with Neatline
 for Omeka Classic, and the [examples] of customization on the wiki.
 
 
+TODO
+----
+
+- Integrate attachments for the exhibit and improve the form (hide all by default except resource),
+
+
 Warning
 -------
 

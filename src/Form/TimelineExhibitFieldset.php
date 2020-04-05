@@ -273,6 +273,18 @@ class TimelineExhibitFieldset extends Fieldset
                 ],
             ])
             ->add([
+                'name' => 'o:block[__blockIndex__][o:data][slides][__slideIndex__][content]',
+                'type' => Element\Text::class,
+                'options' => [
+                    'label' => 'External content', // @translate
+                    'info' => 'A resource id, an url, or any other content managed by the viewer.', // @translate
+                ],
+                'attributes' => [
+                    'id' => 'timeline-exhibit-content',
+                    'required' => false,
+                ],
+            ])
+            ->add([
                 'name' => 'o:block[__blockIndex__][o:data][slides][__slideIndex__][background]',
                 'type' => Asset::class,
                 'options' => [

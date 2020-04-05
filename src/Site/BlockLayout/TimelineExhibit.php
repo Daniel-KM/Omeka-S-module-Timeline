@@ -57,6 +57,16 @@ class TimelineExhibit extends AbstractBlockLayout
 
         $data['scale'] = $data['scale'] === 'cosmological' ? 'cosmological' : 'human';
 
+        // Clean all values.
+        $data['slides'] = array_values(
+            array_map(function ($v) {
+                return array_map(function($w) {
+                    $w = trim($w);
+                    return strlen($w) ? $w : null;
+                }, $v);
+            }, $data['slides'])
+            );
+
         // Normalize values and purify html.
         $data['slides'] = array_map(function ($v) {
             $v += [
@@ -70,24 +80,18 @@ class TimelineExhibit extends AbstractBlockLayout
                 'html' => '',
                 'group' => '',
                 'resource' => null,
+                'content' => '',
                 'background' => null,
                 'background_color' => '',
             ];
             $v['html'] = isset($v['html'])
                 ? $this->fixEndOfLine($this->htmlPurifier->purify($v['html']))
                 : '';
+            if ($v['resource'] == $v['content']) {
+                $v['content'] = '';
+            }
             return $v;
         }, $data['slides']);
-
-        // Clean all values.
-        $data['slides'] = array_values(
-            array_map(function ($v) {
-                return array_map(function($w) {
-                    $w = trim($w);
-                    return strlen($w) ? $w : null;
-                }, $v);
-            }, $data['slides'])
-        );
 
         // Remove empty slides.
         $data['slides'] = array_filter($data['slides'], function($v) {

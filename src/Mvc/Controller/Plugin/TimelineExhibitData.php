@@ -157,7 +157,7 @@ class TimelineExhibitData extends AbstractPlugin
 
         // The id is unique, but not fully stable.
         $slide['unique_id'] = 'slide-' . $slideData['position'];
-        if ($slide['media']) {
+        if ($slide['media'] && $slideData['resource']) {
             $slide['unique_id'] .= '-' . $slideData['resource']->getControllerName() . '-' . $slideData['resource']->id();
         } elseif ($slide['background'] && $slideData['background']) {
             $slide['unique_id'] .= '-asset-' . $slideData['background']->id();
@@ -239,7 +239,7 @@ class TimelineExhibitData extends AbstractPlugin
     protected function media(array $slideData)
     {
         if (empty($slideData['resource'])) {
-            return null;
+            return $this->mediaContent($slideData);
         }
 
         $resource = $slideData['resource'];
@@ -333,6 +333,32 @@ class TimelineExhibitData extends AbstractPlugin
         $media = array_filter($media, 'strlen');
 
         return isset($media['url']) ? $media : null;
+    }
+
+    /**
+     * Get the media content from the slide data.
+     *
+     * @param array $slideData
+     * @return array|null
+     */
+    protected function mediaContent(array $slideData)
+    {
+        if (empty($slideData['content'])) {
+            return null;
+        }
+
+        $content = $slideData['content'];
+
+        $media = [
+            'url' => $content,
+        ];
+
+        if (filter_var($content, FILTER_VALIDATE_URL)) {
+            $media['link'] = $content;
+            $media['link_target'] = '_blank';
+        }
+
+        return $media;
     }
 
     /**

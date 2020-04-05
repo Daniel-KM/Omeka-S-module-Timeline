@@ -99,6 +99,7 @@ return [
                         'html' => '',
                         'group' => '',
                         'resource' => null,
+                        'content' => '',
                         'background' => null,
                         'background_color' => '',
                     ],

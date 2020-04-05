@@ -121,9 +121,12 @@ possible and to be as specific as possible.
 
 ### Parameters of the viewer
 
-Some parameters of the viewer may be customized for each timeline. Currently,
-only the `CenterDate` and the `bandInfos` are managed for the Simile timeline.
-The default is automatically included when the field is empty.
+Some parameters of the viewer may be customized for each timeline.
+
+#### Simile timeline
+
+Currently, only the `CenterDate` and the `bandInfos` are managed for the Simile
+timeline. The default is automatically included when the field is empty.
 
 ```javascript
 {
@@ -157,6 +160,9 @@ The default is automatically included when the field is empty.
 }
 ```
 
+#### Knightlab timeline
+
+You can find all the available parameters in the [Knightlab timeline documentation].
 
 ### Modifying the block template for Timeline
 
@@ -225,7 +231,7 @@ Copyright
 ### Module
 
 * Copyright The Board and Visitors of the University of Virginia, 2010–2012
-* Copyright Daniel Berthereau, 2016-2019 (see [Daniel-KM] on GitHub)
+* Copyright Daniel Berthereau, 2016-2020 (see [Daniel-KM] on GitHub)
 
 ### Translations
 
@@ -244,6 +250,7 @@ Copyright
 [wiki]: http://www.simile-widgets.org/wiki/Timeline
 [ISO 8601]: http://www.iso.org/iso/home/standards/iso8601.htm
 [Knightlab timeline]: https://timeline.knightlab.com
+[Knightlab timeline documentation]: https://timeline.knightlab.com/docs/options.html
 [example of use]: https://docs.neatline.org/working-with-the-simile-timeline-widget.html
 [examples]: http://www.simile-widgets.org/timeline/examples/index.html
 [module issues]: https://github.com/Daniel-KM/Omeka-S-module-Timeline/issues

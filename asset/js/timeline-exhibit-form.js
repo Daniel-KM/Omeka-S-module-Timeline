@@ -39,6 +39,12 @@
             next
                 .find('.inputs input').val('').end()
                 .find('.inputs textarea').html('');
+            // Except the radio type.
+            next.find('.inputs input[type=radio]').prop('checked', false);
+            next.find('.inputs input[type=radio]').removeAttr('checked');
+            next.find('.inputs input[type=radio]').first().attr('checked', 'checked');
+            next.find('.inputs input[type=radio]').first().prop('checked', true);
+            next.find('.inputs input[type=radio]').first().val('event');
 
             current.after(next);
 

@@ -2,6 +2,7 @@
 namespace Timeline\Mvc\Controller\Plugin;
 
 use DateTime;
+use NumericDataTypes\DataType\Timestamp;
 use Zend\Mvc\Controller\Plugin\AbstractPlugin;
 use Zend\Uri\Http as HttpUri;
 
@@ -360,7 +361,7 @@ class TimelineExhibitData extends AbstractPlugin
             return null;
         }
 
-        $dates = $resource->value($dateProperty, ['all' => true, 'type' => 'literal', 'default' => []]);
+        $dates = $resource->value($dateProperty, ['all' => true, 'default' => []]);
         foreach ($dates as $date) {
             $date = $this->date($date, $displayDate);
             if (is_array($date)) {
@@ -374,12 +375,13 @@ class TimelineExhibitData extends AbstractPlugin
     /**
      * Convert a date from string to array.
      *
-     * @param string $date
+     * @param string|\Omeka\Api\Representation\ValueRepresentation $date
      * @param string $displayDate
      * @return array|null
      */
     protected function date($date, $displayDate = null)
     {
+        $displayDate = strlen($displayDate) ? $displayDate : null;
         $explodedDate = [
             'year' => null,
             'month' => null,
@@ -388,12 +390,21 @@ class TimelineExhibitData extends AbstractPlugin
             'minute' => null,
             'second' => null,
             'millisecond' => null,
-            'display_date' => strlen($displayDate) ? $displayDate : null,
+            'display_date' => $displayDate,
         ];
 
         $matches = [];
+
+        // Set the start and end "date" objects.
+        if (is_object($date) && $date->type() === 'numeric:timestamp') {
+            $dateTime = Timestamp::getDateTimeFromValue($date->value());
+            $explodedDate = array_intersect_key($dateTime, $explodedDate);
+            if (!is_null($displayDate)) {
+                $explodedDate['displayDate'] = $displayDate;
+            }
+        }
         // Simple year (not 0).
-        if (preg_match('~^-?[0-9]+$~', $date)) {
+        elseif (preg_match('~^-?[0-9]+$~', $date)) {
             $explodedDate['year'] = $this->isCosmological ? $date : ((int) $date ?: null);
         }
         // TODO Simplify with one regex to manage partial or full iso dates.

@@ -257,7 +257,8 @@ class TimelineExhibitData extends AbstractPlugin
 
         // When a media is set, the item is used for data, according to most
         // common cases.
-        $mainResource = $resource->resourceName() === 'media'
+        $isMedia = $resource->resourceName() === 'media';
+        $mainResource = $isMedia
             ? $resource->item()
             : $resource;
 
@@ -317,8 +318,12 @@ class TimelineExhibitData extends AbstractPlugin
             $media['thumbnail'] = $primaryMedia->thumbnailUrl('medium');
         }
 
-        $media['title'] = $mainResource->displayTitle('') ?: null;
-        $media['caption'] = $mainResource->displayDescription('') ?: null;
+        // Don't duplicate the title and the caption for item.
+        if ($isMedia) {
+            $media['title'] = $mainResource->displayTitle('') ?: null;
+            $media['caption'] = $mainResource->displayDescription('') ?: null;
+        }
+
         $value = $resource->value('dcterms:creator') ?: $mainResource->value('dcterms:creator');
         if ($value) {
             $media['credit'] = $value->asHtml();

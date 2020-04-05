@@ -161,7 +161,6 @@ class TimelineExhibitFieldset extends Fieldset
                 'type' => Element\Text::class,
                 'options' => [
                     'label' => 'Start date', // @translate
-                    'info' => 'Set date as ISO-8601, partial ("YYYY", etc.) or full ("YYYY-MM-DDT00:00:00Z"). Let blank to use the date of the attachment.', // @translate
                 ],
                 'attributes' => [
                     'id' => 'timeline-exhibit-start-date',
@@ -175,7 +174,6 @@ class TimelineExhibitFieldset extends Fieldset
                 'type' => Element\Text::class,
                 'options' => [
                     'label' => 'End date', // @translate
-                    'info' => 'Set date as ISO-8601, partial ("YYYY", etc.) or full ("YYYY-MM-DDT00:00:00Z"). Let blank to use the date of the attachment.', // @translate
                 ],
                 'validators' => [
                     ['name' => 'Date'],
@@ -189,7 +187,6 @@ class TimelineExhibitFieldset extends Fieldset
                 'type' => Element\Text::class,
                 'options' => [
                     'label' => 'Display date for start', // @translate
-                    'info' => 'Set start date as a text.', // @translate
                 ],
                 'attributes' => [
                     'id' => 'timeline-exhibit-start-display-date',
@@ -200,7 +197,6 @@ class TimelineExhibitFieldset extends Fieldset
                 'type' => Element\Text::class,
                 'options' => [
                     'label' => 'Display date for end', // @translate
-                    'info' => 'Set end date as a text.', // @translate
                 ],
                 'attributes' => [
                     'id' => 'timeline-exhibit-end-display-date',
@@ -211,7 +207,6 @@ class TimelineExhibitFieldset extends Fieldset
                 'type' => Element\Text::class,
                 'options' => [
                     'label' => 'Display main date', // @translate
-                    'info' => 'Set main date as a text to override start and end dates.', // @translate
                 ],
                 'attributes' => [
                     'id' => 'timeline-exhibit-display-date',
@@ -244,7 +239,6 @@ class TimelineExhibitFieldset extends Fieldset
                 'type' => ResourceSelect::class,
                 'options' => [
                     'label' => 'Resource', // @translate
-                    'info' => 'A media, a item, or any other resource that provide a thumbnail or a url.' // @translate
                     'empty_option' => '',
                     'resource_value_options' => [
                         'resource' => 'media',
@@ -269,7 +263,6 @@ class TimelineExhibitFieldset extends Fieldset
                 'type' => Element\Number::class,
                 'options' => [
                     'label' => 'Content', // @translate
-                    'info' => 'An item id, a media id, or any other resource id.', // @translate
                 ],
                 'attributes' => [
                     'id' => 'timeline-exhibit-resource',
@@ -283,7 +276,6 @@ class TimelineExhibitFieldset extends Fieldset
                 'type' => Element\Text::class,
                 'options' => [
                     'label' => 'External content', // @translate
-                    'info' => 'A resource id, an url, or any other content managed by the viewer.', // @translate
                 ],
                 'attributes' => [
                     'id' => 'timeline-exhibit-content',
@@ -295,7 +287,6 @@ class TimelineExhibitFieldset extends Fieldset
                 'type' => Element\Textarea::class,
                 'options' => [
                     'label' => 'Caption', // @translate
-                    'info' => 'The description of the resource is used as caption if this field is empty.', // @translate
                 ],
                 'attributes' => [
                     'id' => 'timeline-exhibit-caption',
@@ -307,7 +298,6 @@ class TimelineExhibitFieldset extends Fieldset
                 'type' => Element\Textarea::class,
                 'options' => [
                     'label' => 'Credit', // @translate
-                    'info' => 'The credit of the resource is used as caption if this field is empty.', // @translate
                 ],
                 'attributes' => [
                     'id' => 'timeline-exhibit-credit',

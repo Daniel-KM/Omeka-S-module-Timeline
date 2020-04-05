@@ -164,6 +164,16 @@ timeline. The default is automatically included when the field is empty.
 
 You can find all the available parameters in the [Knightlab timeline documentation].
 
+Notes:
+- When a field is not filled, the properties of the resource are used (title,
+  description, creator).
+- Date should be ISO-8601, partial ("YYYY", etc.) or full ("YYYY-MM-DDT00:00:00Z").
+  Let blank to use the date of the attachment.
+- The main display date override start and end dates in some places.
+- The resource can be an item id, a media id, or any other resource id.
+- If the resource is not set, it’s possible to use an external content,
+  generally an url, but the viewer supports some other content.
+
 ### Modifying the block template for Timeline
 
 To modify the block template, copy it in your theme (file `view/common/block-layout/timeline.phtml`).

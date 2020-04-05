@@ -65,13 +65,13 @@ class TimelineExhibit extends AbstractBlockLayout
                     return strlen($w) ? $w : null;
                 }, $v);
             }, $data['slides'])
-            );
+        );
 
         // Normalize values and purify html.
         $data['slides'] = array_map(function ($v) {
             // Simplify checks.
             $v += [
-                'type' => '',
+                'type' => 'event',
                 'start_date' => '',
                 'end_date' => '',
                 'start_display_date' => '',
@@ -87,14 +87,23 @@ class TimelineExhibit extends AbstractBlockLayout
                 'background_color' => '',
                 'group' => '',
             ];
+            if (empty($v['type'])) {
+                $v['type'] = 'event';
+            }
+            if (empty($v['resource'])) {
+                $v['resource'] = null;
+            }
             if ($v['html']) {
                 $v['html'] = $this->fixEndOfLine($this->htmlPurifier->purify($v['html']));
             }
             if ($v['content']) {
                 $v['content'] = $this->fixEndOfLine($this->htmlPurifier->purify($v['content']));
-            }
-            if ($v['resource'] == strip_tags($v['content'])) {
-                $v['content'] = '';
+                if ($v['resource'] == strip_tags($v['content'])) {
+                    $v['content'] = '';
+                } elseif (empty($v['resource']) && is_numeric($v['content']) && $v['content']) {
+                    $v['resource'] = (string) (int) $v['content'];
+                    $v['content'] = '';
+                }
             }
             if ($v['caption']) {
                 $v['caption'] = $this->fixEndOfLine($this->htmlPurifier->purify($v['caption']));

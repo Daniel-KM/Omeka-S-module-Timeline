@@ -529,7 +529,7 @@ class TimelineExhibitData extends AbstractPlugin
     protected function date($date, $displayDate = null)
     {
         $displayDate = strlen($displayDate) ? $displayDate : null;
-        $explodedDate = [
+        $parts = [
             'year' => null,
             'month' => null,
             'day' => null,
@@ -545,83 +545,83 @@ class TimelineExhibitData extends AbstractPlugin
         // Set the start and end "date" objects.
         if (is_object($date) && $date->type() === 'numeric:timestamp') {
             $dateTime = Timestamp::getDateTimeFromValue($date->value());
-            $explodedDate = array_intersect_key($dateTime, $explodedDate);
+            $parts = array_intersect_key($dateTime, $parts);
             if (!is_null($displayDate)) {
-                $explodedDate['displayDate'] = $displayDate;
+                $parts['displayDate'] = $displayDate;
             }
         }
         // Simple year (not 0).
         elseif (preg_match('~^-?[0-9]+$~', $date)) {
-            $explodedDate['year'] = $this->isCosmological ? $date : ((int) $date ?: null);
+            $parts['year'] = $this->isCosmological ? $date : ((int) $date ?: null);
         }
         // TODO Simplify with one regex to manage partial or full iso dates.
         // Year-month.
         elseif (preg_match('~^(-?[0-9]+)-(1[0-2]|0[1-9])$~', $date, $matches)) {
-            $explodedDate['year'] = (int) $matches[1];
-            $explodedDate['month'] = (int) $matches[2];
+            $parts['year'] = (int) $matches[1];
+            $parts['month'] = (int) $matches[2];
         }
         // Year-month-day.
         elseif (preg_match('~^(-?[0-9]+)-(1[0-2]|0[1-9])-(3[01]|0[1-9]|[12][0-9])$~', $date, $matches)) {
-            $explodedDate['year'] = (int) $matches[1];
-            $explodedDate['month'] = (int) $matches[2];
-            $explodedDate['day'] = (int) $matches[3];
+            $parts['year'] = (int) $matches[1];
+            $parts['month'] = (int) $matches[2];
+            $parts['day'] = (int) $matches[3];
         }
         // Year-month-day hour.
         elseif (preg_match('~^(-?[0-9]+)-(1[0-2]|0[1-9])-(3[01]|0[1-9]|[12][0-9])T(2[0-3]|[01][0-9])$~', $date, $matches)) {
-            $explodedDate['year'] = (int) $matches[1];
-            $explodedDate['month'] = (int) $matches[2];
-            $explodedDate['day'] = (int) $matches[3];
-            $explodedDate['hour'] = (int) $matches[4];
+            $parts['year'] = (int) $matches[1];
+            $parts['month'] = (int) $matches[2];
+            $parts['day'] = (int) $matches[3];
+            $parts['hour'] = (int) $matches[4];
         }
         // Year-month-day hour:minute.
         elseif (preg_match('~^(-?[0-9]+)-(1[0-2]|0[1-9])-(3[01]|0[1-9]|[12][0-9])T(2[0-3]|[01][0-9]):([0-5][0-9])$~', $date, $matches)) {
-            $explodedDate['year'] = (int) $matches[1];
-            $explodedDate['month'] = (int) $matches[2];
-            $explodedDate['day'] = (int) $matches[3];
-            $explodedDate['hour'] = (int) $matches[4];
-            $explodedDate['minute'] = (int) $matches[5];
+            $parts['year'] = (int) $matches[1];
+            $parts['month'] = (int) $matches[2];
+            $parts['day'] = (int) $matches[3];
+            $parts['hour'] = (int) $matches[4];
+            $parts['minute'] = (int) $matches[5];
         }
         // Year-month-day hour:minute:second.
         elseif (preg_match('~^(-?[0-9]+)-(1[0-2]|0[1-9])-(3[01]|0[1-9]|[12][0-9])T(2[0-3]|[01][0-9]):([0-5][0-9]):([0-5][0-9])$~', $date, $matches)) {
-            $explodedDate['year'] = (int) $matches[1];
-            $explodedDate['month'] = (int) $matches[2];
-            $explodedDate['day'] = (int) $matches[3];
-            $explodedDate['hour'] = (int) $matches[4];
-            $explodedDate['minute'] = (int) $matches[5];
-            $explodedDate['second'] = (int) $matches[6];
+            $parts['year'] = (int) $matches[1];
+            $parts['month'] = (int) $matches[2];
+            $parts['day'] = (int) $matches[3];
+            $parts['hour'] = (int) $matches[4];
+            $parts['minute'] = (int) $matches[5];
+            $parts['second'] = (int) $matches[6];
         }
         // Year-month-day hour:minute:second.millisecond
         elseif (preg_match('~^(-?[0-9]+)-(1[0-2]|0[1-9])-(3[01]|0[1-9]|[12][0-9])T(2[0-3]|[01][0-9]):([0-5][0-9]):([0-5][0-9])(\\.[0-9]+)?~', $date, $matches)) {
-            $explodedDate['year'] = (int) $matches[1];
-            $explodedDate['month'] = (int) $matches[2];
-            $explodedDate['day'] = (int) $matches[3];
-            $explodedDate['hour'] = (int) $matches[4];
-            $explodedDate['minute'] = (int) $matches[5];
-            $explodedDate['second'] = (int) $matches[6];
-            $explodedDate['millisecond'] = (int) $matches[7];
+            $parts['year'] = (int) $matches[1];
+            $parts['month'] = (int) $matches[2];
+            $parts['day'] = (int) $matches[3];
+            $parts['hour'] = (int) $matches[4];
+            $parts['minute'] = (int) $matches[5];
+            $parts['second'] = (int) $matches[6];
+            $parts['millisecond'] = (int) $matches[7];
         }
         // Else try a string, converted as a timestamp. Only date is returned
         // for simplicity, according to most common use cases.
         elseif (($timestamp = strtotime($date)) !== false) {
             $dateTime = new DateTime();
             $dateTime->setTimestamp($timestamp);
-            $explodedDate['year'] = (int) $dateTime->format('Y');
-            $explodedDate['month'] = (int) $dateTime->format('m');
-            $explodedDate['day'] = (int) $dateTime->format('d');
+            $parts['year'] = (int) $dateTime->format('Y');
+            $parts['month'] = (int) $dateTime->format('m');
+            $parts['day'] = (int) $dateTime->format('d');
         }
 
-        $explodedDate = array_filter($explodedDate, function ($v) {
+        $parts = array_filter($parts, function ($v) {
             return !is_null($v);
         });
 
-        if (!isset($explodedDate['year'])) {
+        if (!isset($parts['year'])) {
             return null;
         }
 
         if ($this->isCosmological) {
-            return array_intersect_key($explodedDate, ['year' => null, 'display_date' => null]);
+            return array_intersect_key($parts, ['year' => null, 'display_date' => null]);
         }
 
-        return $explodedDate;
+        return $parts;
     }
 }

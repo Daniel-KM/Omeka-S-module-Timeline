@@ -173,6 +173,7 @@ Notes:
 - The resource can be an item id, a media id, or any other resource id.
 - If the resource is not set, it’s possible to use an external content,
   generally an url, but the viewer supports some other content.
+- Events are automatically sorted.
 
 ### Modifying the block template for Timeline
 

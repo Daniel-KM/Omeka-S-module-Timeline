@@ -1,6 +1,8 @@
 <?php
 namespace Timeline\Site\BlockLayout;
 
+use Omeka\Api\Manager as ApiManager;
+use Omeka\Api\Exception\NotFoundException;
 use Omeka\Api\Representation\SitePageBlockRepresentation;
 use Omeka\Api\Representation\SitePageRepresentation;
 use Omeka\Api\Representation\SiteRepresentation;
@@ -23,12 +25,19 @@ class TimelineExhibit extends AbstractBlockLayout
     protected $htmlPurifier;
 
     /**
+     * @var ApiManager
+     */
+    protected $api;
+
+    /**
      * @param HtmlPurifier $htmlPurifier
      */
     public function __construct(
-        HtmlPurifier $htmlPurifier
+        HtmlPurifier $htmlPurifier,
+        ApiManager $api
     ) {
         $this->htmlPurifier = $htmlPurifier;
+        $this->api = $api;
     }
 
     public function getLabel()
@@ -120,9 +129,8 @@ class TimelineExhibit extends AbstractBlockLayout
             return (bool) array_filter($v);
         });
 
-        // TODO Reorder by start date automatically, according to property, date, item date, etc.
-        // usort($data['slides'], function ($a, $b) {
-        // }
+        $this->startDateProperty = $data['start_date_property'];
+        usort($data['slides'], [$this, 'sortEvent']);
 
         $data = $block->setData($data);
     }
@@ -244,6 +252,125 @@ class TimelineExhibit extends AbstractBlockLayout
                 . ' ' . $slide['credit'];
         }
         return $fulltext;
+    }
+
+    /**
+     * Compare two partial or full dates.
+     *
+     * @param array $a
+     * @param array $b
+     * @return int
+     */
+    protected function sortEvent($a, $b)
+    {
+        // There is only one title.
+        if ($b['type'] === 'title') {
+            return 1;
+        }
+        if ($a['type'] === 'title') {
+            return -1;
+        }
+
+        if ($a['type'] !== $b['type']) {
+            // Type is event or era.
+            return ($a['type'] === 'event') ? -1 : 1;
+        }
+
+        // Prepare the date for b first.
+        // strtotime() is not used, because date are partial or may be very old.
+        if ($b['start_date']) {
+            $dateB = $b['start_date'];
+        } elseif ($this->startDateProperty && $b['resource']) {
+            try {
+                $resourceB = $this->api->read('resources', ['id' => $b['resource']])->getContent();
+            } catch (NotFoundException $e) {
+                return -1;
+            }
+            $dateB = $resourceB->value($this->startDateProperty);
+            if (empty($dateB)) {
+                return -1;
+            }
+            $dateB = (string) $dateB->value();
+        } else {
+            return -1;
+        }
+
+        // Prepare the date for a.
+        if ($a['start_date']) {
+            $dateA = $a['start_date'];
+        } elseif ($this->startDateProperty && $a['resource']) {
+            try {
+                $resourceA = $this->api->read('resources', ['id' => $a['resource']])->getContent();
+            } catch (NotFoundException $e) {
+                return 1;
+            }
+            $dateA = $resourceA->value($this->startDateProperty);
+            if (empty($dateA)) {
+                return 1;
+            }
+            $dateA = $dateA->value();
+        } else {
+            return 1;
+        }
+
+        if ($dateA == $dateB) {
+            if ($a['headline'] == $b['headline']) {
+                return 0;
+            }
+            return ($a['headline'] < $b['headline']) ? -1 : 1;
+        }
+
+        // Normalize date before comparaison to avoid issue with date before 0.
+        $minusA = substr($dateA, 0, 1) === '-' ? '-' : '';
+        $minusB = substr($dateB, 0, 1) === '-' ? '-' : '';
+        if ($minusA && !$minusB) {
+            return -1;
+        } elseif (!$minusA && $minusB) {
+            return 1;
+        }
+
+        // Compare each part to manage partial date. Not optimized, but used
+        // only before save.
+
+        // Make the two dates positive to simplify comparaison.
+        $compare = (bool) $minusA ? -1 : 1;
+        if ($compare === -1) {
+            $dateA = substr($dateA, 1);
+            $dateB = substr($dateB, 1);
+        }
+
+        // Compare the year. The year is always present and can be cosmological.
+        $yearA = (int) strtok($dateA, '-');
+        $yearB = (int) strtok($dateB, '-');
+        if ($yearA !== $yearB) {
+            return ($yearA < $yearB) ? -$compare : $compare;
+        }
+
+        // Only the year is compared with minus: in any year, January is before
+        // February.
+
+        $partsA = [];
+        $partsB = [];
+        $regex = '~^(\d+)-?(\d*)-?(\d*)T?(\d*):?(\d*):?(.*)$~';
+        preg_match($regex, $dateA, $partsA);
+        preg_match($regex, $dateB, $partsB);
+
+        for ($i = 2; $i <= 6; $i++) {
+            if ($partsA[$i] === '' && $partsB[$i] === '') {
+                return 0;
+            }
+            if ($partsA[$i] === '') {
+                return -1;
+            }
+            if ($partsB[$i] === '') {
+                return 1;
+            }
+            if ($partsA[$i] !== $partsB[$i]) {
+                return ($partsA[$i] < $partsB[$i]) ? -1 : 1;
+            }
+        }
+
+        return 0;
     }
 
     /**

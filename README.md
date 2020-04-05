@@ -48,10 +48,12 @@ All these parameters can be customized for each timeline.
 Usage
 -----
 
-Once enabled, the module adds a new block for site pages. Simply select it and
-config it (the item pool and eventually the options).
+Once enabled, the module adds two new block for site pages. The first allows to
+create an automatic timeline, the other one an exhibit with selected items.
+Simply select one of them and config it (the item pool and eventually the
+options).
 
-### Add a Timeline Block
+### Add a Timeline Block or an Timeline Exhibit
 
 Creating a timeline is a two-step process:
 

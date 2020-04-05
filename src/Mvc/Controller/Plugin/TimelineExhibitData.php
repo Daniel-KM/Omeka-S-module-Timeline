@@ -207,9 +207,26 @@ class TimelineExhibitData extends AbstractPlugin
     protected function text(array $slideData)
     {
         $text = [
-            'headline' => $slideData['headline'],
-            'text' => $slideData['html'],
+            'headline' => null,
+            'text' => null,
         ];
+
+        if ($slideData['headline']) {
+            $text['headline'] = $slideData['headline'];
+        } elseif ($slideData['resource']) {
+            $text['headline'] = $slideData['resource']->displayTitle();
+        }
+
+        if ($text['headline'] && $slideData['resource']) {
+            $text['headline'] = $slideData['resource']->link($text['headline'], null, ['target' => '_blank']);
+        }
+
+        if ($slideData['html']) {
+            $text['text'] = $slideData['html'];
+        } elseif ($slideData['resource']) {
+            $text['text'] = $slideData['resource']->displayDescription();
+        }
+
         return array_filter($text, 'strlen') ?: null;
     }
 
@@ -235,7 +252,7 @@ class TimelineExhibitData extends AbstractPlugin
             'alt' => null,
             'title' => null,
             'link' => null,
-            'link_target' => null,
+            'link_target' => '_blank',
         ];
 
         // When a media is set, the item is used for data, according to most
@@ -308,7 +325,9 @@ class TimelineExhibitData extends AbstractPlugin
         }
         $media['link'] = $mainResource->siteUrl($this->siteSlug);
 
-        return array_filter($media, 'strlen') && $media['url'] ? $media : null;
+        $media = array_filter($media, 'strlen');
+
+        return isset($media['url']) ? $media : null;
     }
 
     /**

@@ -3,6 +3,7 @@ namespace Timeline\Mvc\Controller\Plugin;
 
 use DateTime;
 use NumericDataTypes\DataType\Timestamp;
+use Omeka\Api\Representation\AbstractResourceEntityRepresentation;
 use Zend\Mvc\Controller\Plugin\AbstractPlugin;
 use Zend\Uri\Http as HttpUri;
 
@@ -87,6 +88,25 @@ class TimelineExhibitData extends AbstractPlugin
 
         foreach ($args['slides'] as $key => $slideData) {
             $slideData['position'] = $key + 1;
+
+            // Prepare attachments so they will be available in all cases.
+            if ($slideData['resource']) {
+                try {
+                    /* @var \Omeka\Api\Representation\AbstractResourceEntityRepresentation $resource */
+                    $slideData['resource'] = $this->api->read('resources', ['id' => $slideData['resource']])->getContent();
+                } catch (\Omeka\Api\Exception\NotFoundException $e) {
+                    $slideData['resource'] = null;
+                }
+            }
+            if ($slideData['background']) {
+                try {
+                    /* @var \Omeka\Api\Representation\AssetRepresentation $background */
+                    $slideData['background'] = $this->api->read('assets', $slideData['background'])->getContent();
+                } catch (\Omeka\Api\Exception\NotFoundException $e) {
+                    $slideData['background'] = null;
+                }
+            }
+
             switch ($slideData['type']) {
                 case 'title':
                     $timeline['title'] = $this->slide($slideData);
@@ -127,11 +147,9 @@ class TimelineExhibitData extends AbstractPlugin
         // The id is unique, but not fully stable.
         $slide['unique_id'] = 'slide-' . $slideData['position'];
         if ($slide['media']) {
-            /** @var \Omeka\Api\Representation\AbstractResourceEntityRepresentation $resource */
-            $resource = $this->api->read('resources', ['id' => $slideData['resource']])->getContent();
-            $slide['unique_id'] .=  '-' . $resource->getControllerName() . '-' . $slideData['resource'];
+            $slide['unique_id'] .= '-' . $slideData['resource']->getControllerName() . '-' . $slideData['resource']->id();
         } elseif ($slide['background'] && $slideData['background']) {
-            $slide['unique_id'] .= '-asset-' . (int) $slideData['background'];
+            $slide['unique_id'] .= '-asset-' . $slideData['background']->id();
         }
 
         $slide = array_filter($slide, function ($v) {
@@ -195,12 +213,7 @@ class TimelineExhibitData extends AbstractPlugin
             return null;
         }
 
-        try {
-            /** @var \Omeka\Api\Representation\AbstractResourceEntityRepresentation $resource */
-            $resource = $this->api->read('resources', ['id' => $slideData['resource']])->getContent();
-        } catch (\Omeka\Api\Exception\NotFoundException $e) {
-            return null;
-        }
+        $resource = $slideData['resource'];
 
         $media = [
             'url' => null,
@@ -295,20 +308,12 @@ class TimelineExhibitData extends AbstractPlugin
     protected function background(array $slideData)
     {
         $background = [];
-
         if ($slideData['background']) {
-            try {
-                /** @var \Omeka\Api\Representation\AssetRepresentation $asset */
-                $asset = $this->api->read('assets', $slideData['background'])->getContent();
-                $background['url'] = $asset->assetUrl();
-            } catch (\Omeka\Api\Exception\NotFoundException $e) {
-            }
+            $background['url'] = $slideData['background']->assetUrl();
         }
-
         if ($slideData['background_color']) {
             $background['color'] = $slideData['background_color'];
         }
-
         return $background ?: null;
     }
 
@@ -347,20 +352,13 @@ class TimelineExhibitData extends AbstractPlugin
     /**
      * Get the date from the specified value of a resource.
      *
-     * @param int $resourceId
+     * @param AbstractResourceEntityRepresentation $resource
      * @param string $dateProperty
      * @param string $displayDate
      * @return array|null
      */
-    protected function resourceDate($resourceId, $dateProperty, $displayDate = null)
+    protected function resourceDate(AbstractResourceEntityRepresentation $resource, $dateProperty, $displayDate = null)
     {
-        try {
-            /** @var \Omeka\Api\Representation\AbstractResourceEntityRepresentation $resource */
-            $resource = $this->api->read('resources', ['id' => $resourceId])->getContent();
-        } catch (\Omeka\Api\Exception\NotFoundException $e) {
-            return null;
-        }
-
         $dates = $resource->value($dateProperty, ['all' => true, 'default' => []]);
         foreach ($dates as $date) {
             $date = $this->date($date, $displayDate);
@@ -368,7 +366,6 @@ class TimelineExhibitData extends AbstractPlugin
                 return $date;
             }
         }
-
         return null;
     }
 

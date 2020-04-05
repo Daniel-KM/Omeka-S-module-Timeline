@@ -116,7 +116,7 @@ class Timeline extends AbstractBlockLayout
                 $view->headLink()
                     ->appendStylesheet('//cdn.knightlab.com/libs/timeline3/latest/css/timeline.css');
                 $view->headScript()
-                    ->appendFile('//cdn.knightlab.com/libs/timeline3/latest/js/timeline.js');
+                    ->appendFile('//cdn.knightlab.com/libs/timeline3/latest/js/timeline.js', 'text/javascript', ['defer' => 'defer']);
                 break;
 
             case 'simile_online':

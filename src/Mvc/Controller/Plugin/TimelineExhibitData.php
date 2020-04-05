@@ -614,14 +614,14 @@ class TimelineExhibitData extends AbstractPlugin
             return !is_null($v);
         });
 
-        if ($this->isCosmological) {
-            return is_null($explodedDate['year'])
-                ? null
-                : array_intersect_key($explodedDate, ['year' => null, 'display_date' => null]);
+        if (!isset($explodedDate['year'])) {
+            return null;
         }
 
-        return $explodedDate['year']
-            ? $explodedDate
-            : null;
+        if ($this->isCosmological) {
+            return array_intersect_key($explodedDate, ['year' => null, 'display_date' => null]);
+        }
+
+        return $explodedDate;
     }
 }

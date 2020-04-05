@@ -85,7 +85,7 @@ return [
                 'heading' => '',
                 'start_date_property' => 'dcterms:date',
                 'end_date_property' => '',
-                'scale' => '',
+                'scale' => 'human',
                 'options' => '{}',
                 'slides' => [
                     [

@@ -55,6 +55,8 @@ class TimelineExhibit extends AbstractBlockLayout
             $data['slides'] = [];
         }
 
+        $data['scale'] = $data['scale'] === 'cosmological' ? 'cosmological' : 'human';
+
         // Normalize values and purify html.
         $data['slides'] = array_map(function ($v) {
             $v += [

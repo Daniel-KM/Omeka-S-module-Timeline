@@ -69,7 +69,7 @@ class TimelineExhibit extends AbstractBlockLayout
         // Clean all values.
         $data['slides'] = array_values(
             array_map(function ($v) {
-                return array_map(function($w) {
+                return array_map(function ($w) {
                     $w = trim($w);
                     return strlen($w) ? $w : null;
                 }, $v);
@@ -124,7 +124,7 @@ class TimelineExhibit extends AbstractBlockLayout
         }, $data['slides']);
 
         // Remove empty slides.
-        $data['slides'] = array_filter($data['slides'], function($v) {
+        $data['slides'] = array_filter($data['slides'], function ($v) {
             unset($v['type']);
             return (bool) array_filter($v);
         });
@@ -154,6 +154,7 @@ class TimelineExhibit extends AbstractBlockLayout
             foreach ($data['slides'] as &$slide) {
                 $slide += $defaultSlides;
             }
+            unset($slide);
         } else {
             $data = $defaultSettings;
         }
@@ -163,10 +164,10 @@ class TimelineExhibit extends AbstractBlockLayout
             // Add fields for repeatable fieldsets with multiple fields.
             if (is_array($value)) {
                 $subFieldsetName = "o:block[__blockIndex__][o:data][$key]";
-                /** @var \Zend\Form\Fieldset $subFieldset */
                 if (!$fieldset->has($subFieldsetName)) {
                     continue;
                 }
+                /** @var \Zend\Form\Fieldset $subFieldset */
                 $subFieldset = $fieldset->get($subFieldsetName);
                 $subFieldsetBaseName = $subFieldsetName . '[__' . substr($key, 0, -1) . 'Index__]';
                 /** @var \Zend\Form\Fieldset $subFieldsetBase */

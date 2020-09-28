@@ -37,6 +37,8 @@ class TimelineData extends AbstractPlugin
         $propertyItemDescription = $args['item_description'];
         $propertyItemDate = $args['item_date'];
         $propertyItemDateEnd = isset($args['item_date_end']) ? $args['item_date_end'] : null;
+        $thumbnailType = empty($args['thumbnail_type']) ? 'medium' : $args['thumbnail_type'];
+        $thumbnailResource = !empty($args['thumbnail_resource']);
 
         $params = $itemPool;
         $params['property'][] = ['joiner' => 'and', 'property' => $args['item_date_id'], 'type' => 'ex'];
@@ -66,8 +68,15 @@ class TimelineData extends AbstractPlugin
             $itemLink = empty($args['site_slug'])
                 ? null
                 : $item->siteUrl($args['site_slug']);
-            $media = $item->primaryMedia();
-            $mediaUrl = $media ? $media->thumbnailUrl('square') : null;
+            if ($thumbnailResource && $item->thumbnail()) {
+                $thumbnailUrl = $item->thumbnail()->assetUrl();
+            } elseif ($media = $item->primaryMedia()) {
+                $thumbnailUrl = $thumbnailResource && $media->thumbnail()
+                    ? $media->thumbnail()->assetUrl()
+                    : $media->thumbnailUrl($thumbnailType);
+            } else {
+                $thumbnailUrl = null;
+            }
             foreach ($itemDates as $key => $valueItemDate) {
                 $event = [];
                 $itemDate = $valueItemDate->value();
@@ -86,8 +95,8 @@ class TimelineData extends AbstractPlugin
                 $event['title'] = $itemTitle;
                 $event['link'] = $itemLink;
                 $event['classname'] = $this->itemClass($item);
-                if ($mediaUrl) {
-                    $event['image'] = $mediaUrl;
+                if ($thumbnailUrl) {
+                    $event['image'] = $thumbnailUrl;
                 }
                 $event['description'] = $itemDescription;
                 $events[] = $event;

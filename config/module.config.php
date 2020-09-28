@@ -75,6 +75,8 @@ return [
                 // 'render_year' => \Timeline\Mvc\Controller\Plugin\TimelineData::RENDER_YEAR_DEFAULT,
                 'render_year' => 'january_1',
                 'center_date' => '9999-99-99',
+                'thumbnail_type' => 'medium',
+                'thumbnail_resource' => true,
                 'viewer' => '{}',
                 'query' => [],
                 'library' => 'simile',

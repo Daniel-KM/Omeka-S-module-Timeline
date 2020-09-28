@@ -104,6 +104,32 @@ class TimelineFieldset extends Fieldset
                 ],
             ])
             ->add([
+                'name' => 'o:block[__blockIndex__][o:data][thumbnail_type]',
+                'type' => Element\Select::class,
+                'options' => [
+                    'label' => 'Thumbnail to use', // @translate
+                    'value_options' => [
+                        'square' => 'Square', // @translate
+                        'medium' => 'Medium', // @translate
+                        'large' => 'Large', // @translate
+                        'original' => 'Original (not recommended)', // @translate
+                    ],
+                ],
+                'attributes' => [
+                    'required' => true,
+                ],
+            ])
+            ->add([
+                'name' => 'o:block[__blockIndex__][o:data][thumbnail_resource]',
+                'type' => Element\Checkbox::class,
+                'options' => [
+                    'label' => 'Use the specific thumbnail of the resource if any', // @translate
+                ],
+                'attributes' => [
+                    'required' => true,
+                ],
+            ])
+            ->add([
                 'name' => 'o:block[__blockIndex__][o:data][viewer]',
                 'type' => Element\Textarea::class,
                 'options' => [

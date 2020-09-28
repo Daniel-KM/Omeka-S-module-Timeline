@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-04-06 00:00+0200\n"
+"POT-Creation-Date: 2020-09-28 00:00+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -112,30 +112,62 @@ msgid ""
 "\"9999-99-99\" the latest date."
 msgstr ""
 
-#: src/Form/TimelineFieldset.php:111 src/Form/TimelineExhibitFieldset.php:102
+#: src/Form/TimelineFieldset.php:110
+msgid "Thumbnail to use"
+msgstr ""
+
+#: src/Form/TimelineFieldset.php:112
+msgid "Square"
+msgstr ""
+
+#: src/Form/TimelineFieldset.php:114
+msgid "Large"
+msgstr ""
+
+#: src/Form/TimelineFieldset.php:115
+msgid "Original (not recommended)"
+msgstr ""
+
+#: src/Form/TimelineFieldset.php:126
+msgid "Use the specific thumbnail of the resource if any"
+msgstr ""
+
+#: src/Form/TimelineFieldset.php:137 src/Form/TimelineExhibitFieldset.php:102
 msgid ""
 "Set the default params of the viewer as json, or let empty for the included "
 "default."
 msgstr ""
 
-#: src/Form/TimelineFieldset.php:122
+#: src/Form/TimelineFieldset.php:148
 msgid "Query to limit resources"
 msgstr ""
 
-#: src/Form/TimelineFieldset.php:123
+#: src/Form/TimelineFieldset.php:149
 msgid ""
 "Limit the timeline to a particular subset of resources, for example a site, "
 "via an advanced search query."
 msgstr ""
 
-#: src/Form/TimelineFieldset.php:130
+#: src/Form/TimelineFieldset.php:156
 msgid "Timeline library"
 msgstr ""
 
-#: src/Form/TimelineFieldset.php:131
+#: src/Form/TimelineFieldset.php:157
 msgid ""
 "Three libraries are available: the standard open source Simile Timeline, or "
 "the online Knightlab Timeline."
+msgstr ""
+
+#: src/Form/TimelineFieldset.php:159
+msgid "Simile (use internal assets)"
+msgstr ""
+
+#: src/Form/TimelineFieldset.php:160
+msgid "Simile online (cannot be used on a https site)"
+msgstr ""
+
+#: src/Form/TimelineFieldset.php:161
+msgid "Knightlab"
 msgstr ""
 
 #: src/Form/TimelineExhibitFieldset.php:38

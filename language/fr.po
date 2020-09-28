@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Neatline\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-04-06 00:00+0200\n"
-"PO-Revision-Date: 2020-04-06 00:00+0200\n"
+"POT-Creation-Date: 2020-09-28 00:00+0000\n"
+"PO-Revision-Date: 2020-09-28 00:00+0000\n"
 "Last-Translator: Daniel Berthereau <Daniel.fr@Berthereau.net>\n"
 "Language-Team: French (http://www.transifex.com/projects/p/neatline/language/"
 "fr/)\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Poedit 2.3\n"
+"X-Generator: Poedit 2.4.1\n"
 
 #: view/common/block-layout/timeline-form.phtml:14
 msgid ""
@@ -76,11 +76,11 @@ msgstr "Date de fin de l'objet"
 
 #: src/Form/TimelineFieldset.php:72
 msgid "If set, the process will use the other date as a start date."
-msgstr "Si indiqué, l‘autre date sera utilisée comme date de départ."
+msgstr "Si indiqué, l’autre date sera utilisée comme date de départ."
 
 #: src/Form/TimelineFieldset.php:85
 msgid "Render year"
-msgstr "Afficher l‘année"
+msgstr "Afficher l’année"
 
 #: src/Form/TimelineFieldset.php:86
 msgid ""
@@ -100,7 +100,7 @@ msgstr "Choisir le premier juillet"
 
 #: src/Form/TimelineFieldset.php:90
 msgid "Mark entire year"
-msgstr "Marquer l‘année complète"
+msgstr "Marquer l’année complète"
 
 #: src/Form/TimelineFieldset.php:91
 msgid "Skip the record"
@@ -120,7 +120,27 @@ msgstr ""
 "Une valeur vide correspond à \"maintenant\", \"0000-00-00\" la date la plus "
 "ancienne et \"9999-99-99\" la plus récente."
 
-#: src/Form/TimelineFieldset.php:111 src/Form/TimelineExhibitFieldset.php:102
+#: src/Form/TimelineFieldset.php:110
+msgid "Thumbnail to use"
+msgstr "Vignette à utiliser"
+
+#: src/Form/TimelineFieldset.php:112
+msgid "Square"
+msgstr "Carré"
+
+#: src/Form/TimelineFieldset.php:114
+msgid "Large"
+msgstr "Large"
+
+#: src/Form/TimelineFieldset.php:115
+msgid "Original (not recommended)"
+msgstr "Original (non recommandé)"
+
+#: src/Form/TimelineFieldset.php:126
+msgid "Use the specific thumbnail of the resource if any"
+msgstr "Utiliser la vignette spécifique de la ressource si présente"
+
+#: src/Form/TimelineFieldset.php:137 src/Form/TimelineExhibitFieldset.php:102
 msgid ""
 "Set the default params of the viewer as json, or let empty for the included "
 "default."
@@ -128,11 +148,11 @@ msgstr ""
 "Indiquer les paramètres par défaut de la visionneuse en json. Laisser vide "
 "pour conserver les paramètres par défaut."
 
-#: src/Form/TimelineFieldset.php:122
+#: src/Form/TimelineFieldset.php:148
 msgid "Query to limit resources"
 msgstr "Requête pour limiter les ressources"
 
-#: src/Form/TimelineFieldset.php:123
+#: src/Form/TimelineFieldset.php:149
 msgid ""
 "Limit the timeline to a particular subset of resources, for example a site, "
 "via an advanced search query."
@@ -140,17 +160,29 @@ msgstr ""
 "Limiter la frise à certaines ressources, par exemple un site, avec une "
 "requête de recherche avancée."
 
-#: src/Form/TimelineFieldset.php:130
+#: src/Form/TimelineFieldset.php:156
 msgid "Timeline library"
 msgstr "Bibliothèque js pour la frise"
 
-#: src/Form/TimelineFieldset.php:131
+#: src/Form/TimelineFieldset.php:157
 msgid ""
 "Three libraries are available: the standard open source Simile Timeline, or "
 "the online Knightlab Timeline."
 msgstr ""
 "Trois bibliothèques js sont disponibles : la frise libre Simile Timeline, en "
 "ligne ou en local, ou la frise de Knightlab."
+
+#: src/Form/TimelineFieldset.php:159
+msgid "Simile (use internal assets)"
+msgstr "Simile (utilise les dépendances locales)"
+
+#: src/Form/TimelineFieldset.php:160
+msgid "Simile online (cannot be used on a https site)"
+msgstr "Simile online (ne peut pas être utilisé avec un site en https)"
+
+#: src/Form/TimelineFieldset.php:161
+msgid "Knightlab"
+msgstr "Knightlab"
 
 #: src/Form/TimelineExhibitFieldset.php:38
 msgid "Start date property"
@@ -159,7 +191,7 @@ msgstr "Propriété pour la date de début"
 #: src/Form/TimelineExhibitFieldset.php:39
 msgid "Date to use from the attachement when no date is set."
 msgstr ""
-"Date du document attaché à utiliser lorsque aucune date n‘est indiquée."
+"Date du document attaché à utiliser lorsque aucune date n’est indiquée."
 
 #: src/Form/TimelineExhibitFieldset.php:54
 msgid "End date property"
@@ -168,8 +200,8 @@ msgstr "Propriété pour la date de fin"
 #: src/Form/TimelineExhibitFieldset.php:55
 msgid "End date to use from the attachement when no end date is set."
 msgstr ""
-"Date de fin du document attaché à utiliser lorsque aucune date de fin n‘'est "
-"indiquée"
+"Date de fin du document attaché à utiliser lorsque aucune date de fin n’'est "
+"indiquée."
 
 #: src/Form/TimelineExhibitFieldset.php:70
 msgid "Credit property"
@@ -180,7 +212,7 @@ msgid ""
 "Credit to use from the attachement when no credit is set (generally creator "
 "or rights)."
 msgstr ""
-"Propriété du document attaché à utiliser lorsque aucun crédit n‘'est indiqué "
+"Propriété du document attaché à utiliser lorsque aucun crédit n’'est indiqué "
 "(généralement Créateur ou Droits)."
 
 #: src/Form/TimelineExhibitFieldset.php:86
@@ -233,7 +265,7 @@ msgstr "Titre principal"
 
 #: src/Form/TimelineExhibitFieldset.php:247
 msgid "block-html full wysiwyg"
-msgstr "Bloc html wysiwyg"
+msgstr "bloc html wysiwyg"
 
 #: src/Form/TimelineExhibitFieldset.php:279
 msgid "External content"
@@ -249,7 +281,7 @@ msgstr "Arrière-plan"
 
 #: src/Form/TimelineExhibitFieldset.php:322
 msgid "Background color"
-msgstr "Couleur d‘arrière-plan"
+msgstr "Couleur d’arrière-plan"
 
 #: src/Form/TimelineExhibitFieldset.php:323
 msgid "A css color as hexadecimal or keyword."
@@ -257,7 +289,7 @@ msgstr "Une couleur css en hexadécimal ou mot-clé."
 
 #: src/Form/TimelineExhibitFieldset.php:345
 msgid "Add another slide"
-msgstr "Ajouter une autre vue."
+msgstr "Ajouter une autre vue"
 
 #: src/Form/TimelineExhibitFieldset.php:356
 msgid "Remove this slide"
@@ -265,9 +297,8 @@ msgstr "Supprimer cette vue"
 
 #: src/Controller/TimelineController.php:30
 #, php-format
-#| msgid "Add a Timeline"
 msgid "Id %d is not a timeline."
-msgstr "Id %d n‘est pas une frise."
+msgstr "Id %d n’est pas une frise."
 
 #: src/Controller/TimelineController.php:79
 #, php-format

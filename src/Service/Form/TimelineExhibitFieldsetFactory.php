@@ -3,7 +3,7 @@ namespace Timeline\Service\Form;
 
 use Timeline\Form\TimelineExhibitFieldset;
 use Interop\Container\ContainerInterface;
-use Zend\ServiceManager\Factory\FactoryInterface;
+use Laminas\ServiceManager\Factory\FactoryInterface;
 
 class TimelineExhibitFieldsetFactory implements FactoryInterface
 {

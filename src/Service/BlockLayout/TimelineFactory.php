@@ -3,7 +3,7 @@ namespace Timeline\Service\BlockLayout;
 
 use Interop\Container\ContainerInterface;
 use Timeline\Site\BlockLayout\Timeline;
-use Zend\ServiceManager\Factory\FactoryInterface;
+use Laminas\ServiceManager\Factory\FactoryInterface;
 
 class TimelineFactory implements FactoryInterface
 {

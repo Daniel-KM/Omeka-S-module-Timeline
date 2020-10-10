@@ -3,7 +3,7 @@
 namespace Timeline\Mvc\Controller\Plugin;
 
 use DateTime;
-use Zend\Mvc\Controller\Plugin\AbstractPlugin;
+use Laminas\Mvc\Controller\Plugin\AbstractPlugin;
 
 class TimelineData extends AbstractPlugin
 {

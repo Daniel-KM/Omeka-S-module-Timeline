@@ -2,7 +2,7 @@
 namespace Timeline\Service\Controller;
 
 use Interop\Container\ContainerInterface;
-use Zend\ServiceManager\Factory\FactoryInterface;
+use Laminas\ServiceManager\Factory\FactoryInterface;
 use Timeline\Controller\TimelineController;
 
 class TimelineControllerFactory implements FactoryInterface

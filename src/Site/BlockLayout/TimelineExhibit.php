@@ -10,7 +10,7 @@ use Omeka\Entity\SitePageBlock;
 use Omeka\Site\BlockLayout\AbstractBlockLayout;
 use Omeka\Stdlib\ErrorStore;
 use Omeka\Stdlib\HtmlPurifier;
-use Zend\View\Renderer\PhpRenderer;
+use Laminas\View\Renderer\PhpRenderer;
 
 class TimelineExhibit extends AbstractBlockLayout
 {
@@ -167,17 +167,17 @@ class TimelineExhibit extends AbstractBlockLayout
                 if (!$fieldset->has($subFieldsetName)) {
                     continue;
                 }
-                /** @var \Zend\Form\Fieldset $subFieldset */
+                /** @var \Laminas\Form\Fieldset $subFieldset */
                 $subFieldset = $fieldset->get($subFieldsetName);
                 $subFieldsetBaseName = $subFieldsetName . '[__' . substr($key, 0, -1) . 'Index__]';
-                /** @var \Zend\Form\Fieldset $subFieldsetBase */
+                /** @var \Laminas\Form\Fieldset $subFieldsetBase */
                 if (!$subFieldset->has($subFieldsetBaseName)) {
                     continue;
                 }
                 $subFieldsetBase = $subFieldset->get($subFieldsetBaseName);
                 foreach (array_values($value) as $subKey => $subValue) {
                     $newSubFieldsetName = $subFieldsetName . "[$subKey]";
-                    /** @var \Zend\Form\Fieldset $newSubFieldset */
+                    /** @var \Laminas\Form\Fieldset $newSubFieldset */
                     $newSubFieldset = clone $subFieldsetBase;
                     $newSubFieldset
                         ->setName($newSubFieldsetName)

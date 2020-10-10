@@ -4,8 +4,8 @@ namespace Timeline\Mvc\Controller\Plugin;
 use DateTime;
 use NumericDataTypes\DataType\Timestamp;
 use Omeka\Api\Representation\AbstractResourceEntityRepresentation;
-use Zend\Mvc\Controller\Plugin\AbstractPlugin;
-use Zend\Uri\Http as HttpUri;
+use Laminas\Mvc\Controller\Plugin\AbstractPlugin;
+use Laminas\Uri\Http as HttpUri;
 
 /**
  * Create an exhibit for Knightlab timeline.
@@ -20,7 +20,7 @@ class TimelineExhibitData extends AbstractPlugin
     protected $api;
 
     /**
-     * @var \Zend\View\Helper\EscapeHtmlAttr
+     * @var \Laminas\View\Helper\EscapeHtmlAttr
      */
     protected $escapeHtmlAttr;
 

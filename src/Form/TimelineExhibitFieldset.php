@@ -4,9 +4,9 @@ namespace Timeline\Form;
 use Omeka\Form\Element\Asset;
 use Omeka\Form\Element\PropertySelect;
 // use Omeka\Form\Element\ResourceSelect;
-use Zend\View\Helper\Url as UrlHelper;
-use Zend\Form\Element;
-use Zend\Form\Fieldset;
+use Laminas\View\Helper\Url as UrlHelper;
+use Laminas\Form\Element;
+use Laminas\Form\Fieldset;
 
 class TimelineExhibitFieldset extends Fieldset
 {

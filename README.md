@@ -66,11 +66,11 @@ Creating a timeline is a two-step process:
 2. To choose which items appear on your timeline, fill the "Item Pool" form. The
   options are the same than in the config by default (see above).
 
-  ![Timeline Block](https://github.com/Daniel-KM/Omeka-S-module-Timeline/blob/master/data/readme/timeline-block-v3-4.png)
+  ![Timeline Block](https://gitlab.com/Daniel-KM/Omeka-S-module-Timeline/blob/master/data/readme/timeline-block-v3-4.png)
 
 Ready! Open the page.
 
-  ![Timeline Page](https://github.com/Daniel-KM/Omeka-S-module-Timeline/blob/master/data/readme/timeline-page-v3-4.png)
+  ![Timeline Page](https://gitlab.com/Daniel-KM/Omeka-S-module-Timeline/blob/master/data/readme/timeline-page-v3-4.png)
 
 **Important**: The number of items should be limited according to the memory of
 the server: currently, the json output is created in one shot, so it can't
@@ -211,7 +211,7 @@ your archives regularly so you can roll back if needed.
 Troubleshooting
 ---------------
 
-See online issues on the [module issues] page on GitHub.
+See online issues on the [module issues] page on GitLab.
 
 
 License
@@ -253,7 +253,7 @@ Copyright
 ### Module
 
 * Copyright The Board and Visitors of the University of Virginia, 2010–2012
-* Copyright Daniel Berthereau, 2016-2020 (see [Daniel-KM] on GitHub)
+* Copyright Daniel Berthereau, 2016-2020 (see [Daniel-KM] on GitLab)
 
 ### Translations
 
@@ -263,10 +263,10 @@ Copyright
 * Katina Rogers (French)
 
 
-[Timeline]: https://github.com/Daniel-KM/Omeka-S-module-Timeline
+[Timeline]: https://gitlab.com/Daniel-KM/Omeka-S-module-Timeline
 [Omeka S]: https://omeka.org/s
 [Scholars’ Lab]: http://scholarslab.org
-[fork of NeatlineTime plugin]: https://github.com/Daniel-KM/Omeka-plugin-NeatlineTime
+[fork of NeatlineTime plugin]: https://gitlab.com/Daniel-KM/Omeka-plugin-NeatlineTime
 [Omeka Classic]: http://omeka.org
 [SIMILE Timeline]: http://www.simile-widgets.org/wiki/Timeline
 [wiki]: http://www.simile-widgets.org/wiki/Timeline
@@ -275,7 +275,7 @@ Copyright
 [Knightlab timeline documentation]: https://timeline.knightlab.com/docs/options.html
 [example of use]: https://docs.neatline.org/working-with-the-simile-timeline-widget.html
 [examples]: http://www.simile-widgets.org/timeline/examples/index.html
-[module issues]: https://github.com/Daniel-KM/Omeka-S-module-Timeline/issues
+[module issues]: https://gitlab.com/Daniel-KM/Omeka-S-module-Timeline/-/issues
 [CeCILL v2.1]: https://www.cecill.info/licences/Licence_CeCILL_V2.1-en.html
 [GNU/GPL]: https://www.gnu.org/licenses/gpl-3.0.html
 [FSF]: https://www.fsf.org
@@ -283,4 +283,4 @@ Copyright
 [themeing-plugin-pages]: http://omeka.org/codex/Theming_Plugin_Pages "Theming Plugin Pages"
 [Scholars’ Lab]: https://github.com/scholarslab
 [GitLab]: https://gitlab.com/Daniel-KM
-[Daniel-KM]: https://github.com/Daniel-KM "Daniel Berthereau"
+[Daniel-KM]: https://gitlab.com/Daniel-KM "Daniel Berthereau"

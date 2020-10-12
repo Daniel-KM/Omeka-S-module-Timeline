@@ -1,6 +1,9 @@
 Timeline (module for Omeka S)
 =============================
 
+> __New versions of this module and support for Omeka S version 3.0 and above
+> are available on [GitLab], which seems to respect users and privacy better.__
+
 [![Build Status](https://travis-ci.org/Daniel-KM/Omeka-S-module-Timeline.svg?branch=develop,master)](https://travis-ci.org/Daniel-KM/Omeka-S-module-Timeline)
 
 [Timeline] is a module for [Omeka S] that integrates the [SIMILE Timeline]
@@ -279,4 +282,5 @@ Copyright
 [OSI]: http://opensource.org
 [themeing-plugin-pages]: http://omeka.org/codex/Theming_Plugin_Pages "Theming Plugin Pages"
 [Scholars’ Lab]: https://github.com/scholarslab
+[GitLab]: https://gitlab.com/Daniel-KM
 [Daniel-KM]: https://github.com/Daniel-KM "Daniel Berthereau"

@@ -1,6 +1,8 @@
-.DS_Store
-.php_cs.cache
-composer.phar
-composer.lock
-/vendor
 /build
+/vendor
+/node_modules
+.sass-cache/
+.php_cs.cache
+.bundle
+.DS_Store
+composer.phar

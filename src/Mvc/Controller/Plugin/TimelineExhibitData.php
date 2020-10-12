@@ -1,11 +1,11 @@
-<?php
+<?php declare(strict_types=1);
 namespace Timeline\Mvc\Controller\Plugin;
 
 use DateTime;
-use NumericDataTypes\DataType\Timestamp;
-use Omeka\Api\Representation\AbstractResourceEntityRepresentation;
 use Laminas\Mvc\Controller\Plugin\AbstractPlugin;
 use Laminas\Uri\Http as HttpUri;
+use NumericDataTypes\DataType\Timestamp;
+use Omeka\Api\Representation\AbstractResourceEntityRepresentation;
 
 /**
  * Create an exhibit for Knightlab timeline.

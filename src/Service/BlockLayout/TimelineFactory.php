@@ -1,9 +1,9 @@
-<?php
+<?php declare(strict_types=1);
 namespace Timeline\Service\BlockLayout;
 
 use Interop\Container\ContainerInterface;
-use Timeline\Site\BlockLayout\Timeline;
 use Laminas\ServiceManager\Factory\FactoryInterface;
+use Timeline\Site\BlockLayout\Timeline;
 
 class TimelineFactory implements FactoryInterface
 {

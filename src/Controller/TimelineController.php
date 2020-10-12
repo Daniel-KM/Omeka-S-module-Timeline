@@ -1,11 +1,11 @@
-<?php
+<?php declare(strict_types=1);
 namespace Timeline\Controller;
 
 use Doctrine\ORM\EntityManager;
-use Omeka\Api\Exception\NotFoundException;
-use Omeka\Stdlib\Message;
 use Laminas\Mvc\Controller\AbstractActionController;
 use Laminas\View\Model\JsonModel;
+use Omeka\Api\Exception\NotFoundException;
+use Omeka\Stdlib\Message;
 
 class TimelineController extends AbstractActionController
 {

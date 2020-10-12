@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 namespace Timeline;
 
 /**
@@ -15,7 +15,7 @@ $services = $serviceLocator;
 $settings = $services->get('Omeka\Settings');
 $connection = $services->get('Omeka\Connection');
 $entityManager = $services->get('Omeka\EntityManager');
-$config = require dirname(dirname(__DIR__)) . '/config/module.config.php';
+$config = require dirname(__DIR__, 2) . '/config/module.config.php';
 
 if (version_compare($oldVersion, '3.4.6', '<')) {
     // Replace item pool by a search query.

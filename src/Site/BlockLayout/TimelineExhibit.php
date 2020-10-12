@@ -1,8 +1,9 @@
-<?php
+<?php declare(strict_types=1);
 namespace Timeline\Site\BlockLayout;
 
-use Omeka\Api\Manager as ApiManager;
+use Laminas\View\Renderer\PhpRenderer;
 use Omeka\Api\Exception\NotFoundException;
+use Omeka\Api\Manager as ApiManager;
 use Omeka\Api\Representation\SitePageBlockRepresentation;
 use Omeka\Api\Representation\SitePageRepresentation;
 use Omeka\Api\Representation\SiteRepresentation;
@@ -10,7 +11,6 @@ use Omeka\Entity\SitePageBlock;
 use Omeka\Site\BlockLayout\AbstractBlockLayout;
 use Omeka\Stdlib\ErrorStore;
 use Omeka\Stdlib\HtmlPurifier;
-use Laminas\View\Renderer\PhpRenderer;
 
 class TimelineExhibit extends AbstractBlockLayout
 {
@@ -45,7 +45,7 @@ class TimelineExhibit extends AbstractBlockLayout
         return 'Timeline Exhibit'; // @translate
     }
 
-    public function prepareForm(PhpRenderer $view)
+    public function prepareForm(PhpRenderer $view): void
     {
         $assetUrl = $view->plugin('assetUrl');
         $view->headLink()
@@ -56,7 +56,7 @@ class TimelineExhibit extends AbstractBlockLayout
             ->appendFile($assetUrl('js/timeline-exhibit-form.js', 'Timeline'));
     }
 
-    public function onHydrate(SitePageBlock $block, ErrorStore $errorStore)
+    public function onHydrate(SitePageBlock $block, ErrorStore $errorStore): void
     {
         $data = $block->getData();
 
@@ -219,7 +219,7 @@ class TimelineExhibit extends AbstractBlockLayout
      *
      * @param PhpRenderer $view
      */
-    public function prepareRender(PhpRenderer $view)
+    public function prepareRender(PhpRenderer $view): void
     {
         $view->headLink()
             ->appendStylesheet('//cdn.knightlab.com/libs/timeline3/latest/css/timeline.css');

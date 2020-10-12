@@ -1,12 +1,12 @@
-<?php
+<?php declare(strict_types=1);
 namespace Timeline\Form;
 
+use Laminas\Form\Element;
+use Laminas\Form\Fieldset;
+use Laminas\View\Helper\Url as UrlHelper;
 use Omeka\Form\Element\Asset;
 use Omeka\Form\Element\PropertySelect;
 // use Omeka\Form\Element\ResourceSelect;
-use Laminas\View\Helper\Url as UrlHelper;
-use Laminas\Form\Element;
-use Laminas\Form\Fieldset;
 
 class TimelineExhibitFieldset extends Fieldset
 {
@@ -15,7 +15,7 @@ class TimelineExhibitFieldset extends Fieldset
      */
     protected $urlHelper;
 
-    public function init()
+    public function init(): void
     {
         // $urlHelper = $this->getUrlHelper();
 

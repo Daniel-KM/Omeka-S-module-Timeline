@@ -1,9 +1,9 @@
-<?php
+<?php declare(strict_types=1);
 namespace Timeline\Service\Form;
 
-use Timeline\Form\TimelineExhibitFieldset;
 use Interop\Container\ContainerInterface;
 use Laminas\ServiceManager\Factory\FactoryInterface;
+use Timeline\Form\TimelineExhibitFieldset;
 
 class TimelineExhibitFieldsetFactory implements FactoryInterface
 {

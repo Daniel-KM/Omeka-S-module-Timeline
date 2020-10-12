@@ -1,14 +1,14 @@
-<?php
+<?php declare(strict_types=1);
 namespace Timeline\Form;
 
-use Omeka\Form\Element\PropertySelect;
-use Timeline\Mvc\Controller\Plugin\TimelineData;
 use Laminas\Form\Element;
 use Laminas\Form\Fieldset;
+use Omeka\Form\Element\PropertySelect;
+use Timeline\Mvc\Controller\Plugin\TimelineData;
 
 class TimelineFieldset extends Fieldset
 {
-    public function init()
+    public function init(): void
     {
         // TODO Checkbox normalize date or not.
 

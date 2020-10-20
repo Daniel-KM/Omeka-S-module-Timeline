@@ -146,7 +146,7 @@ class TimelineData extends AbstractPlugin
      * @param string renderYear Force the format of a single number as a year.
      * @return string ISO-8601 date
      */
-    protected function convertDate($date, $renderYear = null)
+    protected function convertDate(string $date, $renderYear = null)
     {
         if (empty($renderYear)) {
             $renderYear = $this->renderYear;
@@ -204,9 +204,9 @@ class TimelineData extends AbstractPlugin
      * @param string renderYear Force the format of a single number as a year.
      * @return array Array of two dates.
      */
-    protected function convertAnyDate($date, $renderYear = null)
+    protected function convertAnyDate(string $date, string $renderYear = null)
     {
-        return $this->convertTwoDates($date, null, $renderYear);
+        return $this->convertTwoDates($date, "", $renderYear);
     }
 
     /**
@@ -263,13 +263,13 @@ class TimelineData extends AbstractPlugin
 
         // Manage a special case for render "full_year" with a single number.
         if ($renderYear == self::RENDER_YEAR_FULL_YEAR && preg_match('/^-?\d{1,4}$/', $date)) {
-            $dateStartValue = $this->convertDate($date, self::RENDER_YEAR_JANUARY_1);
-            $dateEndValue = $this->convertDate($date, self::RENDER_YEAR_DECEMBER_31);
+            $dateStartValue = $this->convertDate(strval($date), self::RENDER_YEAR_JANUARY_1);
+            $dateEndValue = $this->convertDate(strval($date), self::RENDER_YEAR_DECEMBER_31);
             return [$dateStartValue, $dateEndValue];
         }
 
         // Only one date.
-        $dateStartValue = $this->convertDate($date, $renderYear);
+        $dateStartValue = $this->convertDate(strval($date), $renderYear);
         return [$dateStartValue, null];
     }
 
@@ -297,8 +297,8 @@ class TimelineData extends AbstractPlugin
 
         // Check if the date are two numbers (years).
         if ($renderYear == self::RENDER_YEAR_SKIP) {
-            $dateStartValue = $this->convertDate($dateStart, $renderYear);
-            $dateEndValue = $this->convertDate($dateEnd, $renderYear);
+            $dateStartValue = $this->convertDate(strval($dateStart), $renderYear);
+            $dateEndValue = $this->convertDate(strval($dateEnd), $renderYear);
             return [$dateStartValue, $dateEndValue];
         }
 
@@ -306,26 +306,26 @@ class TimelineData extends AbstractPlugin
         if (!preg_match('/^-?\d{1,4}$/', $dateStart)) {
             if (!preg_match('/^-?\d{1,4}$/', $dateEnd)) {
                 // TODO Check order to force the start or the end.
-                $dateStartValue = $this->convertDate($dateStart, $renderYear);
-                $dateEndValue = $this->convertDate($dateEnd, $renderYear);
+                $dateStartValue = $this->convertDate(strval($dateStart), $renderYear);
+                $dateEndValue = $this->convertDate(strval($dateEnd), $renderYear);
                 return [$dateStartValue, $dateEndValue];
             }
             // Force the format for the end.
-            $dateStartValue = $this->convertDate($dateStart, $renderYear);
+            $dateStartValue = $this->convertDate(strval($dateStart), $renderYear);
             if ($renderYear == self::RENDER_YEAR_FULL_YEAR) {
                 $renderYear = self::RENDER_YEAR_DECEMBER_31;
             }
-            $dateEndValue = $this->convertDate($dateEnd, $renderYear);
+            $dateEndValue = $this->convertDate(strval($dateEnd), $renderYear);
             return [$dateStartValue, $dateEndValue];
         }
         // The start is a year.
         elseif (!preg_match('/^-?\d{1,4}$/', $dateEnd)) {
             // Force the format of the start.
-            $dateEndValue = $this->convertDate($dateEnd, $renderYear);
+            $dateEndValue = $this->convertDate(strval($dateEnd), $renderYear);
             if ($renderYear == self::RENDER_YEAR_FULL_YEAR) {
                 $renderYear = self::RENDER_YEAR_JANUARY_1;
             }
-            $dateStartValue = $this->convertDate($dateStart, $renderYear);
+            $dateStartValue = $this->convertDate(strval($dateStart), $renderYear);
             return [$dateStartValue, $dateEndValue];
         }
 
@@ -334,8 +334,8 @@ class TimelineData extends AbstractPlugin
 
         // Same years.
         if ($dateStart == $dateEnd) {
-            $dateStartValue = $this->convertDate($dateStart, self::RENDER_YEAR_JANUARY_1);
-            $dateEndValue = $this->convertDate($dateEnd, self::RENDER_YEAR_DECEMBER_31);
+            $dateStartValue = $this->convertDate(strval($dateStart), self::RENDER_YEAR_JANUARY_1);
+            $dateEndValue = $this->convertDate(strval($dateEnd), self::RENDER_YEAR_DECEMBER_31);
             return [$dateStartValue, $dateEndValue];
         }
 
@@ -348,17 +348,17 @@ class TimelineData extends AbstractPlugin
 
         switch ($renderYear) {
             case self::RENDER_YEAR_JULY_1:
-                $dateStartValue = $this->convertDate($dateStart, self::RENDER_YEAR_JULY_1);
-                $dateEndValue = $this->convertDate($dateEnd, self::RENDER_YEAR_JUNE_30);
+                $dateStartValue = $this->convertDate(strval($dateStart), self::RENDER_YEAR_JULY_1);
+                $dateEndValue = $this->convertDate(strval($dateEnd), self::RENDER_YEAR_JUNE_30);
                 return [$dateStartValue, $dateEndValue];
             case self::RENDER_YEAR_JANUARY_1:
-                $dateStartValue = $this->convertDate($dateStart, self::RENDER_YEAR_JANUARY_1);
-                $dateEndValue = $this->convertDate($dateEnd, self::RENDER_YEAR_JANUARY_1);
+                $dateStartValue = $this->convertDate(strval($dateStart), self::RENDER_YEAR_JANUARY_1);
+                $dateEndValue = $this->convertDate(strval($dateEnd), self::RENDER_YEAR_JANUARY_1);
                 return [$dateStartValue, $dateEndValue];
             case self::RENDER_YEAR_FULL_YEAR:
             default:
-                $dateStartValue = $this->convertDate($dateStart, self::RENDER_YEAR_JANUARY_1);
-                $dateEndValue = $this->convertDate($dateEnd, self::RENDER_YEAR_DECEMBER_31);
+                $dateStartValue = $this->convertDate(strval($dateStart), self::RENDER_YEAR_JANUARY_1);
+                $dateEndValue = $this->convertDate(strval($dateEnd), self::RENDER_YEAR_DECEMBER_31);
                 return [$dateStartValue, $dateEndValue];
         }
     }

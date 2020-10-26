@@ -206,7 +206,7 @@ class TimelineData extends AbstractPlugin
      */
     protected function convertAnyDate(string $date, string $renderYear = null)
     {
-        return $this->convertTwoDates($date, "", $renderYear);
+        return $this->convertTwoDates($date, '', $renderYear);
     }
 
     /**

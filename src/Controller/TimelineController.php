@@ -62,14 +62,11 @@ class TimelineController extends AbstractActionController
     {
         $entityClass = \Omeka\Entity\SitePageBlock::class;
 
-        $isOldOmeka = \Omeka\Module::VERSION < 2;
-        $alias = $isOldOmeka ? $entityClass : 'omeka_root';
-
         $qb = $this->getEntityManager()->createQueryBuilder();
         $qb
-            ->select($alias)
-            ->from($entityClass, $alias)
-            ->andWhere($qb->expr()->eq($alias . '.id', ':id'))
+            ->select('omeka_root')
+            ->from($entityClass, 'omeka_root')
+            ->andWhere($qb->expr()->eq('omeka_root.id', ':id'))
             ->setParameter('id', $blockId)
             ->setMaxResults(1);
 

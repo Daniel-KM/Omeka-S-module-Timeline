@@ -509,7 +509,7 @@ class TimelineExhibitData extends AbstractPlugin
      */
     protected function resourceDate(AbstractResourceEntityRepresentation $resource, $dateProperty, $displayDate = null)
     {
-        $dates = $resource->value($dateProperty, ['all' => true, 'default' => []]);
+        $dates = $resource->value($dateProperty, ['all' => true]);
         foreach ($dates as $date) {
             $date = $this->date($date, $displayDate);
             if (is_array($date)) {

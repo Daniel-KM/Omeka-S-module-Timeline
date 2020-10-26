@@ -49,11 +49,11 @@ class TimelineData extends AbstractPlugin
         /** @var \Omeka\Api\Representation\ItemRepresentation[] $items */
         foreach ($items as $item) {
             // All items without dates are already automatically removed.
-            $itemDates = $item->value($propertyItemDate, ['all' => true, 'type' => 'literal', 'default' => []]);
+            $itemDates = $item->value($propertyItemDate, ['all' => true]);
             $itemTitle = strip_tags($propertyItemTitle ? (string) $item->value($propertyItemTitle) : $item->displayTitle());
             $itemDescription =  $this->snippet($propertyItemDescription ? (string) $item->value($propertyItemDescription) : $item->displayDescription(), 200);
             $itemDatesEnd = $propertyItemDateEnd
-                ? $item->value($propertyItemDateEnd, ['all' => true, 'type' => 'literal', 'default' => []])
+                ? $item->value($propertyItemDateEnd, ['all' => true])
                 : [];
             $itemLink = empty($args['site_slug'])
                 ? null

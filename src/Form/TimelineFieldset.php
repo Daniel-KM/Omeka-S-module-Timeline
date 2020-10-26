@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 namespace Timeline\Form;
 
 use Laminas\Form\Element;
@@ -30,12 +31,16 @@ class TimelineFieldset extends Fieldset
                 'type' => PropertySelect::class,
                 'options' => [
                     'label' => 'Item title', // @translate
-                    'empty_option' => 'Select a property…', // @translate
+                    'empty_option' => '',
                     'term_as_value' => true,
+                    'prepend_value_options' => [
+                        'default' => 'Automatic', // @translate
+                    ],
                 ],
                 'attributes' => [
-                    'required' => true,
+                    'required' => false,
                     'class' => 'chosen-select',
+                    'data-placeholder' => 'Select a property…', // @translate
                 ],
             ])
             ->add([
@@ -43,12 +48,16 @@ class TimelineFieldset extends Fieldset
                 'type' => PropertySelect::class,
                 'options' => [
                     'label' => 'Item description', // @translate
-                    'empty_option' => 'Select a property…', // @translate
+                    'empty_option' => '',
                     'term_as_value' => true,
+                    'prepend_value_options' => [
+                        'default' => 'Automatic', // @translate
+                    ],
                 ],
                 'attributes' => [
-                    'required' => true,
+                    'required' => false,
                     'class' => 'chosen-select',
+                    'data-placeholder' => 'Select a property…', // @translate
                 ],
             ])
             ->add([
@@ -56,12 +65,13 @@ class TimelineFieldset extends Fieldset
                 'type' => PropertySelect::class,
                 'options' => [
                     'label' => 'Item date', // @translate
-                    'empty_option' => 'Select a property…', // @translate
+                    'empty_option' => '',
                     'term_as_value' => true,
                 ],
                 'attributes' => [
                     'required' => true,
                     'class' => 'chosen-select',
+                    'data-placeholder' => 'Select a property…', // @translate
                 ],
             ])
             ->add([
@@ -70,11 +80,12 @@ class TimelineFieldset extends Fieldset
                 'options' => [
                     'label' => 'Item end date', // @translate
                     'info' => 'If set, the process will use the other date as a start date.', // @translate
-                    'empty_option' => 'None', // @translate
+                    'empty_option' => '',
                     'term_as_value' => true,
                 ],
                 'attributes' => [
                     'class' => 'chosen-select',
+                    'data-placeholder' => 'Select a property…', // @translate
                 ],
             ])
             ->add([
@@ -126,7 +137,7 @@ class TimelineFieldset extends Fieldset
                     'label' => 'Use the specific thumbnail of the resource if any', // @translate
                 ],
                 'attributes' => [
-                    'required' => true,
+                    'required' => false,
                 ],
             ])
             ->add([

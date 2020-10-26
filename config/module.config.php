@@ -68,8 +68,8 @@ return [
         'block_settings' => [
             'timeline' => [
                 'heading' => '',
-                'item_title' => 'dcterms:title',
-                'item_description' => 'dcterms:description',
+                'item_title' => 'default',
+                'item_description' => 'default',
                 'item_date' => 'dcterms:date',
                 'item_date_end' => '',
                 // 'render_year' => \Timeline\Mvc\Controller\Plugin\TimelineData::RENDER_YEAR_DEFAULT,

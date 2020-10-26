@@ -100,7 +100,7 @@ class TimelineExhibitFieldset extends Fieldset
                 'options' => [
                     'label' => 'Options', // @translate
                     'info' => 'Set the default params of the viewer as json, or let empty for the included default.', // @translate
-                    'documentation' => 'https://github.com/daniel-km/omeka-s-module-timeline#knightlab-timeline',
+                    'documentation' => 'https://gitlab.com/daniel-km/omeka-s-module-timeline#knightlab-timeline',
                 ],
                 'attributes' => [
                     'rows' => 5,

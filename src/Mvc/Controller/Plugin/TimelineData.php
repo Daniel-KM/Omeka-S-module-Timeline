@@ -33,8 +33,8 @@ class TimelineData extends AbstractPlugin
             ? $args['render_year']
             : self::RENDER_YEAR_DEFAULT;
 
-        $propertyItemTitle = $args['item_title'];
-        $propertyItemDescription = $args['item_description'];
+        $propertyItemTitle = $args['item_title'] === 'default' ? '' : $args['item_title'];
+        $propertyItemDescription = $args['item_description'] === 'default' ? '' : $args['item_description'];
         $propertyItemDate = $args['item_date'];
         $propertyItemDateEnd = isset($args['item_date_end']) ? $args['item_date_end'] : null;
         $thumbnailType = empty($args['thumbnail_type']) ? 'medium' : $args['thumbnail_type'];
@@ -50,18 +50,8 @@ class TimelineData extends AbstractPlugin
         foreach ($items as $item) {
             // All items without dates are already automatically removed.
             $itemDates = $item->value($propertyItemDate, ['all' => true, 'type' => 'literal', 'default' => []]);
-            $itemTitle = $item->value($propertyItemTitle, ['type' => 'literal', 'default' => '']);
-            if ($itemTitle) {
-                $itemTitle = strip_tags($itemTitle->value());
-            }
-            $itemDescription = $item->value($propertyItemDescription, ['default' => '']);
-            if ($itemDescription) {
-                if (in_array($itemDescription->type(), ['resource:item', 'resource'])) {
-                    $itemDescription = $this->snippet($itemDescription->valueResource()->displayTitle(), 200);
-                } else {
-                    $itemDescription = $this->snippet($itemDescription->value(), 200);
-                }
-            }
+            $itemTitle = strip_tags($propertyItemTitle ? (string) $item->value($propertyItemTitle) : $item->displayTitle());
+            $itemDescription =  $this->snippet($propertyItemDescription ? (string) $item->value($propertyItemDescription) : $item->displayDescription(), 200);
             $itemDatesEnd = $propertyItemDateEnd
                 ? $item->value($propertyItemDateEnd, ['all' => true, 'type' => 'literal', 'default' => []])
                 : [];
@@ -372,7 +362,7 @@ class TimelineData extends AbstractPlugin
      */
     protected function snippet($string, $length)
     {
-        $str = strip_tags($string);
+        $str = strip_tags((string) $string);
         return mb_strlen($str) <= $length ? $str : mb_substr($str, 0, $length - 1) . '&hellip;';
     }
 

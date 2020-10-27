@@ -53,7 +53,7 @@ msgstr "Entête du bloc."
 
 #: src/Form/TimelineFieldset.php:32
 msgid "Item title"
-msgstr "Titre de l'objet"
+msgstr "Titre de l’objet"
 
 #: src/Form/TimelineFieldset.php:33 src/Form/TimelineFieldset.php:46
 #: src/Form/TimelineFieldset.php:59 src/Form/TimelineExhibitFieldset.php:46
@@ -64,15 +64,15 @@ msgstr "Choisir une propriété…"
 
 #: src/Form/TimelineFieldset.php:45
 msgid "Item description"
-msgstr "Description de l'objet"
+msgstr "Description de l’objet"
 
 #: src/Form/TimelineFieldset.php:58
 msgid "Item date"
-msgstr "Date de l'objet"
+msgstr "Date de l’objet"
 
 #: src/Form/TimelineFieldset.php:71
 msgid "Item end date"
-msgstr "Date de fin de l'objet"
+msgstr "Date de fin de l’objet"
 
 #: src/Form/TimelineFieldset.php:72
 msgid "If set, the process will use the other date as a start date."
@@ -200,7 +200,7 @@ msgstr "Propriété pour la date de fin"
 #: src/Form/TimelineExhibitFieldset.php:55
 msgid "End date to use from the attachement when no end date is set."
 msgstr ""
-"Date de fin du document attaché à utiliser lorsque aucune date de fin n’'est "
+"Date de fin du document attaché à utiliser lorsque aucune date de fin n’est "
 "indiquée."
 
 #: src/Form/TimelineExhibitFieldset.php:70
@@ -212,7 +212,7 @@ msgid ""
 "Credit to use from the attachement when no credit is set (generally creator "
 "or rights)."
 msgstr ""
-"Propriété du document attaché à utiliser lorsque aucun crédit n’'est indiqué "
+"Propriété du document attaché à utiliser lorsque aucun crédit n’est indiqué "
 "(généralement Créateur ou Droits)."
 
 #: src/Form/TimelineExhibitFieldset.php:86
@@ -382,7 +382,7 @@ msgstr "Exposition en frise chronologique"
 
 #~ msgid "Cannot associate the timeline with a user who doesn't exist."
 #~ msgstr ""
-#~ "Impossible d'associer la chronologie avec un utilisateur qui n'existe pas."
+#~ "Impossible d’associer la chronologie avec un utilisateur qui n’existe pas."
 
 #~ msgid "Neatline Time | Add a Timeline"
 #~ msgstr "Neatline Time | Ajouter une chronologie"
@@ -394,10 +394,10 @@ msgstr "Exposition en frise chronologique"
 #~ msgstr "Modifier les métadonnées"
 
 #~ msgid "Edit Item Query"
-#~ msgstr "Modifier la requête de l'objet"
+#~ msgstr "Modifier la requête de l’objet"
 
 #~ msgid "There are no timelines."
-#~ msgstr "Il n'y a pas de chronologies."
+#~ msgstr "Il n’y a pas de chronologies."
 
 #~ msgid "Neatline Time | Edit \"%s\" Metadata"
 #~ msgstr "Neatline Time | Modifier les métadonnées de \"%s\""
@@ -425,4 +425,4 @@ msgstr "Exposition en frise chronologique"
 #~ msgstr "Feuilleter les chronologies"
 
 #~ msgid "You have no timelines."
-#~ msgstr "Vous n'avez pas de chronologies."
+#~ msgstr "Vous n’avez pas de chronologies."

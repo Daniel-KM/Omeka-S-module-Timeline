@@ -163,6 +163,10 @@ class Timeline extends AbstractBlockLayout
     protected function itemCount($data)
     {
         $params = $data['query'];
+        // Don't load entities if the only information needed is total results.
+        if (empty($params['limit'])) {
+            $params['limit'] = 0;
+        }
         // Add the param for the date: return only if not empty.
         $params['property'][] = ['joiner' => 'and', 'property' => $data['item_date_id'], 'type' => 'ex'];
         return $this->api->search('items', $params)->getTotalResults();

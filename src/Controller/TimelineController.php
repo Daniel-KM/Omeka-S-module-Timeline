@@ -26,7 +26,7 @@ class TimelineController extends AbstractActionController
 
         $layout = $block->getLayout();
         if (!in_array($layout, ['timeline', 'timelineExhibit'])) {
-            throw new NotFoundException(new Message(
+            throw new NotFoundException((string) new Message(
                 'Id %d is not a timeline.', // @translate
                 $blockId
             ));
@@ -72,7 +72,7 @@ class TimelineController extends AbstractActionController
 
         $entity = $qb->getQuery()->getOneOrNullResult();
         if (!$entity) {
-            throw new NotFoundException(new Message(
+            throw new NotFoundException((string) new Message(
                 '%s entity with criteria %s not found', // @translate
                 $entityClass,
                 json_encode(['id' => $blockId])

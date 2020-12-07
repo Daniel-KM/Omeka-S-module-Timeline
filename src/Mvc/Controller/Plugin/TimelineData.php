@@ -385,7 +385,7 @@ class TimelineData extends AbstractPlugin
      */
     protected function textToId($text, $prepend = null, $delimiter = '-')
     {
-        $text = mb_strtolower($text);
+        $text = mb_strtolower((string) $text);
         $id = preg_replace('/\s/', $delimiter, $text);
         $id = preg_replace('/[^\w\-]/', '', $id);
         $id = trim($id, $delimiter);

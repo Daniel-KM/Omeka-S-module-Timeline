@@ -2,16 +2,13 @@ Timeline (module for Omeka S)
 =============================
 
 > __New versions of this module and support for Omeka S version 3.0 and above
-> are available on [GitLab], which seems to respect users and privacy better.__
+> are available on [GitLab], which seems to respect users and privacy better
+> than the previous repository.__
 
 [![Build Status](https://travis-ci.org/Daniel-KM/Omeka-S-module-Timeline.svg?branch=develop,master)](https://travis-ci.org/Daniel-KM/Omeka-S-module-Timeline)
 
 [Timeline] is a module for [Omeka S] that integrates the [SIMILE Timeline]
 widget and the online [Knightlab timeline] to create timelines.
-
-This [Omeka S] module is a full rewrite of the [fork of NeatlineTime plugin] for
-[Omeka Classic]. The original NeatlineTime plugin was created by the [Scholars’ Lab]
-at the University of Virginia Library and improved by various authors.
 
 
 Installation
@@ -25,6 +22,17 @@ Note: If Omeka is https, if external assets are used, and if the Simile library
 is used, the library will not load on recent browsers, because the online
 library contains an url with unsecure http. In that case, you need to set the
 option "Use Internal library for Simile".
+
+
+Usage
+-----
+
+Once enabled, the module adds two new block for site pages. The first allows to
+create an automatic timeline, the other one an exhibit with selected items.
+Simply select one of them and config it (the item pool and eventually the
+options). Furthermore, any timeline can be created dynamically via `/api/timeline`.
+
+### Fields
 
 Choose which fields you want the module to use on the timeline by default.
 
@@ -47,14 +55,14 @@ Choose which fields you want the module to use on the timeline by default.
 
 All these parameters can be customized for each timeline.
 
+### Url for the dynamic json
 
-Usage
------
+The json is available at "/api/timeline?block-id=xxx". This url supports any
+dynamic standard item query too if you want to get the json without a block.
+The old "/timeline" is deprecated and will be removed in a future version.
 
-Once enabled, the module adds two new block for site pages. The first allows to
-create an automatic timeline, the other one an exhibit with selected items.
-Simply select one of them and config it (the item pool and eventually the
-options).
+By default, the timeline is formatted for Simile. To get the Knightlab format,
+append `?output=knightlab` to the query.
 
 ### Add a Timeline Block or an Timeline Exhibit
 
@@ -198,6 +206,7 @@ TODO
 
 - [ ] Integrate attachments for the exhibit and improve the form (hide all by default except resource),
 - [ ] Integrate Numeric data type Interval and Duration (?).
+- [ ] Create the json for knightlab directly from the controller, not the js in view.
 
 
 Warning
@@ -262,6 +271,10 @@ Copyright
 * Gillian Price (Spanish)
 * Oguljan Reyimbaeva (Russian)
 * Katina Rogers (French)
+
+This [Omeka S] module is a full rewrite of the [fork of NeatlineTime plugin] for
+[Omeka Classic]. The original NeatlineTime plugin was created by the [Scholars’ Lab]
+at the University of Virginia Library and improved by various authors.
 
 
 [Timeline]: https://gitlab.com/Daniel-KM/Omeka-S-module-Timeline

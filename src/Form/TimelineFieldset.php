@@ -5,7 +5,6 @@ namespace Timeline\Form;
 use Laminas\Form\Element;
 use Laminas\Form\Fieldset;
 use Omeka\Form\Element\PropertySelect;
-use Timeline\Mvc\Controller\Plugin\TimelineData;
 
 class TimelineFieldset extends Fieldset
 {
@@ -96,10 +95,10 @@ class TimelineFieldset extends Fieldset
                     'label' => 'Render year', // @translate
                     'info' => 'When a date is a single year, like "1066", the value should be interpreted to be displayed on the timeline.', // @translate
                     'value_options' => [
-                        TimelineData::RENDER_YEAR_JANUARY_1 => 'Pick first January', // @translate
-                        TimelineData::RENDER_YEAR_JULY_1 => 'Pick first July', // @translate
-                        TimelineData::RENDER_YEAR_FULL_YEAR => 'Mark entire year', // @translate
-                        TimelineData::RENDER_YEAR_SKIP => 'Skip the record', // @translate
+                        'january_1' => 'Pick first January', // @translate
+                        'july_1' => 'Pick first July', // @translate
+                        'full_year' => 'Mark entire year', // @translate
+                        'skip' => 'Skip the resource', // @translate
                     ],
                 ],
             ])

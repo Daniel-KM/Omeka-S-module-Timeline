@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 namespace Timeline;
 
 return [
@@ -26,29 +27,47 @@ return [
     ],
     'controllers' => [
         'factories' => [
-            Controller\TimelineController::class => Service\Controller\TimelineControllerFactory::class,
+            Controller\ApiController::class => Service\Controller\ApiControllerFactory::class,
         ],
     ],
     'controller_plugins' => [
         'invokables' => [
-            'timelineData' => Mvc\Controller\Plugin\TimelineData::class,
             'timelineExhibitData' => Mvc\Controller\Plugin\TimelineExhibitData::class,
+            'timelineKnightlab' => Mvc\Controller\Plugin\TimelineKnightlab::class,
+            'timelineSimile' => Mvc\Controller\Plugin\TimelineSimile::class,
         ],
     ],
     'router' => [
         'routes' => [
-            // TODO Replace the timeline block route by a site and admin child routes?
+            'api' => [
+                'child_routes' => [
+                    'timeline' => [
+                        'type' => \Laminas\Router\Http\Segment::class,
+                        'options' => [
+                            'route' => '/timeline[/:block-id]',
+                            'constraints' => [
+                                'block-id' => '\d+',
+                            ],
+                            'defaults' => [
+                                'controller' => Controller\ApiController::class,
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+            // @deprecated Use /api/timeline instead.
             'timeline-block' => [
-                'type' => 'Segment',
+                'type' => \Laminas\Router\Http\Segment::class,
                 'options' => [
                     'route' => '/timeline/:block-id/events.json',
                     'constraints' => [
                         'block-id' => '\d+',
                     ],
                     'defaults' => [
-                        '__NAMESPACE__' => 'Timeline\Controller',
-                        'controller' => 'TimelineController',
-                        'action' => 'events',
+//                         '__NAMESPACE__' => 'Timeline\Controller',
+//                         'controller' => 'ApiController',
+                        'controller' => Controller\ApiController::class,
+                        'action' => 'getList',
                     ],
                 ],
             ],
@@ -72,7 +91,6 @@ return [
                 'item_description' => 'default',
                 'item_date' => 'dcterms:date',
                 'item_date_end' => '',
-                // 'render_year' => \Timeline\Mvc\Controller\Plugin\TimelineData::RENDER_YEAR_DEFAULT,
                 'render_year' => 'january_1',
                 'center_date' => '9999-99-99',
                 'thumbnail_type' => 'medium',

@@ -106,6 +106,7 @@ class Timeline extends AbstractBlockLayout
         $data = $block->data();
 
         $library = $data['library'];
+        // Simile online seems to be broken, so use local one currently.
         if ($library === 'simile_online') {
             $library = 'simile';
         }

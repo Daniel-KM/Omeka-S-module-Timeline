@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 namespace Timeline;
 
 use Laminas\Mvc\MvcEvent;
@@ -16,8 +17,12 @@ class Module extends AbstractModule
     {
         parent::onBootstrap($event);
 
-        $acl = $this->getServiceLocator()->get('Omeka\Acl');
-        $acl->allow(null, [\Timeline\Controller\TimelineController::class]);
+        $this->getServiceLocator()->get('Omeka\Acl')
+            ->allow(
+                null,
+                [
+                    \Timeline\Controller\ApiController::class,
+                ]);
     }
 
     public function upgrade(

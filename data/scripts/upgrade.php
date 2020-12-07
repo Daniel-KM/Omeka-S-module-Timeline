@@ -1,6 +1,9 @@
 <?php declare(strict_types=1);
 namespace Timeline;
 
+use Omeka\Mvc\Controller\Plugin\Messenger;
+use Omeka\Stdlib\Message;
+
 /**
  * @var Module $this
  * @var \Laminas\ServiceManager\ServiceLocatorInterface $serviceLocator
@@ -77,4 +80,12 @@ if (version_compare($oldVersion, '3.4.7', '<')) {
         $entityManager->persist($block);
     }
     $entityManager->flush();
+}
+
+if (version_compare($oldVersion, '3.4.13.3', '<')) {
+    $messenger = new Messenger();
+    $message = new Message(
+        'The json is now built dynamically from the url /api/timeline.' // @translate
+    );
+    $messenger->addWarning($message);
 }

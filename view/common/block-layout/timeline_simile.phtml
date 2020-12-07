@@ -22,7 +22,7 @@ $escape = $this->plugin('escapeHtml');
 
         oTimeline.loadTimeline(
             'timeline-<?= $block->id() ?>',
-            <?= json_encode($this->url('timeline-block', ['block-id' => $block->id()]), 320) ?>,
+            <?= json_encode($this->url('api/timeline', ['block-id' => $block->id()]), 320) ?>,
             params
         );
     });

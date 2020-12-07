@@ -8,8 +8,8 @@
 
 $escape = $this->plugin('escapeHtml');
 
-$url = json_encode($this->url('timeline-block', ['block-id' => $block->id()]), 320);
 $blockId = $block->id();
+$url = json_encode($this->url('api/timeline', ['block-id' => $blockId]), 320);
 
 // @see https://timeline.knightlab.com/docs/options.html
 $options = json_decode($options, true) ?: [];

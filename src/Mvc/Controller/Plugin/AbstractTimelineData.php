@@ -5,16 +5,18 @@ namespace Timeline\Mvc\Controller\Plugin;
 use DateTime;
 use Laminas\Mvc\Controller\Plugin\AbstractPlugin;
 
-class TimelineData extends AbstractPlugin
+abstract class AbstractTimelineData extends AbstractPlugin
 {
-    const RENDER_YEAR_JANUARY_1 = 'january_1';
-    const RENDER_YEAR_JULY_1 = 'july_1';
-    const RENDER_YEAR_DECEMBER_31 = 'december_31';
-    const RENDER_YEAR_JUNE_30 = 'june_30';
-    const RENDER_YEAR_FULL_YEAR = 'full_year';
-    // Render a year as a range: use convertSingleDate().
-    const RENDER_YEAR_SKIP = 'skip';
-    const RENDER_YEAR_DEFAULT = self::RENDER_YEAR_JANUARY_1;
+    public static $renderYears = [
+        'january_1' => 'january_1',
+        'july_1' => 'july_1',
+        'december_31' => 'december_31',
+        'june_30' => 'june_30',
+        'full_year' => 'full_year',
+        // Render a year as a range: use convertSingleDate().
+        'skip' => 'skip',
+        'default' => 'january_1',
+    ];
 
     protected $renderYear;
 
@@ -29,14 +31,12 @@ class TimelineData extends AbstractPlugin
     {
         $events = [];
 
-        $this->renderYear = isset($args['render_year'])
-            ? $args['render_year']
-            : self::RENDER_YEAR_DEFAULT;
+        $this->renderYear = $args['render_year'] ?? static::$renderYears['default'];
 
         $propertyItemTitle = $args['item_title'] === 'default' ? '' : $args['item_title'];
         $propertyItemDescription = $args['item_description'] === 'default' ? '' : $args['item_description'];
         $propertyItemDate = $args['item_date'];
-        $propertyItemDateEnd = isset($args['item_date_end']) ? $args['item_date_end'] : null;
+        $propertyItemDateEnd = $args['item_date_end'] ?? null;
         $thumbnailType = empty($args['thumbnail_type']) ? 'medium' : $args['thumbnail_type'];
         $thumbnailResource = !empty($args['thumbnail_resource']);
 
@@ -51,7 +51,7 @@ class TimelineData extends AbstractPlugin
             // All items without dates are already automatically removed.
             $itemDates = $item->value($propertyItemDate, ['all' => true]);
             $itemTitle = strip_tags($propertyItemTitle ? (string) $item->value($propertyItemTitle) : $item->displayTitle());
-            $itemDescription =  $this->snippet($propertyItemDescription ? (string) $item->value($propertyItemDescription) : $item->displayDescription(), 200);
+            $itemDescription = $this->snippet($propertyItemDescription ? (string) $item->value($propertyItemDescription) : $item->displayDescription(), 200);
             $itemDatesEnd = $propertyItemDateEnd
                 ? $item->value($propertyItemDateEnd, ['all' => true])
                 : [];
@@ -149,21 +149,21 @@ class TimelineData extends AbstractPlugin
                 ? '-' . str_pad(mb_substr($date, 1), 4, '0', STR_PAD_LEFT)
                 : str_pad($date, 4, '0', STR_PAD_LEFT);
             switch ($renderYear) {
-                case self::RENDER_YEAR_JANUARY_1:
+                case static::$renderYears['january_1']:
                     $date_out = $date . '-01-01' . 'T00:00:00+00:00';
                     break;
-                case self::RENDER_YEAR_JULY_1:
+                case static::$renderYears['july_1']:
                     $date_out = $date . '-07-01' . 'T00:00:00+00:00';
                     break;
-                case self::RENDER_YEAR_DECEMBER_31:
+                case static::$renderYears['december_31']:
                     $date_out = $date . '-12-31' . 'T00:00:00+00:00';
                     break;
-                case self::RENDER_YEAR_JUNE_30:
+                case static::$renderYears['june_30']:
                     $date_out = $date . '-06-30' . 'T00:00:00+00:00';
                     break;
-                case self::RENDER_YEAR_FULL_YEAR:
+                case static::$renderYears['full_year']:
                     // Render a year as a range: use timeline_convert_single_date().
-                case self::RENDER_YEAR_SKIP:
+                case static::$renderYears['skip']:
                 default:
                     $date_out = false;
                     break;
@@ -252,9 +252,9 @@ class TimelineData extends AbstractPlugin
         }
 
         // Manage a special case for render "full_year" with a single number.
-        if ($renderYear == self::RENDER_YEAR_FULL_YEAR && preg_match('/^-?\d{1,4}$/', $date)) {
-            $dateStartValue = $this->convertDate(strval($date), self::RENDER_YEAR_JANUARY_1);
-            $dateEndValue = $this->convertDate(strval($date), self::RENDER_YEAR_DECEMBER_31);
+        if ($renderYear == static::$renderYears['full_year'] && preg_match('/^-?\d{1,4}$/', $date)) {
+            $dateStartValue = $this->convertDate(strval($date), static::$renderYears['january_1']);
+            $dateEndValue = $this->convertDate(strval($date), static::$renderYears['december_31']);
             return [$dateStartValue, $dateEndValue];
         }
 
@@ -286,7 +286,7 @@ class TimelineData extends AbstractPlugin
         $dateEnd = $dates[1];
 
         // Check if the date are two numbers (years).
-        if ($renderYear == self::RENDER_YEAR_SKIP) {
+        if ($renderYear == static::$renderYears['skip']) {
             $dateStartValue = $this->convertDate(strval($dateStart), $renderYear);
             $dateEndValue = $this->convertDate(strval($dateEnd), $renderYear);
             return [$dateStartValue, $dateEndValue];
@@ -302,8 +302,8 @@ class TimelineData extends AbstractPlugin
             }
             // Force the format for the end.
             $dateStartValue = $this->convertDate(strval($dateStart), $renderYear);
-            if ($renderYear == self::RENDER_YEAR_FULL_YEAR) {
-                $renderYear = self::RENDER_YEAR_DECEMBER_31;
+            if ($renderYear == static::$renderYears['full_year']) {
+                $renderYear = static::$renderYears['december_31'];
             }
             $dateEndValue = $this->convertDate(strval($dateEnd), $renderYear);
             return [$dateStartValue, $dateEndValue];
@@ -312,8 +312,8 @@ class TimelineData extends AbstractPlugin
         elseif (!preg_match('/^-?\d{1,4}$/', $dateEnd)) {
             // Force the format of the start.
             $dateEndValue = $this->convertDate(strval($dateEnd), $renderYear);
-            if ($renderYear == self::RENDER_YEAR_FULL_YEAR) {
-                $renderYear = self::RENDER_YEAR_JANUARY_1;
+            if ($renderYear == static::$renderYears['full_year']) {
+                $renderYear = static::$renderYears['january_1'];
             }
             $dateStartValue = $this->convertDate(strval($dateStart), $renderYear);
             return [$dateStartValue, $dateEndValue];
@@ -324,8 +324,8 @@ class TimelineData extends AbstractPlugin
 
         // Same years.
         if ($dateStart == $dateEnd) {
-            $dateStartValue = $this->convertDate(strval($dateStart), self::RENDER_YEAR_JANUARY_1);
-            $dateEndValue = $this->convertDate(strval($dateEnd), self::RENDER_YEAR_DECEMBER_31);
+            $dateStartValue = $this->convertDate(strval($dateStart), static::$renderYears['january_1']);
+            $dateEndValue = $this->convertDate(strval($dateEnd), static::$renderYears['december_31']);
             return [$dateStartValue, $dateEndValue];
         }
 
@@ -337,18 +337,18 @@ class TimelineData extends AbstractPlugin
         }
 
         switch ($renderYear) {
-            case self::RENDER_YEAR_JULY_1:
-                $dateStartValue = $this->convertDate(strval($dateStart), self::RENDER_YEAR_JULY_1);
-                $dateEndValue = $this->convertDate(strval($dateEnd), self::RENDER_YEAR_JUNE_30);
+            case static::$renderYears['july_1']:
+                $dateStartValue = $this->convertDate(strval($dateStart), static::$renderYears['july_1']);
+                $dateEndValue = $this->convertDate(strval($dateEnd), static::$renderYears['june_30']);
                 return [$dateStartValue, $dateEndValue];
-            case self::RENDER_YEAR_JANUARY_1:
-                $dateStartValue = $this->convertDate(strval($dateStart), self::RENDER_YEAR_JANUARY_1);
-                $dateEndValue = $this->convertDate(strval($dateEnd), self::RENDER_YEAR_JANUARY_1);
+            case static::$renderYears['january_1']:
+                $dateStartValue = $this->convertDate(strval($dateStart), static::$renderYears['january_1']);
+                $dateEndValue = $this->convertDate(strval($dateEnd), static::$renderYears['january_1']);
                 return [$dateStartValue, $dateEndValue];
-            case self::RENDER_YEAR_FULL_YEAR:
+            case static::$renderYears['full_year']:
             default:
-                $dateStartValue = $this->convertDate(strval($dateStart), self::RENDER_YEAR_JANUARY_1);
-                $dateEndValue = $this->convertDate(strval($dateEnd), self::RENDER_YEAR_DECEMBER_31);
+                $dateStartValue = $this->convertDate(strval($dateStart), static::$renderYears['january_1']);
+                $dateEndValue = $this->convertDate(strval($dateEnd), static::$renderYears['december_31']);
                 return [$dateStartValue, $dateEndValue];
         }
     }

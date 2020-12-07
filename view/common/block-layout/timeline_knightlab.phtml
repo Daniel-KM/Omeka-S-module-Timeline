@@ -22,7 +22,7 @@ jQuery(document).ready(function($) {
     var centerDate = <?= json_encode($data['center_date']) ?>;
     <?php endif; ?>
     // Get the location for the json data.
-    var jsonTimelineUri = <?= json_encode($this->url('timeline-block', ['block-id' => $block->id()]), 320) ?>;
+    var jsonTimelineUri = <?= json_encode($this->url('api/timeline', ['block-id' => $block->id()]), 320) ?>;
 
     $.getJSON(jsonTimelineUri, function(data) {
         // console.log('data ', data);

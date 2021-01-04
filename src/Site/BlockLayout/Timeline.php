@@ -40,18 +40,21 @@ class Timeline extends AbstractBlockLayout
     {
         $data = $block->getData();
 
-        $data['viewer'] = trim($data['viewer']);
+        $data['viewer'] = trim($data['viewer'] ?? '{}');
         if ($data['viewer'] === '') {
             $data['viewer'] = '{}';
         }
 
         $property = $this->api
-            ->searchOne('properties', ['term' => $data['item_date']])
+            ->searchOne('properties', ['term' => $data['item_date'] ?? 'dcterms:date'])
             ->getContent();
         $data['item_date_id'] = (string) $property->id();
 
-        $query = [];
-        parse_str($data['query'], $query);
+        $query = $data['query'] ?? [];
+        if (is_string($query)) {
+            $query = [];
+            parse_str($data['query'], $query);
+        }
         $data['query'] = $query;
 
         $block->setData($data);
@@ -164,6 +167,12 @@ class Timeline extends AbstractBlockLayout
     protected function itemCount($data)
     {
         $params = $data['query'];
+
+        // Fixes some bad upgrades to 3.4.13.3.
+        if (is_string($params)) {
+            parse_str($data['query'], $params);
+        }
+
         // Don't load entities if the only information needed is total results.
         if (empty($params['limit'])) {
             $params['limit'] = 0;

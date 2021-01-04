@@ -70,7 +70,7 @@ class TimelineExhibit extends AbstractBlockLayout
         $data['slides'] = array_values(
             array_map(function ($v) {
                 return array_map(function ($w) {
-                    $w = trim($w);
+                    $w = trim((string) $w);
                     return strlen($w) ? $w : null;
                 }, $v);
             }, $data['slides'])

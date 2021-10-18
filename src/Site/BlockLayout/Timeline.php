@@ -77,7 +77,7 @@ class Timeline extends AbstractBlockLayout
             $itemCount = $this->itemCount($data);
             if (is_array($data['query'])) {
                 $data['query'] = urldecode(
-                    http_build_query($data['query'], "\n", '&', PHP_QUERY_RFC3986)
+                    http_build_query($data['query'], '', '&', PHP_QUERY_RFC3986)
                 );
             }
         } else {

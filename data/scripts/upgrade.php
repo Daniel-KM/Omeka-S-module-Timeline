@@ -27,7 +27,7 @@ SELECT id, data
 FROM site_page_block
 WHERE layout = 'timeline';
 SQL;
-    $stmt = $connection->query($sql);
+    $stmt = $connection->executeQuery($sql);
     $timelines = $stmt->fetchAll(\PDO::FETCH_KEY_PAIR);
     foreach ($timelines as $id => $data) {
         $data = json_decode($data, true);

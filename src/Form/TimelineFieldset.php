@@ -4,7 +4,7 @@ namespace Timeline\Form;
 
 use Laminas\Form\Element;
 use Laminas\Form\Fieldset;
-use Omeka\Form\Element\PropertySelect;
+use Omeka\Form\Element as OmekaElement;
 
 class TimelineFieldset extends Fieldset
 {
@@ -27,7 +27,7 @@ class TimelineFieldset extends Fieldset
             ])
             ->add([
                 'name' => 'o:block[__blockIndex__][o:data][item_title]',
-                'type' => PropertySelect::class,
+                'type' => OmekaElement\PropertySelect::class,
                 'options' => [
                     'label' => 'Item title', // @translate
                     'empty_option' => '',
@@ -37,6 +37,7 @@ class TimelineFieldset extends Fieldset
                     ],
                 ],
                 'attributes' => [
+                    'id' => 'timeline-item-title',
                     'required' => false,
                     'class' => 'chosen-select',
                     'data-placeholder' => 'Select a property…', // @translate
@@ -44,7 +45,7 @@ class TimelineFieldset extends Fieldset
             ])
             ->add([
                 'name' => 'o:block[__blockIndex__][o:data][item_description]',
-                'type' => PropertySelect::class,
+                'type' => OmekaElement\PropertySelect::class,
                 'options' => [
                     'label' => 'Item description', // @translate
                     'empty_option' => '',
@@ -54,6 +55,7 @@ class TimelineFieldset extends Fieldset
                     ],
                 ],
                 'attributes' => [
+                    'id' => 'timeline-item-description',
                     'required' => false,
                     'class' => 'chosen-select',
                     'data-placeholder' => 'Select a property…', // @translate
@@ -61,13 +63,14 @@ class TimelineFieldset extends Fieldset
             ])
             ->add([
                 'name' => 'o:block[__blockIndex__][o:data][item_date]',
-                'type' => PropertySelect::class,
+                'type' => OmekaElement\PropertySelect::class,
                 'options' => [
                     'label' => 'Item date', // @translate
                     'empty_option' => '',
                     'term_as_value' => true,
                 ],
                 'attributes' => [
+                    'id' => 'timeline-item-date',
                     'required' => true,
                     'class' => 'chosen-select',
                     'data-placeholder' => 'Select a property…', // @translate
@@ -75,7 +78,7 @@ class TimelineFieldset extends Fieldset
             ])
             ->add([
                 'name' => 'o:block[__blockIndex__][o:data][item_date_end]',
-                'type' => PropertySelect::class,
+                'type' => OmekaElement\PropertySelect::class,
                 'options' => [
                     'label' => 'Item end date', // @translate
                     'info' => 'If set, the process will use the other date as a start date.', // @translate
@@ -83,6 +86,7 @@ class TimelineFieldset extends Fieldset
                     'term_as_value' => true,
                 ],
                 'attributes' => [
+                    'id' => 'timeline-item-date-end',
                     'class' => 'chosen-select',
                     'data-placeholder' => 'Select a property…', // @translate
                 ],
@@ -101,6 +105,9 @@ class TimelineFieldset extends Fieldset
                         'skip' => 'Skip the resource', // @translate
                     ],
                 ],
+                'attributes' => [
+                    'id' => 'timeline-render-year',
+                ],
             ])
             ->add([
                 'name' => 'o:block[__blockIndex__][o:data][center_date]',
@@ -111,6 +118,9 @@ class TimelineFieldset extends Fieldset
                 ],
                 'validators' => [
                     ['name' => 'Date'],
+                ],
+                'attributes' => [
+                    'id' => 'timeline-center-date',
                 ],
             ])
             ->add([
@@ -126,6 +136,7 @@ class TimelineFieldset extends Fieldset
                     ],
                 ],
                 'attributes' => [
+                    'id' => 'timeline-thumbnail-type',
                     'required' => true,
                 ],
             ])
@@ -136,6 +147,7 @@ class TimelineFieldset extends Fieldset
                     'label' => 'Use the specific thumbnail of the resource if any', // @translate
                 ],
                 'attributes' => [
+                    'id' => 'timeline-thumbnail-resource',
                     'required' => false,
                 ],
             ])
@@ -148,15 +160,21 @@ class TimelineFieldset extends Fieldset
                     'documentation' => 'https://gitlab.com/daniel-km/omeka-s-module-timeline#parameters-of-the-viewer',
                 ],
                 'attributes' => [
+                    'id' => 'timeline-viewer',
                     'rows' => 5,
                 ],
             ])
             ->add([
                 'name' => 'o:block[__blockIndex__][o:data][query]',
-                'type' => Element\Text::class,
+                'type' => OmekaElement\Query::class,
                 'options' => [
-                    'label' => 'Query to limit resources', // @translate
-                    'info' => 'Limit the timeline to a particular subset of resources, for example a site, via an advanced search query.', // @translate
+                    'label' => 'Search pool query', // @translate
+                    'info' => 'Restrict timeline to a particular subset of resources, for example a site.', // @translate
+                    'query_resource_type' => null,
+                    'query_partial_excludelist' => ['common/advanced-search/site'],
+                ],
+                'attributes' => [
+                    'id' => 'timeline-query',
                 ],
             ])
             ->add([
@@ -172,6 +190,7 @@ class TimelineFieldset extends Fieldset
                     ],
                 ],
                 'attributes' => [
+                    'id' => 'timeline-library',
                     'required' => true,
                 ],
             ]);

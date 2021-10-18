@@ -92,6 +92,8 @@ class Timeline extends AbstractBlockLayout
         }
 
         $fieldset = $formElementManager->get($blockFieldset);
+        $fieldset->get('o:block[__blockIndex__][o:data][query]')
+            ->setOption('query_resource_type', $data['resource_type'] ?? 'items');
         $fieldset->populateValues($dataForm);
 
         return $view->partial(

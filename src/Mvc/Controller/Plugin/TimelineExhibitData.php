@@ -298,7 +298,7 @@ class TimelineExhibitData extends AbstractPlugin
             } elseif (in_array($primaryMedia->extension(), $this->mediaExtensions)) {
                 $media['url'] = $primaryMedia->originalUrl();
             } else {
-                $data = $media->mediaData();
+                $data = $primaryMedia->mediaData();
                 switch ($primaryMedia->renderer()) {
                     case 'file':
                         // May use embed.ly for unmanaged formats.
@@ -314,7 +314,7 @@ class TimelineExhibitData extends AbstractPlugin
                         } elseif (!empty($data['html'])) {
                             $media['url'] = '<blockquote>' . $data['html'] . '</blockquote>';
                         } else {
-                            $media['url'] = $media->source();
+                            $media['url'] = $primaryMedia->source();
                         }
                         break;
                     case 'youtube':
@@ -331,7 +331,7 @@ class TimelineExhibitData extends AbstractPlugin
                         break;
                     case 'iiif':
                     default:
-                        $media['url'] = '<blockquote>' . $media->render() . '</blockquote>';
+                        $media['url'] = '<blockquote>' . $primaryMedia->render() . '</blockquote>';
                         break;
                 }
             }

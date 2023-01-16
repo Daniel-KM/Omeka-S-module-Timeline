@@ -1,24 +1,27 @@
 <?php declare(strict_types=1);
+
 namespace Timeline;
 
-use Omeka\Mvc\Controller\Plugin\Messenger;
 use Omeka\Stdlib\Message;
 
 /**
  * @var Module $this
- * @var \Laminas\ServiceManager\ServiceLocatorInterface $serviceLocator
+ * @var \Laminas\ServiceManager\ServiceLocatorInterface $services
  * @var string $newVersion
  * @var string $oldVersion
  *
+ * @var \Omeka\Api\Manager $api
+ * @var \Omeka\Settings\Settings $settings
  * @var \Doctrine\DBAL\Connection $connection
  * @var \Doctrine\ORM\EntityManager $entityManager
- * @var \Omeka\Api\Manager $api
+ * @var \Omeka\Mvc\Controller\Plugin\Messenger $messenger
  */
-$services = $serviceLocator;
+$plugins = $services->get('ControllerPluginManager');
+$api = $plugins->get('api');
 $settings = $services->get('Omeka\Settings');
 $connection = $services->get('Omeka\Connection');
+$messenger = $plugins->get('messenger');
 $entityManager = $services->get('Omeka\EntityManager');
-$config = require dirname(__DIR__, 2) . '/config/module.config.php';
 
 if (version_compare($oldVersion, '3.4.6', '<')) {
     // Replace item pool by a search query.
@@ -27,8 +30,7 @@ SELECT id, data
 FROM site_page_block
 WHERE layout = 'timeline';
 SQL;
-    $stmt = $connection->executeQuery($sql);
-    $timelines = $stmt->fetchAll(\PDO::FETCH_KEY_PAIR);
+    $timelines = $connection->executeQuery($sql)->fetchAllKeyValue();
     foreach ($timelines as $id => $data) {
         $data = json_decode($data, true);
         $data['args']['query'] = empty($data['item_pool']) ? [] : $data['item_pool'];
@@ -47,7 +49,7 @@ UPDATE site_page_block
 SET data = $data
 WHERE id = $id;
 SQL;
-        $connection->exec($sql);
+        $connection->executeStatement($sql);
     }
 }
 
@@ -83,7 +85,7 @@ if (version_compare($oldVersion, '3.4.7', '<')) {
 }
 
 if (version_compare($oldVersion, '3.4.13.3', '<')) {
-    $messenger = new Messenger();
+    $messenger = $services->get('ControllerPluginManager')->get('messenger');
     $message = new Message(
         'The json is now built dynamically from the url /api/timeline.' // @translate
     );

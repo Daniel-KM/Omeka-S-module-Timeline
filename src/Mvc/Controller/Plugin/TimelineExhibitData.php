@@ -608,7 +608,7 @@ class TimelineExhibitData extends AbstractPlugin
         // for simplicity, according to most common use cases.
         elseif (($timestamp = strtotime($dateTime)) !== false) {
             $dateTimeO = new DateTime();
-            $dateTime->setTimestamp($timestamp);
+            $dateTimeO->setTimestamp($timestamp);
             $parts['year'] = (int) $dateTimeO->format('Y');
             $parts['month'] = (int) $dateTimeO->format('m');
             $parts['day'] = (int) $dateTimeO->format('d');

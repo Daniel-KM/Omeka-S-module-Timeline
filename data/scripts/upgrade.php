@@ -23,6 +23,8 @@ $connection = $services->get('Omeka\Connection');
 $messenger = $plugins->get('messenger');
 $entityManager = $services->get('Omeka\EntityManager');
 
+$localConfig = require dirname(__DIR__, 2) . '/config/module.config.php';
+
 if (version_compare($oldVersion, '3.4.6', '<')) {
     // Replace item pool by a search query.
     $sql = <<<'SQL'
@@ -54,7 +56,7 @@ SQL;
 }
 
 if (version_compare($oldVersion, '3.4.7', '<')) {
-    $timelineLibrary = $settings->get('timeline_library', $config['timeline']['block_settings']['timeline']['library']);
+    $timelineLibrary = $settings->get('timeline_library', $localConfig['timeline']['block_settings']['timeline']['library']);
     $internalAssets = $settings->get('timeline_internal_assets', true);
     if ($timelineLibrary === 'simile' && !$internalAssets) {
         $timelineLibrary = 'simile_online';
@@ -85,9 +87,33 @@ if (version_compare($oldVersion, '3.4.7', '<')) {
 }
 
 if (version_compare($oldVersion, '3.4.13.3', '<')) {
-    $messenger = $services->get('ControllerPluginManager')->get('messenger');
     $message = new Message(
         'The json is now built dynamically from the url /api/timeline.' // @translate
+    );
+    $messenger->addWarning($message);
+}
+
+if (version_compare($oldVersion, '3.4.19', '<')) {
+    // Fix a possible issue in upgrade 3.4.7.
+    $repository = $entityManager->getRepository(\Omeka\Entity\SitePageBlock::class);
+    /** @var \Omeka\Entity\SitePageBlock[] $blocks */
+    $blocks = $repository->findBy(['layout' => 'timeline']);
+    foreach ($blocks as $block) {
+        $data = $block->getData();
+        if (empty($data['query'])) {
+            $data['query'] = [];
+        } elseif (is_string($data['query'])) {
+            $query = [];
+            parse_str($data['query'], $query);
+            $data['query'] = $query;
+        }
+        $block->setData($data);
+        $entityManager->persist($block);
+    }
+    $entityManager->flush();
+
+    $message = new Message(
+        'The next version (3.4.20) will require Omeka S v4.1.' // @translate
     );
     $messenger->addWarning($message);
 }

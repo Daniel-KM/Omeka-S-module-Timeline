@@ -30,7 +30,6 @@ class Module extends AbstractModule
         $newVersion,
         ServiceLocatorInterface $services
     ): void {
-        $serviceLocator = $services;
         require_once 'data/scripts/upgrade.php';
     }
 }

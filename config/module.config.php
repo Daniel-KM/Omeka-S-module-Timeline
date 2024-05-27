@@ -87,6 +87,7 @@ return [
         'block_settings' => [
             'timeline' => [
                 'heading' => '',
+                'query' => [],
                 'item_title' => 'default',
                 'item_description' => 'default',
                 'item_date' => 'dcterms:date',
@@ -96,7 +97,6 @@ return [
                 'thumbnail_type' => 'medium',
                 'thumbnail_resource' => true,
                 'viewer' => '{}',
-                'query' => [],
                 'library' => 'simile',
                 // The id of dcterms:date in the standard install of Omeka S.
                 'item_date_id' => '7',

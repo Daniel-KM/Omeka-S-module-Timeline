@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 namespace Timeline\Site\BlockLayout;
 
 use Laminas\View\Renderer\PhpRenderer;
@@ -18,16 +19,12 @@ class Timeline extends AbstractBlockLayout
     const PARTIAL_NAME = 'common/block-layout/timeline_simile';
 
     /**
-     * @var Api
+     * @var \Omeka\Mvc\Controller\Plugin\Api
      */
     protected $api;
 
-    /**
-     * @param Api $api
-     */
-    public function __construct(
-        Api $api
-    ) {
+    public function __construct(Api $api)
+    {
         $this->api = $api;
     }
 
@@ -38,7 +35,15 @@ class Timeline extends AbstractBlockLayout
 
     public function onHydrate(SitePageBlock $block, ErrorStore $errorStore): void
     {
-        $data = $block->getData();
+        $data = $block->getData() ?? [];
+
+        if (empty($data['query'])) {
+            $data['query'] = [];
+        } elseif (!is_array($data['query'])) {
+            $query = [];
+            parse_str(ltrim($data['query'], "? \t\n\r\0\x0B"), $query);
+            $data['query'] = $query;
+        }
 
         $data['viewer'] = trim($data['viewer'] ?? '{}');
         if ($data['viewer'] === '') {
@@ -49,13 +54,6 @@ class Timeline extends AbstractBlockLayout
             ->searchOne('properties', ['term' => $data['item_date'] ?? 'dcterms:date'])
             ->getContent();
         $data['item_date_id'] = (string) $property->id();
-
-        $query = $data['query'] ?? [];
-        if (is_string($query)) {
-            $query = [];
-            parse_str($data['query'], $query);
-        }
-        $data['query'] = $query;
 
         $block->setData($data);
     }
@@ -73,9 +71,10 @@ class Timeline extends AbstractBlockLayout
         $blockFieldset = \Timeline\Form\TimelineFieldset::class;
 
         if ($block) {
-            $data = $block->data() + $defaultSettings;
-            $itemCount = $this->itemCount($data);
-            if (is_array($data['query'])) {
+            $data = ($block->data() ?? []) + $defaultSettings;
+            if (empty($data['query'])) {
+                $data['query'] = 'site_id=' . $site->id();
+            } elseif (is_array($data['query'])) {
                 $data['query'] = urldecode(
                     http_build_query($data['query'], '', '&', PHP_QUERY_RFC3986)
                 );
@@ -83,8 +82,12 @@ class Timeline extends AbstractBlockLayout
         } else {
             $data = $defaultSettings;
             $data['query'] = 'site_id=' . $site->id();
-            $itemCount = null;
         }
+
+        $query = null;
+        parse_str($data['query'], $query);
+        $query['property'][] = ['joiner' => 'and', 'property' => empty($data['item_date_id']) ? 'dcterms:date' : $data['item_date_id'], 'type' => 'ex'];
+        $itemCount = $this->itemCount($query);
 
         $dataForm = [];
         foreach ($data as $key => $value) {
@@ -101,6 +104,7 @@ class Timeline extends AbstractBlockLayout
             [
                 'fieldset' => $fieldset,
                 'data' => $dataForm,
+                'query' => $query,
                 'itemCount' => $itemCount,
             ]
         );
@@ -162,25 +166,18 @@ class Timeline extends AbstractBlockLayout
 
     /**
      * Helper to get the item count for the item pool, filtered of empty dates.
-     *
-     * @param array $data
-     * @return int
      */
-    protected function itemCount($data)
+    protected function itemCount(array $data): int
     {
-        $params = $data['query'];
-
-        // Fixes some bad upgrades to 3.4.13.3.
-        if (is_string($params)) {
-            parse_str($data['query'], $params);
-        }
+        $params = $data['query'] ?? [];
 
         // Don't load entities if the only information needed is total results.
         if (empty($params['limit'])) {
             $params['limit'] = 0;
         }
+
         // Add the param for the date: return only if not empty.
-        $params['property'][] = ['joiner' => 'and', 'property' => $data['item_date_id'], 'type' => 'ex'];
-        return $this->api->search('items', $params)->getTotalResults();
+        $params['property'][] = ['joiner' => 'and', 'property' => empty($data['item_date_id']) ? 'dcterms:date' : $data['item_date_id'], 'type' => 'ex'];
+        return (int) $this->api->search('items', $params)->getTotalResults();
     }
 }

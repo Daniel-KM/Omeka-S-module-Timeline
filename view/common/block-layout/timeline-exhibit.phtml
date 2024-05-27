@@ -6,32 +6,36 @@
  * @var string $options
  */
 
-$escape = $this->plugin('escapeHtml');
+$plugins = $this->getHelperPluginManager();
+$url = $plugins->get('url');
+$setting = $plugins->get('setting');
+$escape = $plugins->get('escapeHtml');
+$siteSetting = $plugins->get('siteSetting');
 
 $blockId = $block->id();
-$url = json_encode($this->url('api/timeline', ['block-id' => $blockId]), 320);
+$jsonTimelineUrl = json_encode($url('api/timeline', ['block-id' => $blockId]), 320);
 
 // @see https://timeline.knightlab.com/docs/options.html
 $options = json_decode($options, true) ?: [];
 $options += [
     'start_at_slide' => 0,
-    'language' => substr($this->siteSetting('locale'), 0, 2),
+    'language' => substr($siteSetting('locale', ''), 0, 2) ?: (substr($setting('locale', ''), 0, 2) ?: 'en'),
 ];
 
 // The container size is required inline to avoid 0-height issues with some themes.
-if (isset($options['container_style'])):
+if (isset($options['container_style'])) {
     $containerStyle = $options['container_style'];
     unset($options['container_style']);
-else:
+} else {
     $containerStyle = 'width: 100%; height: 80vh;';
-endif;
+}
 
 $options = json_encode($options, 320);
 
 $js = <<<JS
 jQuery(document).ready(function($) {
     var timelineId = 'timeline-$blockId';
-    var timelineUrl = $url;
+    var timelineUrl = $jsonTimelineUrl;
     var timelineOptions = $options;
     $.getJSON(timelineUrl, function(data) {
         window.timeline = new TL.Timeline(timelineId, data, timelineOptions);

@@ -25,6 +25,21 @@ class TimelineFieldset extends Fieldset
                 ],
             ])
             ->add([
+                'name' => 'o:block[__blockIndex__][o:data][query]',
+                'type' => OmekaElement\Query::class,
+                'options' => [
+                    'label' => 'Search pool query', // @translate
+                    'info' => 'Restrict timeline to a particular subset of resources, for example a site.', // @translate
+                    'query_resource_type' => null,
+                    'query_partial_excludelist' => [
+                        'common/advanced-search/site',
+                    ],
+                ],
+                'attributes' => [
+                    'id' => 'timeline-query',
+                ],
+            ])
+            ->add([
                 'name' => 'o:block[__blockIndex__][o:data][item_title]',
                 'type' => OmekaElement\PropertySelect::class,
                 'options' => [
@@ -154,26 +169,13 @@ class TimelineFieldset extends Fieldset
                 'name' => 'o:block[__blockIndex__][o:data][viewer]',
                 'type' => Element\Textarea::class,
                 'options' => [
-                    'label' => 'Viewer', // @translate
+                    'label' => 'Timeline viewer params', // @translate
                     'info' => 'Set the default params of the viewer as json, or let empty for the included default.', // @translate
                     'documentation' => 'https://gitlab.com/daniel-km/omeka-s-module-timeline#parameters-of-the-viewer',
                 ],
                 'attributes' => [
                     'id' => 'timeline-viewer',
                     'rows' => 5,
-                ],
-            ])
-            ->add([
-                'name' => 'o:block[__blockIndex__][o:data][query]',
-                'type' => OmekaElement\Query::class,
-                'options' => [
-                    'label' => 'Search pool query', // @translate
-                    'info' => 'Restrict timeline to a particular subset of resources, for example a site.', // @translate
-                    'query_resource_type' => null,
-                    'query_partial_excludelist' => ['common/advanced-search/site'],
-                ],
-                'attributes' => [
-                    'id' => 'timeline-query',
                 ],
             ])
             ->add([

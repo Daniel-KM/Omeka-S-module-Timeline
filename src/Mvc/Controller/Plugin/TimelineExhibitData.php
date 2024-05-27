@@ -69,11 +69,8 @@ class TimelineExhibitData extends AbstractPlugin
 
     /**
      * Extract titles, descriptions and dates from the timeline’s slides.
-     *
-     * @param array $args
-     * @return array
      */
-    public function __invoke(array $args)
+    public function __invoke(array $args): array
     {
         $controller = $this->getController();
         $this->api = $controller->api();
@@ -125,7 +122,7 @@ class TimelineExhibitData extends AbstractPlugin
             }
             if ($slideData['background']) {
                 try {
-                    /* @var \Omeka\Api\Representation\AssetRepresentation $background */
+                    /** @see \Omeka\Api\Representation\AssetRepresentation $background */
                     $slideData['background'] = $this->api->read('assets', $slideData['background'])->getContent();
                 } catch (\Omeka\Api\Exception\NotFoundException $e) {
                     $slideData['background'] = null;
@@ -160,11 +157,8 @@ class TimelineExhibitData extends AbstractPlugin
 
     /**
      * Get the slide from the slide data.
-     *
-     * @param array $slideData
-     * @return array|null
      */
-    protected function slide(array $slideData)
+    protected function slide(array $slideData): ?array
     {
         $interval = $this->intervalDate($slideData);
 
@@ -205,11 +199,8 @@ class TimelineExhibitData extends AbstractPlugin
 
     /**
      * Get the era from the slide data.
-     *
-     * @param array $slideData
-     * @return array|null
      */
-    protected function era(array $slideData)
+    protected function era(array $slideData): ?array
     {
         $interval = $this->intervalDate($slideData);
         $era = [
@@ -225,11 +216,8 @@ class TimelineExhibitData extends AbstractPlugin
 
     /**
      * Get the text from the slide data.
-     *
-     * @param array $slideData
-     * @return array|null
      */
-    protected function text(array $slideData)
+    protected function text(array $slideData): ?array
     {
         $text = [
             'headline' => null,
@@ -239,7 +227,7 @@ class TimelineExhibitData extends AbstractPlugin
         if ($slideData['headline']) {
             $text['headline'] = $slideData['headline'];
         } elseif ($slideData['resource']) {
-            $text['headline'] = $slideData['resource']->displayTitle();
+            $text['headline'] = (string) $slideData['resource']->displayTitle();
         }
 
         if ($text['headline'] && $slideData['resource']) {
@@ -249,7 +237,7 @@ class TimelineExhibitData extends AbstractPlugin
         if ($slideData['html']) {
             $text['text'] = $slideData['html'];
         } elseif ($slideData['resource']) {
-            $text['text'] = $slideData['resource']->displayDescription();
+            $text['text'] = (string) $slideData['resource']->displayDescription();
         }
 
         return array_filter($text, 'strlen') ?: null;
@@ -257,11 +245,8 @@ class TimelineExhibitData extends AbstractPlugin
 
     /**
      * Get the media from the slide data.
-     *
-     * @param array $slideData
-     * @return array|null
      */
-    protected function media(array $slideData)
+    protected function media(array $slideData): ?array
     {
         if (empty($slideData['resource'])) {
             return $this->mediaContent($slideData);
@@ -368,11 +353,8 @@ class TimelineExhibitData extends AbstractPlugin
 
     /**
      * Get the media content from the slide data.
-     *
-     * @param array $slideData
-     * @return array|null
      */
-    protected function mediaContent(array $slideData)
+    protected function mediaContent(array $slideData): ?array
     {
         if (empty($slideData['content'])) {
             return null;
@@ -401,11 +383,8 @@ class TimelineExhibitData extends AbstractPlugin
 
     /**
      * Get the background from the slide data.
-     *
-     * @param array $slideData
-     * @return array|null
      */
-    protected function background(array $slideData)
+    protected function background(array $slideData): ?array
     {
         $background = [];
         if ($slideData['background']) {
@@ -419,11 +398,8 @@ class TimelineExhibitData extends AbstractPlugin
 
     /**
      * Get the start date from the slide data.
-     *
-     * @param array $slideData
-     * @return array|null
      */
-    protected function startDate(array $slideData)
+    protected function startDate(array $slideData): ?array
     {
         if (empty($slideData['start_date'])) {
             return empty($slideData['resource']) || empty($this->startDateProperty)
@@ -435,11 +411,8 @@ class TimelineExhibitData extends AbstractPlugin
 
     /**
      * Get the end date from the slide data.
-     *
-     * @param array $slideData
-     * @return array|null
      */
-    protected function endDate(array $slideData)
+    protected function endDate(array $slideData): ?array
     {
         if (empty($slideData['end_date'])) {
             return empty($slideData['resource']) || empty($this->endDateProperty)
@@ -451,11 +424,8 @@ class TimelineExhibitData extends AbstractPlugin
 
     /**
      * Get the start and end date from the specified value of a resource.
-     *
-     * @param array $slideData
-     * @return array|null
      */
-    protected function intervalDate(array $slideData)
+    protected function intervalDate(array $slideData): ?array
     {
         if (empty($this->startDateProperty) || empty($slideData['resource'])) {
             return null;
@@ -466,7 +436,7 @@ class TimelineExhibitData extends AbstractPlugin
             return null;
         }
 
-        list($start, $end) = explode('/', $date->value());
+        [$start, $end] = explode('/', $date->value());
 
         $startDate = Timestamp::getDateTimeFromValue($start);
         $interval['start_date'] = [
@@ -504,10 +474,8 @@ class TimelineExhibitData extends AbstractPlugin
      *
      * @param AbstractResourceEntityRepresentation $resource
      * @param string $dateProperty
-     * @param string $displayDate
-     * @return array|null
      */
-    protected function resourceDate(AbstractResourceEntityRepresentation $resource, $dateProperty, $displayDate = null)
+    protected function resourceDate(AbstractResourceEntityRepresentation $resource, $dateProperty, ?string $displayDate = null): ?array
     {
         $dates = $resource->value($dateProperty, ['all' => true]);
         foreach ($dates as $date) {
@@ -523,12 +491,10 @@ class TimelineExhibitData extends AbstractPlugin
      * Convert a date from string to array.
      *
      * @param string|\Omeka\Api\Representation\ValueRepresentation $date
-     * @param string $displayDate
-     * @return array|null
      */
-    protected function date($date, $displayDate = null)
+    protected function date($date, ?string $displayDate = null): ?array
     {
-        $displayDate = strlen($displayDate) ? $displayDate : null;
+        $displayDate = strlen((string) $displayDate) ? $displayDate : null;
         $parts = [
             'year' => null,
             'month' => null,

@@ -4,6 +4,7 @@ namespace Timeline\Mvc\Controller\Plugin;
 
 use DateTime;
 use Laminas\Mvc\Controller\Plugin\AbstractPlugin;
+use Omeka\Api\Representation\ItemRepresentation;
 
 abstract class AbstractTimelineData extends AbstractPlugin
 {
@@ -22,12 +23,8 @@ abstract class AbstractTimelineData extends AbstractPlugin
 
     /**
      * Extract titles, descriptions and dates from the timeline’s pool of items.
-     *
-     * @param array $itemPool
-     * @param array $args
-     * @return array
      */
-    public function __invoke(array $itemPool, array $args)
+    public function __invoke(array $itemPool, array $args): array
     {
         $events = [];
 
@@ -71,9 +68,9 @@ abstract class AbstractTimelineData extends AbstractPlugin
                 $event = [];
                 $itemDate = $valueItemDate->value();
                 if (empty($itemDatesEnd[$key])) {
-                    list($dateStart, $dateEnd) = $this->convertAnyDate($itemDate, $this->renderYear);
+                    [$dateStart, $dateEnd] = $this->convertAnyDate($itemDate, $this->renderYear);
                 } else {
-                    list($dateStart, $dateEnd) = $this->convertTwoDates($itemDate, $itemDatesEnd[$key]->value(), $this->renderYear);
+                    [$dateStart, $dateEnd] = $this->convertTwoDates($itemDate, $itemDatesEnd[$key]->value(), $this->renderYear);
                 }
                 if (empty($dateStart)) {
                     continue;
@@ -104,10 +101,8 @@ abstract class AbstractTimelineData extends AbstractPlugin
      * Returns a string for timeline_json 'classname' attribute for an item.
      *
      * Default fields included are: 'item', item type name, all DC:Type values.
-     *
-     * @return string
      */
-    protected function itemClass($item)
+    protected function itemClass(ItemRepresentation $item): string
     {
         $classes = ['item'];
 
@@ -125,8 +120,7 @@ abstract class AbstractTimelineData extends AbstractPlugin
             $classes[] = $this->textToId($type->value());
         }
 
-        $classAttribute = implode(' ', $classes);
-        return $classAttribute;
+        return implode(' ', $classes);
     }
 
     /**
@@ -136,7 +130,7 @@ abstract class AbstractTimelineData extends AbstractPlugin
      * @param string renderYear Force the format of a single number as a year.
      * @return string ISO-8601 date
      */
-    protected function convertDate(string $date, $renderYear = null)
+    protected function convertDate(string $date, ?string $renderYear = null): ?string
     {
         if (empty($renderYear)) {
             $renderYear = $this->renderYear;
@@ -150,39 +144,39 @@ abstract class AbstractTimelineData extends AbstractPlugin
                 : str_pad($date, 4, '0', STR_PAD_LEFT);
             switch ($renderYear) {
                 case static::$renderYears['january_1']:
-                    $date_out = $date . '-01-01' . 'T00:00:00+00:00';
+                    $dateOut = $date . '-01-01' . 'T00:00:00+00:00';
                     break;
                 case static::$renderYears['july_1']:
-                    $date_out = $date . '-07-01' . 'T00:00:00+00:00';
+                    $dateOut = $date . '-07-01' . 'T00:00:00+00:00';
                     break;
                 case static::$renderYears['december_31']:
-                    $date_out = $date . '-12-31' . 'T00:00:00+00:00';
+                    $dateOut = $date . '-12-31' . 'T00:00:00+00:00';
                     break;
                 case static::$renderYears['june_30']:
-                    $date_out = $date . '-06-30' . 'T00:00:00+00:00';
+                    $dateOut = $date . '-06-30' . 'T00:00:00+00:00';
                     break;
                 case static::$renderYears['full_year']:
                     // Render a year as a range: use timeline_convert_single_date().
                 case static::$renderYears['skip']:
                 default:
-                    $date_out = false;
+                    $dateOut = false;
                     break;
             }
-            return $date_out;
+            return $dateOut;
         }
 
         try {
             $dateTime = new DateTime($date);
 
-            $date_out = $dateTime->format(DateTime::ISO8601);
-            $date_out = preg_replace('/^(-?)(\d{3}-)/', '${1}0\2', $date_out);
-            $date_out = preg_replace('/^(-?)(\d{2}-)/', '${1}00\2', $date_out);
-            $date_out = preg_replace('/^(-?)(\d{1}-)/', '${1}000\2', $date_out);
+            $dateOut = $dateTime->format(DateTime::ISO8601);
+            $dateOut = preg_replace('/^(-?)(\d{3}-)/', '${1}0\2', $dateOut);
+            $dateOut = preg_replace('/^(-?)(\d{2}-)/', '${1}00\2', $dateOut);
+            $dateOut = preg_replace('/^(-?)(\d{1}-)/', '${1}000\2', $dateOut);
         } catch (\Exception $e) {
-            $date_out = null;
+            $dateOut = null;
         }
 
-        return $date_out;
+        return $dateOut;
     }
 
     /**
@@ -194,7 +188,7 @@ abstract class AbstractTimelineData extends AbstractPlugin
      * @param string renderYear Force the format of a single number as a year.
      * @return array Array of two dates.
      */
-    protected function convertAnyDate(string $date, string $renderYear = null)
+    protected function convertAnyDate(string $date, ?string $renderYear = null): array
     {
         return $this->convertTwoDates($date, '', $renderYear);
     }
@@ -209,7 +203,7 @@ abstract class AbstractTimelineData extends AbstractPlugin
      * @param string renderYear Force the format of a single number as a year.
      * @return array Array of two dates.
      */
-    protected function convertTwoDates($date, $dateEnd, $renderYear = null)
+    protected function convertTwoDates($date, $dateEnd, ?string $renderYear = null): array
     {
         if (empty($renderYear)) {
             $renderYear = $this->renderYear;
@@ -245,7 +239,7 @@ abstract class AbstractTimelineData extends AbstractPlugin
      * @param string renderYear Force the format of a single number as a year.
      * @return array Array of two dates.
      */
-    protected function convertSingleDate($date, $renderYear = null)
+    protected function convertSingleDate($date, ?string $renderYear = null): array
     {
         if (empty($renderYear)) {
             $renderYear = $this->renderYear;
@@ -272,7 +266,7 @@ abstract class AbstractTimelineData extends AbstractPlugin
      * @param string renderYear Force the format of a single number as a year.
      * @return array $dates
      */
-    protected function convertRangeDates($dates, $renderYear = null)
+    protected function convertRangeDates($dates, ?string $renderYear = null): array
     {
         if (!is_array($dates)) {
             return [null, null];
@@ -360,7 +354,7 @@ abstract class AbstractTimelineData extends AbstractPlugin
      * @param int $length
      * @return string
      */
-    protected function snippet($string, $length)
+    protected function snippet($string, $length): string
     {
         $str = strip_tags((string) $string);
         return mb_strlen($str) <= $length ? $str : mb_substr($str, 0, $length - 1) . '&hellip;';
@@ -383,12 +377,12 @@ abstract class AbstractTimelineData extends AbstractPlugin
      * @param string $delimiter The delimiter to use (- by default)
      * @return string
      */
-    protected function textToId($text, $prepend = null, $delimiter = '-')
+    protected function textToId($text, ?string $prepend = null, string $delimiter = '-'): string
     {
         $text = mb_strtolower((string) $text);
         $id = preg_replace('/\s/', $delimiter, $text);
         $id = preg_replace('/[^\w\-]/', '', $id);
         $id = trim($id, $delimiter);
-        return $prepend ? $prepend . $delimiter . $id : $id;
+        return strlen((string) $prepend) ? $prepend . $delimiter . $id : $id;
     }
 }

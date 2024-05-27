@@ -1,25 +1,21 @@
 <?php declare(strict_types=1);
+
 namespace Timeline\Form;
 
 use Laminas\Form\Element;
 use Laminas\Form\Fieldset;
 use Laminas\View\Helper\Url as UrlHelper;
-use Omeka\Form\Element\Asset;
-use Omeka\Form\Element\PropertySelect;
-
-// use Omeka\Form\Element\ResourceSelect;
+use Omeka\Form\Element as OmekaElement;
 
 class TimelineExhibitFieldset extends Fieldset
 {
     /**
-     * @var UrlHelper
+     * @var \Laminas\View\Helper\Url
      */
     protected $urlHelper;
 
     public function init(): void
     {
-        // $urlHelper = $this->getUrlHelper();
-
         $this
             ->add([
                 'name' => 'o:block[__blockIndex__][o:data][heading]',
@@ -33,7 +29,7 @@ class TimelineExhibitFieldset extends Fieldset
             ])
             ->add([
                 'name' => 'o:block[__blockIndex__][o:data][start_date_property]',
-                'type' => PropertySelect::class,
+                'type' => OmekaElement\PropertySelect::class,
                 'options' => [
                     'label' => 'Start date property', // @translate
                     'info' => 'Date to use from the attachement when no date is set.', // @translate
@@ -49,7 +45,7 @@ class TimelineExhibitFieldset extends Fieldset
             ])
             ->add([
                 'name' => 'o:block[__blockIndex__][o:data][end_date_property]',
-                'type' => PropertySelect::class,
+                'type' => OmekaElement\PropertySelect::class,
                 'options' => [
                     'label' => 'End date property', // @translate
                     'info' => 'End date to use from the attachement when no end date is set.', // @translate
@@ -65,7 +61,7 @@ class TimelineExhibitFieldset extends Fieldset
             ])
             ->add([
                 'name' => 'o:block[__blockIndex__][o:data][credit_property]',
-                'type' => PropertySelect::class,
+                'type' => OmekaElement\PropertySelect::class,
                 'options' => [
                     'label' => 'Credit property', // @translate
                     'info' => 'Credit to use from the attachement when no credit is set (generally creator or rights).', // @translate
@@ -250,7 +246,7 @@ class TimelineExhibitFieldset extends Fieldset
             /* // TODO Use attachement or a dynamic resource callback.
             ->add([
                 'name' => 'o:block[__blockIndex__][o:data][slides][__slideIndex__][resource]',
-                'type' => ResourceSelect::class,
+                'type' => OmekaElement\ResourceSelect::class,
                 'options' => [
                     'label' => 'Resource', // @translate
                     'empty_option' => '',
@@ -307,7 +303,7 @@ class TimelineExhibitFieldset extends Fieldset
             ])
             ->add([
                 'name' => 'o:block[__blockIndex__][o:data][slides][__slideIndex__][background]',
-                'type' => Asset::class,
+                'type' => OmekaElement\Asset::class,
                 'options' => [
                     'label' => 'Background', // @translate
                 ],
@@ -366,10 +362,5 @@ class TimelineExhibitFieldset extends Fieldset
     {
         $this->urlHelper = $urlHelper;
         return $this;
-    }
-
-    public function getUrlHelper()
-    {
-        return $this->urlHelper;
     }
 }

@@ -45,6 +45,16 @@ class Timeline extends AbstractBlockLayout
             $data['query'] = $query;
         }
 
+        // In some cases, the ArrayTextarray store values as string.
+        $eras = $data['eras'] ?? [];
+        if (empty($eras)) {
+            $data['eras'] = [];
+        } elseif (is_string($eras)) {
+            $arrayTextarea = new \Omeka\Form\Element\ArrayTextarea();
+            $arrayTextarea->setAsKeyValue(true);
+            $data['eras'] = $arrayTextarea->stringToArray($eras);
+        }
+
         $data['viewer'] = trim($data['viewer'] ?? '{}');
         if ($data['viewer'] === '') {
             $data['viewer'] = '{}';

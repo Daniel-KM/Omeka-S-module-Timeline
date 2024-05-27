@@ -96,6 +96,7 @@ return [
                 'item_date_end' => '',
                 'render_year' => 'january_1',
                 'center_date' => '9999-99-99',
+                'eras' => [],
                 'thumbnail_type' => 'medium',
                 'thumbnail_resource' => true,
                 'viewer' => '{}',

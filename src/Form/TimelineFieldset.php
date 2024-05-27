@@ -138,6 +138,20 @@ class TimelineFieldset extends Fieldset
                 ],
             ])
             ->add([
+                'name' => 'o:block[__blockIndex__][o:data][eras]',
+                'type' => OmekaElement\ArrayTextarea::class,
+                'options' => [
+                    'label' => 'Eras/Periods', // @translate
+                    'info' => 'Write one era by line like "Summer 2024 = 2024-06-20/2024-09-21". Year can be set alone. Require Knightlab.', // @ŧranslate
+                    'as_key_value' => true,
+                ],
+                'attributes' => [
+                    'id' => 'timeline-eras',
+                    'placeholder' => '', // @translate
+                    'rows' => 5,
+                ],
+            ])
+            ->add([
                 'name' => 'o:block[__blockIndex__][o:data][thumbnail_type]',
                 'type' => Element\Select::class,
                 'options' => [

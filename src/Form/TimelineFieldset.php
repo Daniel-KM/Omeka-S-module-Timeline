@@ -147,7 +147,7 @@ class TimelineFieldset extends Fieldset
                 ],
                 'attributes' => [
                     'id' => 'timeline-eras',
-                    'placeholder' => '', // @translate
+                    'placeholder' => '',
                     'rows' => 5,
                 ],
             ])

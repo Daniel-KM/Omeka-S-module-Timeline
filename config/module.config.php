@@ -33,8 +33,10 @@ return [
     'controller_plugins' => [
         'invokables' => [
             'timelineExhibitData' => Mvc\Controller\Plugin\TimelineExhibitData::class,
-            'timelineKnightlab' => Mvc\Controller\Plugin\TimelineKnightlab::class,
-            'timelineSimile' => Mvc\Controller\Plugin\TimelineSimile::class,
+        ],
+        'factories' => [
+            'timelineKnightlab' => Service\ControllerPlugin\TimelineKnightlabFactory::class,
+            'timelineSimile' => Service\ControllerPlugin\TimelineSimileFactory::class,
         ],
     ],
     'router' => [

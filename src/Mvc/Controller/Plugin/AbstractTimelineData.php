@@ -4,10 +4,16 @@ namespace Timeline\Mvc\Controller\Plugin;
 
 use DateTime;
 use Laminas\Mvc\Controller\Plugin\AbstractPlugin;
+use Omeka\Api\Manager as ApiManager;
 use Omeka\Api\Representation\ItemRepresentation;
 
 abstract class AbstractTimelineData extends AbstractPlugin
 {
+    /**
+     * @var \Omeka\Api\Manager
+     */
+    protected $api;
+
     public static $renderYears = [
         'january_1' => 'january_1',
         'july_1' => 'july_1',
@@ -20,6 +26,11 @@ abstract class AbstractTimelineData extends AbstractPlugin
     ];
 
     protected $renderYear;
+
+    public function __construct(ApiManager $api)
+    {
+        $this->api = $api;
+    }
 
     /**
      * Extract titles, descriptions and dates from the timeline’s pool of items.
@@ -40,11 +51,11 @@ abstract class AbstractTimelineData extends AbstractPlugin
         $params = $itemPool;
         $params['property'][] = ['joiner' => 'and', 'property' => $args['item_date_id'], 'type' => 'ex'];
 
-        $items = $this->getController()->api()
-            ->search('items', $params)
-            ->getContent();
-        /** @var \Omeka\Api\Representation\ItemRepresentation[] $items */
-        foreach ($items as $item) {
+        // To avoid overflow when requesting all items, use a loop with id.
+        $itemIds = $this->api->search('items', $params, ['returnScalar' => 'id'])->getContent();
+
+        /** @var \Omeka\Api\Representation\ItemRepresentation $item */
+        foreach (array_chunk($itemIds, 100) as $idsChunk) foreach ($this->api->search('items', ['id' => $idsChunk])->getContent() as $item) {
             // All items without dates are already automatically removed.
             $itemDates = $item->value($propertyItemDate, ['all' => true]);
             $itemTitle = strip_tags($propertyItemTitle ? (string) $item->value($propertyItemTitle) : $item->displayTitle());

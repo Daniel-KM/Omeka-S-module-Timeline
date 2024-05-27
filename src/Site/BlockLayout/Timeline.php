@@ -88,6 +88,9 @@ class Timeline extends AbstractBlockLayout
         parse_str($data['query'], $query);
         $query['property'][] = ['joiner' => 'and', 'property' => empty($data['item_date_id']) ? 'dcterms:date' : $data['item_date_id'], 'type' => 'ex'];
         $itemCount = $this->itemCount($query);
+        if (!empty($query['limit'])) {
+            $itemCount = min($itemCount, $query['limit']);
+        }
 
         $dataForm = [];
         foreach ($data as $key => $value) {

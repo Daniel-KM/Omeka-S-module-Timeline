@@ -3,10 +3,15 @@
  * @var \Laminas\View\Renderer\PhpRenderer $this
  * @var \Timeline\Form\TimelineFieldset $fieldset
  * @var array $data
+ * @var array $query
  * @var int $itemCount
  */
 
-$translate = $this->plugin('translate');
+$plugins = $this->getHelperPluginManager();
+$url = $plugins->get('url');
+$translate = $plugins->get('translate');
+$hyperlink = $plugins->get('hyperlink');
+
 ?>
 
 <div>
@@ -14,18 +19,12 @@ $translate = $this->plugin('translate');
         echo $translate('Items can be selected in the whole base or in a limited list via the query below.');
         echo ' ' . $translate('The default item pool is the current site one.');
         echo ' ' . $translate('Items without a date are automatically filtered.');
-        if (!is_null($itemCount)) {
-            $query = [];
-            parse_str($data['o:block[__blockIndex__][o:data][query]'], $query);
-            $itemDataId = $data['o:block[__blockIndex__][o:data][item_date_id]'];
-            $query['property'][] = ['joiner' => 'and', 'property' => $itemDataId, 'type' => 'ex'];
-            echo ' ' . sprintf(
-                $translate('There are currently %s items in this timeline’s pool.'),
-                $this->hyperlink(
-                    $itemCount,
-                    $this->url('admin/default', ['controller' => 'item'], ['query' => $query])
-                )
-            );
+        echo ' ' . sprintf(
+            $translate('There are currently %s items in this timeline’s pool.'),
+            $hyperlink($itemCount, $url('admin/default', ['controller' => 'item'], ['query' => $query]))
+        );
+        if ($itemCount > 1000) {
+            echo ' ' . $translate('There are more than 1000 Items, so the timeline may display slowly or there may be an overflow. It is recommended to limit pool with the query below.');
         }
         ?>
     </p>

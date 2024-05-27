@@ -50,10 +50,10 @@ class TimelineExhibit extends AbstractBlockLayout
         $assetUrl = $view->plugin('assetUrl');
         $view->headLink()
             ->appendStylesheet($assetUrl('css/asset-form.css', 'Omeka'))
-            ->appendStylesheet($assetUrl('css/timeline-form.css', 'Timeline'));
+            ->appendStylesheet($assetUrl('css/timeline-admin.css', 'Timeline'));
         $view->headScript()
             ->appendFile($assetUrl('js/asset-form.js', 'Omeka'))
-            ->appendFile($assetUrl('js/timeline-exhibit-form.js', 'Timeline'));
+            ->appendFile($assetUrl('js/timeline-admin.js', 'Timeline'));
     }
 
     public function onHydrate(SitePageBlock $block, ErrorStore $errorStore): void

@@ -103,7 +103,7 @@ class Timeline extends AbstractBlockLayout
         $fieldset->populateValues($dataForm);
 
         return $view->partial(
-            'common/block-layout/timeline-form',
+            'common/block-layout/admin/timeline-form',
             [
                 'fieldset' => $fieldset,
                 'data' => $dataForm,

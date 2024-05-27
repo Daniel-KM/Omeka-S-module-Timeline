@@ -186,7 +186,7 @@ class TimelineFieldset extends Fieldset
                     'info' => 'Three libraries are available: the standard open source Simile Timeline, or the online Knightlab Timeline.', // @translate
                     'value_options' => [
                         'simile' => 'Simile (use internal assets)', // @translate
-                        'simile_online' => 'Simile online (cannot be used on a https site)', // @translate
+                        'simile_online' => 'Simile online (use online js/css)', // @translate
                         'knightlab' => 'Knightlab', // @translate
                     ],
                 ],

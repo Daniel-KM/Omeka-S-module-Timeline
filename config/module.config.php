@@ -3,6 +3,13 @@
 namespace Timeline;
 
 return [
+    'service_manager' => [
+        'factories' => [
+            // Override theme factory to inject module pages and block templates.
+            // Copied in BlockPlus, Reference, Timeline.
+            'Omeka\Site\ThemeManager' => Service\ThemeManagerFactory::class,
+        ],
+    ],
     'view_manager' => [
         'template_path_stack' => [
             dirname(__DIR__) . '/view',
@@ -10,6 +17,10 @@ return [
         'strategies' => [
             'ViewJsonStrategy',
         ],
+    ],
+    'page_templates' => [
+    ],
+    'block_templates' => [
     ],
     'block_layouts' => [
         'factories' => [

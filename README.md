@@ -190,7 +190,13 @@ Notes:
 
 ### Modifying the block template for Timeline
 
-To modify the block template, copy it in your theme (file `view/common/block-layout/timeline.phtml`).
+Before Omeka S v4.1, copy it in your theme (file `view/common/block-layout/timeline.phtml`).
+
+Since Omeka S v4.1, copy the file `view/common/block-layout/timeline.phtml` in
+the theme directory for block templates and rename it as you want, for example
+`view/common/block-template/timeline-xxx.phtml`, then declare it in the file `config/theme.ini`,
+for example here `block_templates.timeline.xxx = "Custom xxx", and finally
+select it in the block layout in the admin site page edition.
 
 ### Modifying the viewer
 

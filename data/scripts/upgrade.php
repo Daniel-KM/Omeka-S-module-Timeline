@@ -111,9 +111,98 @@ if (version_compare($oldVersion, '3.4.19', '<')) {
         $entityManager->persist($block);
     }
     $entityManager->flush();
+}
 
-    $message = new Message(
-        'The next version (3.4.20) will require Omeka S v4.1.' // @translate
-    );
-    $messenger->addWarning($message);
+if (version_compare($oldVersion, '3.4.20', '<')) {
+    /** @see /BlockPlus/data/scripts/upgrade.php */
+
+    $logger = $services->get('Omeka\Logger');
+
+    $pageRepository = $entityManager->getRepository(\Omeka\Entity\SitePage::class);
+    $blocksRepository = $entityManager->getRepository(\Omeka\Entity\SitePageBlock::class);
+
+    /**
+     * Replace filled setttings "heading" by a specific block "Heading" or "Html".
+     */
+
+    $hasBlockPlus = class_exists('BlockPlus\Module', false);
+    $viewHelpers = $services->get('ViewHelperManager');
+    $escape = $viewHelpers->get('escapeHtml');
+
+    $blockTemplates = [
+        'timeline' => 'common/block-layout/timeline',
+        'timelineExhibit' => 'common/block-layout/timeline-exhibit',
+    ];
+    $blockTemplatesHeading = $blockTemplates;
+
+    $pagesWithHeading = [];
+    $processedBlocksId = [];
+    foreach ($pageRepository->findAll() as $page) {
+        $pageSlug = $page->getSlug();
+        $siteSlug = $page->getSite()->getSlug();
+        $position = 0;
+        foreach ($page->getBlocks() as $block) {
+            $block->setPosition(++$position);
+            $layout = $block->getLayout();
+            if (!isset($blockTemplatesHeading[$layout])) {
+                continue;
+            }
+            $blockId = $block->getId();
+            $data = $block->getData() ?: [];
+            $heading = $data['heading'] ?? '';
+            if (strlen($heading) && !isset($processedBlocksId[$blockId])) {
+                $b = new \Omeka\Entity\SitePageBlock();
+                $b->setLayout($hasBlockPlus ? 'heading' : 'html');
+                $b->setPage($page);
+                $b->setPosition(++$position);
+                $b->setData($hasBlockPlus
+                    ? ['text' => $heading, 'level' => 2]
+                    :  ['html' => '<h2>' . $escape($heading) . '</h2>']
+                );
+                $entityManager->persist($b);
+                $block->setPosition(++$position);
+                $pagesWithHeading[$siteSlug][$pageSlug] = $pageSlug;
+                $processedBlocksId[$blockId] = $blockId;
+            }
+            unset($data['heading']);
+            $block->setData($data);
+        }
+    }
+
+    // Do a clear to fix issues with new blocks created during migration.
+    $entityManager->flush();
+    $entityManager->clear();
+
+    if (!empty($pagesWithHeading)) {
+        $pagesWithHeading = array_map('array_values', $pagesWithHeading);
+        $message = new Message(
+            'The setting "heading" was removed from blocks. A new block "Heading" (module BlockPlus) or "Html" was prepended to all blocks that had a filled heading. You may check pages for styles: %s', // @translate
+            json_encode($pagesWithHeading, 448)
+        );
+        $messenger->addWarning($message);
+        $logger->warn((string) $message);
+    }
+
+    /**
+     * Replace filled settings "template" by the new layout data for timeline.
+     */
+
+    $blockTemplatesRenamed = [
+        'simile_online' => 'timeline-simile-online', // @translate
+        'knightlab' => 'timeline-knightlab', // @translate
+    ];
+
+    foreach ($blocksRepository->findBy(['layout' => 'timeline']) as $block) {
+        $data = $block->getData();
+        $library = $data['library'] ?? null;
+        if (isset($blockTemplatesRenamed[$library])) {
+            $layoutData = $block->getLayoutData();
+            $layoutData['template_name'] = $blockTemplatesRenamed[$library];
+            $block->setLayoutData($layoutData);
+        }
+        unset($data['library']);
+        $block->setData($data);
+    }
+
+    $entityManager->flush();
 }

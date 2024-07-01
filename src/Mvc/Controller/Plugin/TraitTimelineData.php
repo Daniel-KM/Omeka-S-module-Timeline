@@ -6,6 +6,7 @@ use DateTime;
 use DateTimeZone;
 use Laminas\Mvc\Controller\Plugin\AbstractPlugin;
 use Omeka\Api\Manager as ApiManager;
+use Omeka\Api\Representation\AbstractResourceEntityRepresentation;
 
 /**
  * Date parsing is adapted from module Numeric Data Type.
@@ -55,6 +56,42 @@ trait TraitTimelineData
      * @var string
      */
     protected $patternIso8601 = '^(?<date>(?<year>-?\d{1,})(-(?<month>\d{2}))?(-(?<day>\d{2}))?)(?<time>(T(?<hour>\d{2}))?(:(?<minute>\d{2}))?(:(?<second>\d{2}))?)(?<offset>((?<offset_hour>[+-]\d{2})?(:(?<offset_minute>\d{2}))?)|Z?)$';
+
+    /**
+     * Append metadata for custom timelines.
+     */
+    protected function resourceMetadata(AbstractResourceEntityRepresentation $resource, array $fields): array
+    {
+        $result = [];
+        foreach ($fields as $field) {
+            if ($field === 'resource_class') {
+                $value = $resource->resourceClass();
+                if ($value) {
+                    $result['o:resource_class'][] = ['value' => $value->term()];
+                }
+            } elseif ($field === 'resource_class_label') {
+                $value = $resource->resourceClass();
+                if ($value) {
+                    $result['o:resource_class'][] = ['value' => $value->label()];
+                }
+            } elseif ($field === 'resource_template_label') {
+                $value = $resource->resourceTemplate();
+                if ($value) {
+                    $result['o:resource_template'][] = ['value' => $value->label()];
+                }
+            } elseif ($field === 'owner_name') {
+                $value = $resource->owner();
+                if ($value) {
+                    $result['o:owner'][] = ['value' => $value->name()];
+                }
+            } else {
+                foreach ($resource->value($field, ['all' => true]) as $value) {
+                    $result[$field][] = ['value' => (string) $value];
+                }
+            }
+        }
+        return $result;
+    }
 
     /**
      * @todo See TimelineExhibitData

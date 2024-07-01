@@ -31,7 +31,7 @@ class TimelineExhibitData extends AbstractPlugin
     /**
      * @var string
      */
-    protected $startDateProperty = 'dcterms:date';
+    protected $creditProperty = 'dcterms:creator';
 
     /**
      * @var string
@@ -39,9 +39,9 @@ class TimelineExhibitData extends AbstractPlugin
     protected $endDateProperty = null;
 
     /**
-     * @var string
+     * @var array
      */
-    protected $creditProperty = 'dcterms:creator';
+    protected $fieldsItem = [];
 
     /**
      * @var bool
@@ -52,6 +52,11 @@ class TimelineExhibitData extends AbstractPlugin
      * @var string
      */
     protected $siteSlug;
+
+    /**
+     * @var string
+     */
+    protected $startDateProperty = 'dcterms:date';
 
     /**
      * List of extensions that are managed directly by the viewer.
@@ -87,13 +92,14 @@ class TimelineExhibitData extends AbstractPlugin
         $this->startDateProperty = $args['start_date_property'];
         $this->endDateProperty = $args['end_date_property'];
         $this->creditProperty = $args['credit_property'];
-        $this->isCosmologicial = (bool) $args['scale'] === 'cosmological';
+        $this->isCosmological = (bool) $args['scale'] === 'cosmological';
+        $this->fieldsItem = $args['item_metadata'] ?? [];
         $this->siteSlug = $args['site_slug'];
 
         $eras = empty($args['eras']) ? [] : $this->eras($args['eras']);
 
         $timeline = [
-            'scale' => $this->isCosmologicial ? 'cosmological' : 'human',
+            'scale' => $this->isCosmological ? 'cosmological' : 'human',
             'title' => null,
             'events' => [],
             'eras' => $eras,
@@ -110,6 +116,7 @@ class TimelineExhibitData extends AbstractPlugin
                 'start_display_date' => '',
                 'end_display_date' => '',
                 'display_date' => '',
+                'metadata' => [],
                 'headline' => '',
                 'html' => '',
                 'resource' => null,
@@ -124,7 +131,7 @@ class TimelineExhibitData extends AbstractPlugin
             // Prepare attachments so they will be available in all cases.
             if ($slideData['resource']) {
                 try {
-                    /* @var \Omeka\Api\Representation\AbstractResourceEntityRepresentation $resource */
+                    /** @see \Omeka\Api\Representation\AbstractResourceEntityRepresentation $resource */
                     $slideData['resource'] = $this->api->read('resources', ['id' => $slideData['resource']])->getContent();
                 } catch (\Omeka\Api\Exception\NotFoundException $e) {
                     $slideData['resource'] = null;
@@ -195,6 +202,10 @@ class TimelineExhibitData extends AbstractPlugin
         $slide = array_filter($slide, function ($v) {
             return !is_null($v);
         });
+
+        if ($this->fieldsItem && !empty($slideData['resource'])) {
+            $slide['metadata'] = $this->resourceMetadata($slideData['resource'], $this->fieldsItem);
+        }
 
         if ($slideData['type'] === 'title') {
             return array_filter($slide)

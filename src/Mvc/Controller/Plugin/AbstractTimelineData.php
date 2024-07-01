@@ -48,6 +48,7 @@ abstract class AbstractTimelineData extends AbstractPlugin
         $propertyItemDescription = $args['item_description'] === 'default' ? '' : $args['item_description'];
         $propertyItemDate = $args['item_date'];
         $propertyItemDateEnd = $args['item_date_end'] ?? null;
+        $fieldsItem = $args['item_metadata'] ?? [];
 
         $eras = empty($args['eras']) ? [] : $this->eras($args['eras']);
 
@@ -72,6 +73,7 @@ abstract class AbstractTimelineData extends AbstractPlugin
             $itemLink = empty($args['site_slug'])
                 ? null
                 : $item->siteUrl($args['site_slug']);
+
             if ($thumbnailResource && $item->thumbnail()) {
                 $thumbnailUrl = $item->thumbnail()->assetUrl();
             } elseif ($media = $item->primaryMedia()) {
@@ -99,6 +101,9 @@ abstract class AbstractTimelineData extends AbstractPlugin
                 $event['title'] = $itemTitle;
                 $event['link'] = $itemLink;
                 $event['classname'] = $this->itemClass($item);
+                if ($fieldsItem) {
+                    $event['metadata'] = $this->resourceMetadata($item, $fieldsItem);
+                }
                 if ($thumbnailUrl) {
                     $event['image'] = $thumbnailUrl;
                 }

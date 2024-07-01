@@ -23,8 +23,8 @@ $hyperlink = $plugins->get('hyperlink');
             $translate('There are currently %s items in this timeline’s pool.'),
             $hyperlink($itemCount, $url('admin/default', ['controller' => 'item'], ['query' => $query]))
         );
-        if ($itemCount > 1000) {
-            echo ' ' . $translate('There are more than 1000 Items, so the timeline may display slowly or there may be an overflow. It is recommended to limit pool with the query below.');
+        if ($itemCount > 100) {
+            echo ' ' . $translate('There are more than 100 items, so the timeline won’t be usable and may display slowly or causes an overload. It is recommended to limit pool with the query below.');
         }
         ?>
     </p>

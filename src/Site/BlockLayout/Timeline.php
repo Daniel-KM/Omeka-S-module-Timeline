@@ -96,7 +96,13 @@ class Timeline extends AbstractBlockLayout
 
         $query = null;
         parse_str($data['query'], $query);
-        $query['property'][] = ['joiner' => 'and', 'property' => empty($data['item_date_id']) ? 'dcterms:date' : $data['item_date_id'], 'type' => 'ex'];
+
+        // This property is automatically appended via the controller too.
+        $query['property'][] = [
+            'joiner' => 'and',
+            'property' => empty($data['item_date_id']) ? 'dcterms:date' : $data['item_date_id'],
+            'type' => 'ex',
+        ];
         $itemCount = $this->itemCount($query);
         if (!empty($query['limit'])) {
             $itemCount = min($itemCount, $query['limit']);
@@ -177,17 +183,12 @@ class Timeline extends AbstractBlockLayout
     /**
      * Helper to get the item count for the item pool, filtered of empty dates.
      */
-    protected function itemCount(array $data): int
+    protected function itemCount(array $query): int
     {
-        $params = $data['query'] ?? [];
-
         // Don't load entities if the only information needed is total results.
-        if (empty($params['limit'])) {
-            $params['limit'] = 0;
+        if (empty($query['limit'])) {
+            $query['limit'] = 0;
         }
-
-        // Add the param for the date: return only if not empty.
-        $params['property'][] = ['joiner' => 'and', 'property' => empty($data['item_date_id']) ? 'dcterms:date' : $data['item_date_id'], 'type' => 'ex'];
-        return (int) $this->api->search('items', $params)->getTotalResults();
+        return (int) $this->api->search('items', $query)->getTotalResults();
     }
 }

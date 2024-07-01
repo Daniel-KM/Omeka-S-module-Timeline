@@ -1,4 +1,4 @@
-var oTimeline = {
+const oTimeline = {
     resizeTimerID: null,
 
     resizeTimeline: function() {
@@ -60,7 +60,7 @@ var oTimeline = {
         };
     },
 
-    loadTimeline: function(timelineId, timelineData, params) {
+    loadTimeline: function(timelineId, timelineDataUrl, timelineParams) {
         oTimeline._monkeyPatchFillInfoBubble();
         var eventSource = new Timeline.DefaultEventSource();
 
@@ -69,12 +69,12 @@ var oTimeline = {
         // defaultTheme.autoWidth = true;
 
         var bandInfos = [];
-        if (typeof params.bandInfos !== 'undefined' && params.bandInfos.length) {
-            for (i = 0; i < params.bandInfos.length; ++i) {
-                if (typeof params.bandInfos[i].eventSource === 'undefined') {
-                    params.bandInfos[i].eventSource = eventSource;
+        if (typeof timelineParams.bandInfos !== 'undefined' && timelineParams.bandInfos.length) {
+            for (i = 0; i < timelineParams.bandInfos.length; ++i) {
+                if (typeof timelineParams.bandInfos[i].eventSource === 'undefined') {
+                    timelineParams.bandInfos[i].eventSource = eventSource;
                 }
-                bandInfos[i] = Timeline.createBandInfo(params.bandInfos[i]);
+                bandInfos[i] = Timeline.createBandInfo(timelineParams.bandInfos[i]);
             }
         } else {
             bandInfos = [
@@ -115,14 +115,14 @@ var oTimeline = {
         }
 
         var tl = Timeline.create(document.getElementById(timelineId), bandInfos);
-        tl.loadJSON(timelineData, function(json, url) {
-        // log the timelineData, and see what's there
-        // figure out what's creating the timelineData json
-        // console.log("json: ", json);
-        // console.log("timelineData: ", timelineData);
+        tl.loadJSON(timelineDataUrl, function(json, url) {
+            // log the timelineDataUrl, and see what's there
+            // figure out what's creating the timelineDataUrl json
+            // console.log("json: ", json);
+            // console.log("timelineDataUrl: ", timelineDataUrl);
             if (json.events.length > 0) {
                 eventSource.loadJSON(json, url);
-                var centerDate = params.centerDate;
+                var centerDate = timelineParams.centerDate;
                 // console.log("centerDate: " + centerDate);
                 if (!centerDate) {
                     centerDate = new Date().toJSON().slice(0,10);
@@ -137,5 +137,24 @@ var oTimeline = {
                 tl.getBand(0).setCenterVisibleDate(parsedDate);
             }
         });
+
+        return tl;
     }
 };
+
+document.addEventListener('DOMContentLoaded', function (event) {
+    // The config is defined inside the html.
+    if (typeof timelines === 'undefined') {
+        return;
+    }
+
+    if (typeof window.timelinesSimile === 'undefined') {
+        window.timelinesSimile = {};
+    }
+
+    Object.entries(timelines).forEach(([tid, conf]) => {
+        if (conf.type === 'simile' && conf.id && conf.url) {
+            window.timelinesSimile[tid] = oTimeline.loadTimeline(conf.id, conf.url, conf.params);
+        }
+    })
+});

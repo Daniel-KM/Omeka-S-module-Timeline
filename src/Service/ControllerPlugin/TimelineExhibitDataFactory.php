@@ -4,13 +4,13 @@ namespace Timeline\Service\ControllerPlugin;
 
 use Interop\Container\ContainerInterface;
 use Laminas\ServiceManager\Factory\FactoryInterface;
-use Timeline\Mvc\Controller\Plugin\TimelineKnightlab;
+use Timeline\Mvc\Controller\Plugin\TimelineExhibitData;
 
-class TimelineKnightlabFactory implements FactoryInterface
+class TimelineExhibitDataFactory implements FactoryInterface
 {
     public function __invoke(ContainerInterface $services, $name, array $options = null)
     {
-        return new TimelineKnightlab(
+        return new TimelineExhibitData(
             $services->get('Omeka\ApiManager')
         );
     }

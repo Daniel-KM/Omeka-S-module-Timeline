@@ -6,6 +6,7 @@ use DateTime;
 use Laminas\Mvc\Controller\Plugin\AbstractPlugin;
 use Laminas\Uri\Http as HttpUri;
 use NumericDataTypes\DataType\Timestamp;
+use Omeka\Api\Manager as ApiManager;
 use Omeka\Api\Representation\AbstractResourceEntityRepresentation;
 
 /**
@@ -16,7 +17,7 @@ use Omeka\Api\Representation\AbstractResourceEntityRepresentation;
 class TimelineExhibitData extends AbstractPlugin
 {
     /**
-     * @var \Omeka\Mvc\Controller\Plugin\Api
+     * @var \Omeka\Api\Manager
      */
     protected $api;
 
@@ -68,13 +69,17 @@ class TimelineExhibitData extends AbstractPlugin
         'wav',
     ];
 
+    public function __construct(ApiManager $api)
+    {
+        $this->api = $api;
+    }
+
     /**
      * Extract titles, descriptions and dates from the timeline’s slides.
      */
     public function __invoke(array $args): array
     {
         $controller = $this->getController();
-        $this->api = $controller->api();
         $this->escapeHtmlAttr = $controller->viewHelpers()->get('escapeHtmlAttr');
 
         $this->startDateProperty = $args['start_date_property'];

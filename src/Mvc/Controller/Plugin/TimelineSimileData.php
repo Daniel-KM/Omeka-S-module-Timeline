@@ -2,6 +2,6 @@
 
 namespace Timeline\Mvc\Controller\Plugin;
 
-class TimelineSimile extends AbstractTimelineData
+class TimelineSimileData extends AbstractTimelineData
 {
 }

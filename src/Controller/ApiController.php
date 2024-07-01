@@ -105,8 +105,8 @@ SQL;
                 $query = $blockData['query'];
                 unset($blockData['query']);
                 $data = ($blockData['library'] ?? 'simile') === 'knightlab'
-                    ? $this->timelineKnightlab($query, $blockData)
-                    : $this->timelineSimile($query, $blockData);
+                    ? $this->timelineKnightlabData($query, $blockData)
+                    : $this->timelineSimileData($query, $blockData);
             }
         } elseif (empty($query)) {
             new NotFoundException((string) new Message(
@@ -117,8 +117,8 @@ SQL;
             $config = require dirname(__DIR__, 2) . '/config/module.config.php';
             $blockData = $config['timeline']['block_settings']['timeline'];
             $data = ($query['output'] ?? 'simile') === 'knightlab'
-                ? $this->timelineKnightlab($query, $blockData)
-                : $this->timelineSimile($query, $blockData);
+                ? $this->timelineKnightlabData($query, $blockData)
+                : $this->timelineSimileData($query, $blockData);
         }
 
         return new ApiJsonModel($data, $this->getViewOptions());

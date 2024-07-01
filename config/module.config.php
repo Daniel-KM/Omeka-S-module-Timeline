@@ -31,12 +31,10 @@ return [
         ],
     ],
     'controller_plugins' => [
-        'invokables' => [
-            'timelineExhibitData' => Mvc\Controller\Plugin\TimelineExhibitData::class,
-        ],
         'factories' => [
-            'timelineKnightlab' => Service\ControllerPlugin\TimelineKnightlabFactory::class,
-            'timelineSimile' => Service\ControllerPlugin\TimelineSimileFactory::class,
+            'timelineExhibitData' => Service\ControllerPlugin\TimelineExhibitDataFactory::class,
+            'timelineKnightlabData' => Service\ControllerPlugin\TimelineKnightlabDataFactory::class,
+            'timelineSimileData' => Service\ControllerPlugin\TimelineSimileDataFactory::class,
         ],
     ],
     'router' => [

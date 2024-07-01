@@ -7,7 +7,7 @@ namespace Timeline\Mvc\Controller\Plugin;
  *
  * @link https://timeline.knightlab.com
  */
-class TimelineKnightlab extends AbstractTimelineData
+class TimelineKnightlabData extends AbstractTimelineData
 {
     // TODO Reintegrate the view timeline_knightlab here. See TimelineExhibitData too.
 }

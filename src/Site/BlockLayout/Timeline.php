@@ -8,6 +8,7 @@ use Omeka\Api\Representation\SitePageRepresentation;
 use Omeka\Api\Representation\SiteRepresentation;
 use Omeka\Entity\SitePageBlock;
 use Omeka\Mvc\Controller\Plugin\Api;
+use Omeka\Mvc\Controller\Plugin\Messenger;
 use Omeka\Site\BlockLayout\AbstractBlockLayout;
 use Omeka\Stdlib\ErrorStore;
 
@@ -23,9 +24,15 @@ class Timeline extends AbstractBlockLayout
      */
     protected $api;
 
-    public function __construct(Api $api)
+    /**
+     * @var \Omeka\Mvc\Controller\Plugin\Messenger
+     */
+    protected $messenger;
+
+    public function __construct(Api $api, Messenger $messenger)
     {
         $this->api = $api;
+        $this->messenger = $messenger;
     }
 
     public function getLabel()
@@ -58,6 +65,13 @@ class Timeline extends AbstractBlockLayout
         $data['viewer'] = trim($data['viewer'] ?? '{}');
         if ($data['viewer'] === '') {
             $data['viewer'] = '{}';
+        }
+
+        $viewer = json_decode($data['viewer'], true);
+        if (strlen(preg_replace('~\s*~', '', $data['viewer'])) <= 2) {
+            $data['viewer'] = '{}';
+        } elseif (!$viewer || !is_array($viewer)) {
+            $this->messenger->addError('The config of the Timeline viewer should be a valid json object.'); // @translate
         }
 
         $property = $this->api

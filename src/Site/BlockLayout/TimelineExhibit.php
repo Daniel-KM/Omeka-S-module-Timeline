@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 namespace Timeline\Site\BlockLayout;
 
 use Laminas\View\Renderer\PhpRenderer;
@@ -9,10 +10,11 @@ use Omeka\Api\Representation\SitePageRepresentation;
 use Omeka\Api\Representation\SiteRepresentation;
 use Omeka\Entity\SitePageBlock;
 use Omeka\Site\BlockLayout\AbstractBlockLayout;
+use Omeka\Site\BlockLayout\TemplateableBlockLayoutInterface;
 use Omeka\Stdlib\ErrorStore;
 use Omeka\Stdlib\HtmlPurifier;
 
-class TimelineExhibit extends AbstractBlockLayout
+class TimelineExhibit extends AbstractBlockLayout implements TemplateableBlockLayoutInterface
 {
     /**
      * The default partial view script.
@@ -227,14 +229,13 @@ class TimelineExhibit extends AbstractBlockLayout
             ->appendFile('//cdn.knightlab.com/libs/timeline3/latest/js/timeline.js');
     }
 
-    public function render(PhpRenderer $view, SitePageBlockRepresentation $block)
+    public function render(PhpRenderer $view, SitePageBlockRepresentation $block, $templateViewScript = self::PARTIAL_NAME)
     {
-        $vars = [
-            'block' => $block,
-            'heading' => $block->dataValue('heading', ''),
-            'options' => $block->dataValue('options', '{}'),
-        ];
-        return $view->partial(self::PARTIAL_NAME, $vars);
+        $data = $block->data();
+        $data['heading'] = $block->dataValue('heading', '');
+        $data['options'] = $block->dataValue('options', '{}');
+        $vars = ['block' => $block] + $data;
+        return $view->partial($templateViewScript, $vars);
     }
 
     public function getFulltextText(PhpRenderer $view, SitePageBlockRepresentation $block)

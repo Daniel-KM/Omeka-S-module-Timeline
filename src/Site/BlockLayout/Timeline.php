@@ -10,9 +10,10 @@ use Omeka\Entity\SitePageBlock;
 use Omeka\Mvc\Controller\Plugin\Api;
 use Omeka\Mvc\Controller\Plugin\Messenger;
 use Omeka\Site\BlockLayout\AbstractBlockLayout;
+use Omeka\Site\BlockLayout\TemplateableBlockLayoutInterface;
 use Omeka\Stdlib\ErrorStore;
 
-class Timeline extends AbstractBlockLayout
+class Timeline extends AbstractBlockLayout implements TemplateableBlockLayoutInterface
 {
     /**
      * The default partial view script.
@@ -143,7 +144,7 @@ class Timeline extends AbstractBlockLayout
         );
     }
 
-    public function render(PhpRenderer $view, SitePageBlockRepresentation $block)
+    public function render(PhpRenderer $view, SitePageBlockRepresentation $block, $templateViewScript = self::PARTIAL_NAME)
     {
         $data = $block->data();
 
@@ -185,13 +186,12 @@ class Timeline extends AbstractBlockLayout
                 break;
         }
 
-        return $view->partial(
-            'common/block-layout/timeline_' . $library,
-            [
-                'block' => $block,
-                'data' => $data,
-            ]
-        );
+        if ($templateViewScript === self::PARTIAL_NAME) {
+            $templateViewScript = mb_substr($templateViewScript, 0, mb_strrpos($templateViewScript, '_')) . '_' . $library;
+        }
+
+        $vars = ['block' => $block, 'data' => $data];
+        return $view->partial($templateViewScript, $vars);
     }
 
     /**

@@ -3,113 +3,58 @@
  * @var \Laminas\View\Renderer\PhpRenderer $this
  * @var \Omeka\Api\Representation\SitePageBlockRepresentation $block
  * @var array $data
+ *
+ * @see https://timeline.knightlab.com/docs/options.html
  */
 
-// TODO Move the script in a external js but manage multiple timelines.
-
 $plugins = $this->getHelperPluginManager();
+$url = $plugins->get('url');
 $setting = $plugins->get('setting');
-$escape = $plugins->get('escapeHtml');
+$assetUrl = $plugins->get('assetUrl');
 $siteSetting = $plugins->get('siteSetting');
+$escapeAttr = $plugins->get('escapeHtmlAttr');
 
 $language = substr($siteSetting('locale', ''), 0, 2) ?: (substr($setting('locale', ''), 0, 2) ?: 'en');
+
+// The container size is required inline to avoid 0-height issues with some themes.
+$containerStyle = 'width: 100%; height: 80vh;';
+
+$data['viewer'] = json_decode($data['viewer']) ? $data['viewer'] : json_encode(['' => 1, 'language' => $language]);
+
+$timelineId = 'timeline-' . $block->id();
+$timelineUrl = json_encode($url('api/timeline', ['block-id' => $block->id()]), 320);
+$timelineParamsString = $data['viewer'];
+$timelineParams = json_decode($timelineParamsString, true) ?: [];
+if (is_array($timelineParams)) {
+    if (array_key_exists('container_style', $timelineParams)) {
+        $containerStyle = $timelineParams['container_style'];
+        unset($timelineParams['container_style']);
+    }
+    $timelineParams['centerDate'] = $data['center_date'] ?? '';
+    // Slide 0 is slide title, but there is no slide title.
+    $timelineParams['start_at_slide'] = $timelineParams['start_at_slide'] ?? 1;
+    $timelineParams['language'] = $timelineParams['language'] ?? $language;
+    $timelineParamsString = json_encode($timelineParams, 448);
+}
+
+$script = <<<JS
+if (typeof timelines === 'undefined') {
+    timelines = {};
+}
+timelines['$timelineId'] = {
+    id: '$timelineId',
+    type: 'knightlab',
+    url: $timelineUrl,
+    params: $timelineParamsString,
+};
+JS;
 
 $this->headLink()
     ->appendStylesheet('https://cdn.knightlab.com/libs/timeline3/latest/css/timeline.css');
 $this->headScript()
-    ->appendFile('https://cdn.knightlab.com/libs/timeline3/latest/js/timeline.js', 'text/javascript', ['defer' => 'defer']);
-
-$data['viewer'] = json_decode($data['viewer']) ? $data['viewer'] : json_encode(['start_at_slide' => 1, 'language' => $language]);
+    ->appendFile('https://cdn.knightlab.com/libs/timeline3/latest/js/timeline.js', 'text/javascript', ['defer' => 'defer'])
+    ->appendFile($assetUrl('js/timeline-knightlab.js', 'Timeline'), 'text/javascript', ['defer' => 'defer'])
+    ->appendScript($script);
 ?>
 
-<div id="timeline-<?= $block->id() ?>" class="timeline" style="width: 100%; height: 80vh"></div>
-
-<script>
-jQuery(document).ready(function($) {
-    <?php if (!empty($data['center_date'])): ?>
-    var centerDate = <?= json_encode($data['center_date']) ?>;
-    <?php endif; ?>
-    // Get the location for the json data.
-    var jsonTimelineUri = <?= json_encode($this->url('api/timeline', ['block-id' => $block->id()]), 320) ?>;
-
-    $.getJSON(jsonTimelineUri, function(data) {
-        // console.log('data ', data);
-        var timelineEvents = new Array();
-
-        for (var i = 0; i < data.events.length; i++) {
-        // Parse the date string into Y, M, D.
-        // Assumes YYYY-MM-DD.
-        var startDate = parseDate(data.events[i].start);
-
-        // Create the slide object for the record.
-        var timelineEntry = {
-            "text": {
-                "headline": "<a href=" + data.events[i].link + ">" + data.events[i].title + "</a>"
-            },
-            "start_date": {
-                "year": startDate[0],
-                "month": startDate[1],
-                "day": startDate[2]
-            },
-        };
-
-        // If the item has a description, include it.
-        if (data.events[i].description) {
-            timelineEntry.text["text"] = data.events[i].description;
-        }
-
-        // If the record has an end date, include it.
-        if (data.events[i].end) {
-            var endDate = parseDate(data.events[i].end);
-
-            timelineEntry["end_date"] = {
-                "year": endDate[0],
-                "month": endDate[1],
-                "day": endDate[2]
-            };
-        }
-
-        // If the record has a file attachment, include that.
-        // Limits based on returned JSON:
-        // If multiple images are attached to the record, it only shows the first.
-        // If a pdf is attached, it does not show it or indicate it.
-        // If an mp3 is attached in Files, it does not appear.
-        if (data.events[i].image) {
-            timelineEntry["media"] = { "url": data.events[i].image };
-        }
-
-        // Add the slide to the events.
-        timelineEvents.push(timelineEntry);
-        }
-
-        // Create the collection of slides.
-        var slides = {
-            "title": {
-                "text": {
-                    "headline": '',
-                    "text": ''
-                }
-            },
-            "events": timelineEvents
-        };
-
-        var timelineDivID = 'timeline-<?= $block->id() ?>';
-        var timelineOptions = <?= $data['viewer'] ?>;
-
-        // Initialize the timeline instance.
-        window.timeline = new TL.Timeline(timelineDivID, slides, timelineOptions);
-
-        function parseDate(entryDateString) {
-            var entryDate = entryDateString;
-
-            var parsedDate = entryDate.split('-');
-
-            var entryYear = parsedDate[0];
-            var entryMonth = parsedDate[1];
-            var entryDay = parsedDate[2].slice(0, 2);
-
-            return [entryYear, entryMonth, entryDay];
-        };
-    });
-});
-</script>
+<div id="<?= $timelineId ?>" class="timeline" style="<?= $escapeAttr($containerStyle) ?>"></div>

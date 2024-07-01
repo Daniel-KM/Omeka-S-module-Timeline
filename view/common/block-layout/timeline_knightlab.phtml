@@ -10,10 +10,6 @@ $data['viewer'] = json_decode($data['viewer']) ? $data['viewer'] : json_encode([
 $escape = $this->plugin('escapeHtml');
 ?>
 
-<?php if (!empty($data['heading'])): ?>
-<h2><?= $escape($data['heading']) ?></h2>
-<?php endif; ?>
-
 <div id="timeline-<?= $block->id() ?>" class="timeline" style="width: 100%; height: 80vh"></div>
 
 <script>

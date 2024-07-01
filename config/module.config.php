@@ -97,7 +97,6 @@ return [
     'timeline' => [
         'block_settings' => [
             'timeline' => [
-                'heading' => '',
                 'query' => [],
                 'item_title' => 'default',
                 'item_description' => 'default',
@@ -114,7 +113,6 @@ return [
                 'item_date_id' => '7',
             ],
             'timelineExhibit' => [
-                'heading' => '',
                 'start_date_property' => 'dcterms:date',
                 'end_date_property' => '',
                 'credit_property' => 'dcterms:creator',

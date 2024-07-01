@@ -8,10 +8,6 @@
 $escape = $this->plugin('escapeHtml');
 ?>
 
-<?php if (!empty($data['heading'])): ?>
-<h2><?= $escape($data['heading']) ?></h2>
-<?php endif; ?>
-
 <div id="timeline-<?= $block->id() ?>" class="timeline"></div>
 <script>
     jQuery(document).ready(function($) {

@@ -2,7 +2,6 @@
 /**
  * @var \Laminas\View\Renderer\PhpRenderer $this
  * @var \Omeka\Api\Representation\SitePageBlockRepresentation $block
- * @var string $heading
  * @var string $options
  */
 
@@ -44,9 +43,5 @@ jQuery(document).ready(function($) {
 JS;
 $this->headScript()->appendScript($js);
 ?>
-
-<?php if (!empty($heading)): ?>
-<h2><?= $escape($heading) ?></h2>
-<?php endif; ?>
 
 <div id="timeline-<?= $blockId ?>" class="timeline" style="<?= $containerStyle ?>"></div>

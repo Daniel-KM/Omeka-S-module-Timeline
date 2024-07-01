@@ -18,16 +18,6 @@ class TimelineExhibitFieldset extends Fieldset
     {
         $this
             ->add([
-                'name' => 'o:block[__blockIndex__][o:data][heading]',
-                'type' => Element\Text::class,
-                'options' => [
-                    'label' => 'Block title', // @translate
-                ],
-                'attributes' => [
-                    'id' => 'timeline-exhibit-heading',
-                ],
-            ])
-            ->add([
                 'name' => 'o:block[__blockIndex__][o:data][start_date_property]',
                 'type' => OmekaElement\PropertySelect::class,
                 'options' => [

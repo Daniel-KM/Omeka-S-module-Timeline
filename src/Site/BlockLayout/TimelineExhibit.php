@@ -232,7 +232,6 @@ class TimelineExhibit extends AbstractBlockLayout implements TemplateableBlockLa
     public function render(PhpRenderer $view, SitePageBlockRepresentation $block, $templateViewScript = self::PARTIAL_NAME)
     {
         $data = $block->data();
-        $data['heading'] = $block->dataValue('heading', '');
         $data['options'] = $block->dataValue('options', '{}');
         $vars = ['block' => $block] + $data;
         return $view->partial($templateViewScript, $vars);
@@ -241,7 +240,7 @@ class TimelineExhibit extends AbstractBlockLayout implements TemplateableBlockLa
     public function getFulltextText(PhpRenderer $view, SitePageBlockRepresentation $block)
     {
         // TODO Add resource title, description, date, etc.?
-        $fulltext = $block->dataValue('heading', '');
+        $fulltext = '';
         foreach ($block->dataValue('slides', []) as $slide) {
             $fulltext .= ' ' . $slide['start_date']
                 . ' ' . $slide['start_display_date']

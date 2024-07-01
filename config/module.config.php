@@ -121,6 +121,7 @@ return [
                 'end_date_property' => '',
                 'credit_property' => 'dcterms:creator',
                 'scale' => 'human',
+                'eras' => [],
                 'options' => '{}',
                 'slides' => [
                     [

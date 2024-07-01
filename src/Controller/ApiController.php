@@ -77,6 +77,12 @@ class ApiController extends \Omeka\Controller\ApiController
                 );
             }
 
+            /**
+             * @see \Timeline\Mvc\Controller\Plugin\TimelineExhibitData
+             * @see \Timeline\Mvc\Controller\Plugin\TimelineKnightlabData
+             * @see \Timeline\Mvc\Controller\Plugin\TimelineSimileData
+             */
+
             $blockData = $block->getData();
             $blockData['site_slug'] = null;
             try {

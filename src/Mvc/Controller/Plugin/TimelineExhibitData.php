@@ -16,6 +16,8 @@ use Omeka\Api\Representation\AbstractResourceEntityRepresentation;
  */
 class TimelineExhibitData extends AbstractPlugin
 {
+    use TraitTimelineData;
+
     /**
      * @var \Omeka\Api\Manager
      */
@@ -88,11 +90,13 @@ class TimelineExhibitData extends AbstractPlugin
         $this->isCosmologicial = (bool) $args['scale'] === 'cosmological';
         $this->siteSlug = $args['site_slug'];
 
+        $eras = empty($args['eras']) ? [] : $this->eras($args['eras']);
+
         $timeline = [
             'scale' => $this->isCosmologicial ? 'cosmological' : 'human',
             'title' => null,
             'events' => [],
-            'eras' => [],
+            'eras' => $eras,
         ];
 
         foreach ($args['slides'] as $key => $slideData) {

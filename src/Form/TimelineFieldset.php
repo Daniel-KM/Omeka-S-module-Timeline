@@ -180,23 +180,6 @@ class TimelineFieldset extends Fieldset
                     'id' => 'timeline-viewer',
                     'rows' => 5,
                 ],
-            ])
-            ->add([
-                'name' => 'o:block[__blockIndex__][o:data][library]',
-                'type' => Element\Select::class,
-                'options' => [
-                    'label' => 'Timeline library', // @translate
-                    'info' => 'Three libraries are available: the standard open source Simile Timeline, or the online Knightlab Timeline.', // @translate
-                    'value_options' => [
-                        'simile' => 'Simile (use internal assets)', // @translate
-                        'simile_online' => 'Simile online (use online js/css)', // @translate
-                        'knightlab' => 'Knightlab', // @translate
-                    ],
-                ],
-                'attributes' => [
-                    'id' => 'timeline-library',
-                    'required' => true,
-                ],
             ]);
     }
 }

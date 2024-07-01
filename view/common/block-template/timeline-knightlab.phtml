@@ -5,9 +5,21 @@
  * @var array $data
  */
 
-$data['viewer'] = json_decode($data['viewer']) ? $data['viewer'] : json_encode(['start_at_slide' => 1, 'language' => substr($this->siteSetting('locale'), 0, 2)]);
+// TODO Move the script in a external js but manage multiple timelines.
 
-$escape = $this->plugin('escapeHtml');
+$plugins = $this->getHelperPluginManager();
+$setting = $plugins->get('setting');
+$escape = $plugins->get('escapeHtml');
+$siteSetting = $plugins->get('siteSetting');
+
+$language = substr($siteSetting('locale', ''), 0, 2) ?: (substr($setting('locale', ''), 0, 2) ?: 'en');
+
+$this->headLink()
+    ->appendStylesheet('https://cdn.knightlab.com/libs/timeline3/latest/css/timeline.css');
+$this->headScript()
+    ->appendFile('https://cdn.knightlab.com/libs/timeline3/latest/js/timeline.js', 'text/javascript', ['defer' => 'defer']);
+
+$data['viewer'] = json_decode($data['viewer']) ? $data['viewer'] : json_encode(['start_at_slide' => 1, 'language' => $language]);
 ?>
 
 <div id="timeline-<?= $block->id() ?>" class="timeline" style="width: 100%; height: 80vh"></div>

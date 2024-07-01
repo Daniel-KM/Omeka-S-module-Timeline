@@ -21,6 +21,11 @@ return [
     'page_templates' => [
     ],
     'block_templates' => [
+        'timeline' => [
+            'timeline-simile' => 'Simile (use internal assets)', // @translate
+            'timeline-simile-online' => 'Simile online (use online js/css)', // @translate
+            'timeline-knightlab' => 'Knightlab', // @translate
+        ],
     ],
     'block_layouts' => [
         'factories' => [
@@ -108,7 +113,6 @@ return [
                 'thumbnail_type' => 'medium',
                 'thumbnail_resource' => true,
                 'viewer' => '{}',
-                'library' => 'simile',
                 // The id of dcterms:date in the standard install of Omeka S.
                 'item_date_id' => '7',
             ],

@@ -18,7 +18,7 @@ class Timeline extends AbstractBlockLayout implements TemplateableBlockLayoutInt
     /**
      * The default partial view script.
      */
-    const PARTIAL_NAME = 'common/block-layout/timeline_simile';
+    const PARTIAL_NAME = 'common/block-layout/timeline';
 
     /**
      * @var \Omeka\Mvc\Controller\Plugin\Api
@@ -146,51 +146,7 @@ class Timeline extends AbstractBlockLayout implements TemplateableBlockLayoutInt
 
     public function render(PhpRenderer $view, SitePageBlockRepresentation $block, $templateViewScript = self::PARTIAL_NAME)
     {
-        $data = $block->data();
-
-        $library = $data['library'];
-        unset($data['library']);
-
-        switch ($library) {
-            case 'knightlab':
-                $view->headLink()
-                    ->appendStylesheet('https://cdn.knightlab.com/libs/timeline3/latest/css/timeline.css');
-                $view->headScript()
-                    ->appendFile('https://cdn.knightlab.com/libs/timeline3/latest/js/timeline.js', 'text/javascript', ['defer' => 'defer']);
-                break;
-
-            case 'simile_online':
-                $assetUrl = $view->plugin('assetUrl');
-                $view->headLink()
-                    ->appendStylesheet($assetUrl('css/timeline.css', 'Timeline'));
-                $view->headScript()
-                    ->appendFile($assetUrl('js/timeline.js', 'Timeline'))
-                    ->appendFile('https://simile-widgets.org/timeline/api/timeline-api.js?bundle=true')
-                    ->appendScript('SimileAjax.History.enabled = false; window.jQuery = SimileAjax.jQuery;');
-                $library = 'simile';
-                break;
-
-            case 'simile':
-            default:
-                $assetUrl = $view->plugin('assetUrl');
-                $timelineVariables = 'Timeline_ajax_url="' . $assetUrl('vendor/simile/ajax-api/simile-ajax-api.js', 'Timeline') . '";' . PHP_EOL;
-                $timelineVariables .= 'Timeline_urlPrefix="' . dirname($assetUrl('vendor/simile/timeline-api/timeline-api.js', 'Timeline')) . '/";' . PHP_EOL;
-                $timelineVariables .= 'Timeline_parameters="bundle=true";';
-                $view->headLink()
-                    ->appendStylesheet($assetUrl('css/timeline.css', 'Timeline'));
-                $view->headScript()
-                    ->appendFile($assetUrl('js/timeline.js', 'Timeline'))
-                    ->appendScript($timelineVariables)
-                    ->appendFile($assetUrl('vendor/simile/timeline-api/timeline-api.js', 'Timeline'))
-                    ->appendScript('SimileAjax.History.enabled = false; // window.jQuery = SimileAjax.jQuery;');
-                break;
-        }
-
-        if ($templateViewScript === self::PARTIAL_NAME) {
-            $templateViewScript = mb_substr($templateViewScript, 0, mb_strrpos($templateViewScript, '_')) . '_' . $library;
-        }
-
-        $vars = ['block' => $block, 'data' => $data];
+        $vars = ['block' => $block, 'data' => $block->data()];
         return $view->partial($templateViewScript, $vars);
     }
 

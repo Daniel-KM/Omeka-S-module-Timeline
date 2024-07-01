@@ -8,7 +8,7 @@
 $plugins = $this->getHelperPluginManager();
 $url = $plugins->get('url');
 $setting = $plugins->get('setting');
-$escape = $plugins->get('escapeHtml');
+$escapeAttr = $plugins->get('escapeHtmlAttr');
 $siteSetting = $plugins->get('siteSetting');
 
 $blockId = $block->id();
@@ -44,4 +44,4 @@ JS;
 $this->headScript()->appendScript($js);
 ?>
 
-<div id="timeline-<?= $blockId ?>" class="timeline" style="<?= $containerStyle ?>"></div>
+<div id="timeline-<?= $blockId ?>" class="timeline" style="<?= $escapeAttr($containerStyle) ?>"></div>

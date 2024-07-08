@@ -108,9 +108,11 @@ SQL;
             if ($layout === 'timelineExhibit') {
                 $data = $this->timelineExhibitData($blockData);
             } else {
+                $layoutData = $block->getLayoutData() ?? [];
+                $layoutLibrary = $layoutData['template_name'] ?? 'timeline-simile';
                 $query = $blockData['query'];
                 unset($blockData['query']);
-                $data = ($blockData['library'] ?? 'simile') === 'knightlab'
+                $data = $layoutLibrary === 'timeline-knightlab'
                     ? $this->timelineKnightlabData($query, $blockData)
                     : $this->timelineSimileData($query, $blockData);
             }

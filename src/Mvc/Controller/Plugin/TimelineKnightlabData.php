@@ -9,5 +9,5 @@ namespace Timeline\Mvc\Controller\Plugin;
  */
 class TimelineKnightlabData extends AbstractTimelineData
 {
-    // TODO Reintegrate the view timeline_knightlab here. See TimelineExhibitData too.
+    protected $timelineJs = 'knightlab';
 }

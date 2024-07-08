@@ -32,7 +32,7 @@ if (is_array($timelineParams)) {
     }
     $timelineParams['centerDate'] = $data['center_date'] ?? '';
     // Slide 0 is slide title, but there is no slide title.
-    $timelineParams['start_at_slide'] = $timelineParams['start_at_slide'] ?? 1;
+    $timelineParams['start_at_slide'] = $timelineParams['start_at_slide'] ?? 0;
     $timelineParams['language'] = $timelineParams['language'] ?? $language;
     $timelineParamsString = json_encode($timelineParams, 448);
 }

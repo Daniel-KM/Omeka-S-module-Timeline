@@ -547,6 +547,9 @@ class TimelineExhibitData extends AbstractPlugin
      * Convert a date from string to array.
      *
      * @param string|\Omeka\Api\Representation\ValueRepresentation $date
+     *
+     * @todo Merge with \Timeline\Mvc\Controller\Plugin\TraitTimelineData::dateToArray()
+     * @see \Timeline\Mvc\Controller\Plugin\TraitTimelineData::dateToArray()
      */
     protected function date($date, ?string $displayDate = null): ?array
     {

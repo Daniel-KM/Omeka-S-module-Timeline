@@ -4,4 +4,5 @@ namespace Timeline\Mvc\Controller\Plugin;
 
 class TimelineSimileData extends AbstractTimelineData
 {
+    protected $timelineJs = 'simile';
 }

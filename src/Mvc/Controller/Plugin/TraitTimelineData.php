@@ -170,6 +170,38 @@ trait TraitTimelineData
      */
     protected function extractMarkers(array $markers): array
     {
+        return $this->timelineJs === 'knightlab'
+            ? $this->extractMarkersKnigthlab($markers)
+            : $this->extractMarkersSimile($markers);
+    }
+
+    protected function extractMarkersKnigthlab(array $markers): array
+    {
+        $result = [];
+
+        foreach (array_filter($markers) as $label => $dates) {
+            [$dateStart, $dateEnd] = $this->convertAnyDate($dates, $this->renderYear);
+            if (empty($dateStart)) {
+                continue;
+            }
+            $event = [];
+            $event['start_date'] = $this->dateToArray($dateStart);
+            if (!is_null($dateEnd)) {
+                $event['end_date'] = $this->dateToArray($dateEnd);;
+            }
+            $event['text'] = [
+                'headline' =>  $label,
+            ];
+            // Does not work with knighlab.
+            $event['classname'] = 'extra-marker';
+            $result[] = $event;
+        }
+
+        return $result;
+    }
+
+    protected function extractMarkersSimile(array $markers): array
+    {
         $result = [];
 
         foreach (array_filter($markers) as $label => $dates) {
@@ -184,7 +216,6 @@ trait TraitTimelineData
             }
             $event['title'] = $label;
             $event['classname'] = 'extra-marker';
-
             $result[] = $event;
         }
 
@@ -193,6 +224,9 @@ trait TraitTimelineData
 
     /**
      * Extract year from a normalized date.
+     *
+     * @todo Merge with \Timeline\Mvc\Controller\Plugin\TimelineExhibitData::date()
+     * @see \Timeline\Mvc\Controller\Plugin\TimelineExhibitData::date()
      */
     protected function dateToArray(?string $date): array
     {

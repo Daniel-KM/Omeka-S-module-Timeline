@@ -21,6 +21,11 @@ abstract class AbstractTimelineData extends AbstractPlugin
      */
     protected $translate;
 
+    /**
+     * @var string "simile" or "knightlab".
+     */
+    protected $timelineJs = null;
+
     public static $renderYears = [
         'january_1' => 'january_1',
         'july_1' => 'july_1',
@@ -106,20 +111,47 @@ abstract class AbstractTimelineData extends AbstractPlugin
                 if (empty($dateStart)) {
                     continue;
                 }
-                $event['start'] = $dateStart;
-                if (!is_null($dateEnd)) {
-                    $event['end'] = $dateEnd;
+                if ($this->timelineJs === 'knightlab') {
+                    $event['start_date'] = $this->dateToArray($dateStart);
+                    if (!is_null($dateEnd)) {
+                        $event['end_date'] = $this->dateToArray($dateEnd);;
+                    }
+                    $event['text'] = [
+                        'headline' => '<a href=' . $itemLink . '>' . $itemTitle . '</a>',
+                    ];
+                    if ($itemDescription) {
+                        $event['text']['text'] = $itemDescription;
+                    }
+                    // If the record has a file attachment, include that.
+                    // Limits based on returned JSON:
+                    // If multiple images are attached to the record, it only
+                    // shows the first.
+                    // If a pdf is attached, it does not show it or indicate it.
+                    // If an mp3 is attached in Files, it does not appear.
+                    if ($thumbnailUrl) {
+                        $event['media']['url'] = $thumbnailUrl;
+                        $event['media']['link'] = $itemLink;
+                        $event['media']['link_target'] = '_blank';
+                    }
+                } else {
+                    $event['start'] = $dateStart;
+                    if (!is_null($dateEnd)) {
+                        $event['end'] = $dateEnd;
+                    }
+                    $event['title'] = $itemTitle;
+                    $event['link'] = $itemLink;
+                    if ($itemDescription) {
+                        $event['description'] = $itemDescription;
+                    }
+                    if ($thumbnailUrl) {
+                        $event['image'] = $thumbnailUrl;
+                    }
                 }
-                $event['title'] = $itemTitle;
-                $event['link'] = $itemLink;
+                // Does not work with knighlab.
                 $event['classname'] = $this->itemClass($item);
                 if ($fieldsItem) {
                     $event['metadata'] = $this->resourceMetadata($item, $fieldsItem);
                 }
-                if ($thumbnailUrl) {
-                    $event['image'] = $thumbnailUrl;
-                }
-                $event['description'] = $itemDescription;
                 if ($itemGroup) {
                     $event['group'] = $itemGroup;
                 }

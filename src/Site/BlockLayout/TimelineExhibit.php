@@ -186,7 +186,7 @@ class TimelineExhibit extends AbstractBlockLayout implements TemplateableBlockLa
         foreach ($data as $key => $value) {
             // Add fields for repeatable fieldsets with multiple fields.
             // But some keys have array as values (ArrayTextarea).
-            if (is_array($value) && !in_array($key, ['eras', 'markers', 'item_metadata'])) {
+            if (is_array($value) && !in_array($key, ['eras', 'markers', 'group', 'item_metadata'])) {
                 $subFieldsetName = "o:block[__blockIndex__][o:data][$key]";
                 if (!$fieldset->has($subFieldsetName)) {
                     continue;

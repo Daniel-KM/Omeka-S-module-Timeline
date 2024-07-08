@@ -58,6 +58,29 @@ trait TraitTimelineData
     protected $patternIso8601 = '^(?<date>(?<year>-?\d{1,})(-(?<month>\d{2}))?(-(?<day>\d{2}))?)(?<time>(T(?<hour>\d{2}))?(:(?<minute>\d{2}))?(:(?<second>\d{2}))?)(?<offset>((?<offset_hour>[+-]\d{2})?(:(?<offset_minute>\d{2}))?)|Z?)$';
 
     /**
+     * Get a single metadata from a resource for custom timelines.
+     */
+    protected function resourceMetadataSingle(AbstractResourceEntityRepresentation $resource, ?string $field): ?string
+    {
+        if (!$field) {
+            return null;
+        } elseif ($field === 'resource_class') {
+            return $resource->resourceClass();
+        } elseif ($field === 'resource_class_label') {
+            $value = $resource->resourceClass();
+            return $value ? $this->translate->__invoke($value->label()) : null;
+        } elseif ($field === 'resource_template_label') {
+            $value = $resource->resourceTemplate();
+            return $value ? $value->label() : null;
+        } elseif ($field === 'owner_name') {
+            $value = $resource->owner();
+            return $value ? $value->name() : null;
+        } else {
+            return $resource->value($field, ['default' => null]);
+        }
+    }
+
+    /**
      * Get a list of metadata from a resource for custom timelines.
      */
     protected function resourceMetadata(AbstractResourceEntityRepresentation $resource, array $fields): array
@@ -72,7 +95,7 @@ trait TraitTimelineData
             } elseif ($field === 'resource_class_label') {
                 $value = $resource->resourceClass();
                 if ($value) {
-                    $result['o:resource_class'][] = ['value' => $value->label()];
+                    $result['o:resource_class'][] = ['value' => $this->translate->__invoke($value->label())];
                 }
             } elseif ($field === 'resource_template_label') {
                 $value = $resource->resourceTemplate();
@@ -190,6 +213,10 @@ trait TraitTimelineData
         ];
         return array_filter(array_intersect_key($fullDate, $emptyDate), 'is_int');
         */
+
+        if (!$fullDate) {
+            return [];
+        }
 
         $result = ['year' => (int) $fullDate['year']];
         if (isset($fullDate['month'])) {

@@ -44,6 +44,16 @@ class TimelineExhibitData extends AbstractPlugin
     protected $fieldsItem = [];
 
     /**
+     * @var string
+     */
+    protected $fieldGroup = null;
+
+    /**
+     * @var string
+     */
+    protected $groupDefault = null;
+
+    /**
      * @var bool
      */
     protected $isCosmological = false;
@@ -94,6 +104,8 @@ class TimelineExhibitData extends AbstractPlugin
         $this->creditProperty = $args['credit_property'];
         $this->isCosmological = (bool) $args['scale'] === 'cosmological';
         $this->fieldsItem = $args['item_metadata'] ?? [];
+        $this->fieldGroup = $args['group'] ?? null;
+        $this->groupDefault = empty($args['group_default']) ? null : $args['group_default'];
         $this->siteSlug = $args['site_slug'];
 
         $eras = empty($args['eras']) ? [] : $this->extractEras($args['eras']);
@@ -187,12 +199,27 @@ class TimelineExhibitData extends AbstractPlugin
     {
         $interval = $this->intervalDate($slideData);
 
+        $group = $this->groupDefault;
+        if (empty($slideData['group'])) {
+            if ($this->fieldGroup
+                && $slideData['resource']
+                && $slideData['type'] !== 'title'
+                && $slideData['type'] !== 'era'
+            ) {
+                $group = $this->resourceMetadataSingle($slideData['resource'], $this->fieldGroup)
+                    ?: $this->groupDefault;
+                $group = $group ? strip_tags($group) : null;
+            }
+        } else {
+            $group = strip_tags($slideData['group']):
+        }
+
         $slide = [
             'start_date' => $interval ? $interval['start_date'] : $this->startDate($slideData),
             'end_date' => $interval ? $interval['end_date'] : $this->endDate($slideData),
             'text' => $this->text($slideData),
             'media' => $this->media($slideData),
-            'group' => empty($slideData['group']) ? null : $slideData['group'],
+            'group' => $group,
             'display_date' => empty($slideData['display_date']) ? null : $slideData['display_date'],
             'background' => $this->background($slideData),
             'autolink' => false,

@@ -56,6 +56,8 @@ abstract class AbstractTimelineData extends AbstractPlugin
         $propertyItemDate = $args['item_date'];
         $propertyItemDateEnd = $args['item_date_end'] ?? null;
         $fieldsItem = $args['item_metadata'] ?? [];
+        $fieldGroup = $args['group'] ?? null;
+        $groupDefault = empty($args['group_default']) ? null : $args['group_default'];
 
         $eras = empty($args['eras']) ? [] : $this->extractEras($args['eras']);
         $markers = empty($args['markers']) ? [] : $this->extractMarkers($args['markers']);
@@ -75,6 +77,8 @@ abstract class AbstractTimelineData extends AbstractPlugin
             $itemDates = $item->value($propertyItemDate, ['all' => true]);
             $itemTitle = strip_tags($propertyItemTitle ? (string) $item->value($propertyItemTitle) : $item->displayTitle());
             $itemDescription = $this->snippet($propertyItemDescription ? (string) $item->value($propertyItemDescription) : $item->displayDescription(), 200);
+            $itemGroup = $this->resourceMetadataSingle($item, $fieldGroup) ?: $groupDefault;
+            $itemGroup = $itemGroup ? strip_tags($itemGroup) : null;
             $itemDatesEnd = $propertyItemDateEnd
                 ? $item->value($propertyItemDateEnd, ['all' => true])
                 : [];
@@ -116,6 +120,9 @@ abstract class AbstractTimelineData extends AbstractPlugin
                     $event['image'] = $thumbnailUrl;
                 }
                 $event['description'] = $itemDescription;
+                if ($itemGroup) {
+                    $event['group'] = $itemGroup;
+                }
                 $events[] = $event;
             }
         }

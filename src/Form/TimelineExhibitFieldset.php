@@ -88,6 +88,39 @@ class TimelineExhibitFieldset extends Fieldset
                 ],
             ])
             ->add([
+                'name' => 'o:block[__blockIndex__][o:data][group]',
+                'type' => OmekaElement\PropertySelect::class,
+                'options' => [
+                    'label' => 'Metadata to use as group', // @translate
+                    'empty_option' => '',
+                    'term_as_value' => true,
+                    'prepend_value_options' => [
+                        'resource_class' => 'Resource class', // @translate
+                        'resource_class_label' => 'Resource class label', // @translate
+                        'resource_template_label' => 'Resource template', // @translate
+                        'owner_name' => 'Owner', // @translate
+                    ],
+                ],
+                'attributes' => [
+                    'id' => 'timeline-group',
+                    'required' => false,
+                    'multiple' => false,
+                    'class' => 'chosen-select',
+                    'data-placeholder' => 'Select a metadata…', // @translate
+                ],
+            ])
+            ->add([
+                'name' => 'o:block[__blockIndex__][o:data][group_default]',
+                'type' => Element\Text::class,
+                'options' => [
+                    'label' => 'Default group', // @translate
+                ],
+                'attributes' => [
+                    'id' => 'timeline-group-default',
+                    'required' => false,
+                ],
+            ])
+            ->add([
                 'name' => 'o:block[__blockIndex__][o:data][scale]',
                 'type' => Element\Radio::class,
                 'options' => [

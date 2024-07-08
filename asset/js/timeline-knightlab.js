@@ -1,5 +1,10 @@
 jQuery(document).ready(function($) {
 
+    if (typeof TL === 'undefined') {
+        console.log('The timeline library should be loaded first.');
+        return;
+    }
+
     const kTimeline = {
         loadTimeline: function(timelineId, timelineDataUrl, timelineParams) {
             $.getJSON(timelineDataUrl, function(data) {

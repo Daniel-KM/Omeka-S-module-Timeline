@@ -280,7 +280,8 @@ Copyright
 
 This [Omeka S] module is a full rewrite of the [fork of NeatlineTime plugin] for
 [Omeka Classic]. The original NeatlineTime plugin was created by the [Scholars’ Lab]
-at the University of Virginia Library and improved by various authors.
+at the University of Virginia Library and improved by various authors. Some
+improvements were integrated for the digital library of [Saint-Quentin Art & Histoire].
 
 
 [Timeline]: https://gitlab.com/Daniel-KM/Omeka-S-module-Timeline
@@ -302,5 +303,6 @@ at the University of Virginia Library and improved by various authors.
 [OSI]: http://opensource.org
 [themeing-plugin-pages]: http://omeka.org/codex/Theming_Plugin_Pages "Theming Plugin Pages"
 [Scholars’ Lab]: https://github.com/scholarslab
+[Saint-Quentin Art & Histoire]: http://saintquentinartethistoire.fr
 [GitLab]: https://gitlab.com/Daniel-KM
 [Daniel-KM]: https://gitlab.com/Daniel-KM "Daniel Berthereau"

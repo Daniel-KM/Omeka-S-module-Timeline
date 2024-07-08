@@ -29,7 +29,7 @@ if (is_array($timelineParams)) {
         $containerStyle = $timelineParams['container_style'];
         unset($timelineParams['container_style']);
     }
-    $timelineParams['centerDate'] = $data['center_date'] ?? '';
+    $timelineParams['centerDate'] = $options['center_date'] ?? '';
     // Slide 0 is slide title.
     $timelineParams['start_at_slide'] = $timelineParams['start_at_slide'] ?? 0;
     $timelineParams['language'] = $timelineParams['language'] ?? $language;

@@ -19,6 +19,11 @@ use Omeka\Api\Representation\AbstractResourceEntityRepresentation;
 trait TraitTimelineData
 {
     /**
+     * @var bool
+     */
+    protected $isCosmological = false;
+
+    /**
      * Minimum and maximum years.
      *
      * When converted to Unix timestamps, anything outside this range would
@@ -180,14 +185,14 @@ trait TraitTimelineData
         $result = [];
 
         foreach (array_filter($markers) as $label => $dates) {
-            [$dateStart, $dateEnd] = $this->convertAnyDate($dates, $this->renderYear);
+            [$dateStart, $dateEnd] = strpos($dates, '/') ? explode('/', $dates) : [$dates, null];
             if (empty($dateStart)) {
                 continue;
             }
             $event = [];
-            $event['start_date'] = $this->dateToArray($dateStart);
+            $event['start_date'] = $this->date($dateStart);
             if (!is_null($dateEnd)) {
-                $event['end_date'] = $this->dateToArray($dateEnd);;
+                $event['end_date'] = $this->date($dateEnd);;
             }
             $event['text'] = [
                 'headline' =>  $label,
@@ -225,8 +230,8 @@ trait TraitTimelineData
     /**
      * Extract year from a normalized date.
      *
-     * @todo Merge with \Timeline\Mvc\Controller\Plugin\TimelineExhibitData::date()
-     * @see \Timeline\Mvc\Controller\Plugin\TimelineExhibitData::date()
+     * @todo Merge with \Timeline\Mvc\Controller\Plugin\TraitTimelineData::date()
+     * @see \Timeline\Mvc\Controller\Plugin\TraitTimelineData::date()
      */
     protected function dateToArray(?string $date): array
     {
@@ -467,5 +472,116 @@ trait TraitTimelineData
                 // January, March, May, July, August, October, December
                 return 31;
         }
+    }
+
+    /**
+     * Convert a date from string to array.
+     *
+     * @param string|\Omeka\Api\Representation\ValueRepresentation $date
+     *
+     * @todo Merge with \Timeline\Mvc\Controller\Plugin\TraitTimelineData::dateToArray()
+     * @see \Timeline\Mvc\Controller\Plugin\TraitTimelineData::dateToArray()
+     */
+    protected function date($date, ?string $displayDate = null): ?array
+    {
+        $displayDate = strlen((string) $displayDate) ? $displayDate : null;
+        $parts = [
+            'year' => null,
+            'month' => null,
+            'day' => null,
+            'hour' => null,
+            'minute' => null,
+            'second' => null,
+            'millisecond' => null,
+            'display_date' => $displayDate,
+        ];
+
+        $matches = [];
+
+        $dateTime = is_object($date)
+            ? $date->value()
+            : $date;
+
+        // Set the start and end "date" objects.
+        if (is_object($date) && $date->type() === 'numeric:timestamp') {
+            $dateTime = Timestamp::getDateTimeFromValue($date->value());
+            $parts = array_intersect_key($dateTime, $parts);
+            if (!is_null($displayDate)) {
+                $parts['displayDate'] = $displayDate;
+            }
+        }
+        // Simple year (not 0).
+        elseif (preg_match('~^-?[0-9]+$~', $dateTime)) {
+            $parts['year'] = $this->isCosmological ? $date : ((int) $dateTime ?: null);
+        }
+        // TODO Simplify with one regex to manage partial or full iso dates.
+        // Year-month.
+        elseif (preg_match('~^(-?[0-9]+)-(1[0-2]|0[1-9])$~', $dateTime, $matches)) {
+            $parts['year'] = (int) $matches[1];
+            $parts['month'] = (int) $matches[2];
+        }
+        // Year-month-day.
+        elseif (preg_match('~^(-?[0-9]+)-(1[0-2]|0[1-9])-(3[01]|0[1-9]|[12][0-9])$~', $dateTime, $matches)) {
+            $parts['year'] = (int) $matches[1];
+            $parts['month'] = (int) $matches[2];
+            $parts['day'] = (int) $matches[3];
+        }
+        // Year-month-day hour.
+        elseif (preg_match('~^(-?[0-9]+)-(1[0-2]|0[1-9])-(3[01]|0[1-9]|[12][0-9])T(2[0-3]|[01][0-9])$~', $dateTime, $matches)) {
+            $parts['year'] = (int) $matches[1];
+            $parts['month'] = (int) $matches[2];
+            $parts['day'] = (int) $matches[3];
+            $parts['hour'] = (int) $matches[4];
+        }
+        // Year-month-day hour:minute.
+        elseif (preg_match('~^(-?[0-9]+)-(1[0-2]|0[1-9])-(3[01]|0[1-9]|[12][0-9])T(2[0-3]|[01][0-9]):([0-5][0-9])$~', $dateTime, $matches)) {
+            $parts['year'] = (int) $matches[1];
+            $parts['month'] = (int) $matches[2];
+            $parts['day'] = (int) $matches[3];
+            $parts['hour'] = (int) $matches[4];
+            $parts['minute'] = (int) $matches[5];
+        }
+        // Year-month-day hour:minute:second.
+        elseif (preg_match('~^(-?[0-9]+)-(1[0-2]|0[1-9])-(3[01]|0[1-9]|[12][0-9])T(2[0-3]|[01][0-9]):([0-5][0-9]):([0-5][0-9])$~', $dateTime, $matches)) {
+            $parts['year'] = (int) $matches[1];
+            $parts['month'] = (int) $matches[2];
+            $parts['day'] = (int) $matches[3];
+            $parts['hour'] = (int) $matches[4];
+            $parts['minute'] = (int) $matches[5];
+            $parts['second'] = (int) $matches[6];
+        }
+        // Year-month-day hour:minute:second.millisecond
+        elseif (preg_match('~^(-?[0-9]+)-(1[0-2]|0[1-9])-(3[01]|0[1-9]|[12][0-9])T(2[0-3]|[01][0-9]):([0-5][0-9]):([0-5][0-9])(\\.[0-9]+)?~', $dateTime, $matches)) {
+            $parts['year'] = (int) $matches[1];
+            $parts['month'] = (int) $matches[2];
+            $parts['day'] = (int) $matches[3];
+            $parts['hour'] = (int) $matches[4];
+            $parts['minute'] = (int) $matches[5];
+            $parts['second'] = (int) $matches[6];
+            $parts['millisecond'] = (int) $matches[7];
+        }
+        // Else try a string, converted as a timestamp. Only date is returned
+        // for simplicity, according to most common use cases.
+        elseif (($timestamp = strtotime($dateTime)) !== false) {
+            $dateTimeO = new DateTime();
+            $dateTimeO->setTimestamp($timestamp);
+            $parts['year'] = (int) $dateTimeO->format('Y');
+            $parts['month'] = (int) $dateTimeO->format('m');
+            $parts['day'] = (int) $dateTimeO->format('d');
+        }
+
+        $parts = array_filter($parts, function ($v) {
+            return !is_null($v);
+        });
+
+        if (!isset($parts['year'])) {
+            return null;
+        }
+
+        if ($this->isCosmological) {
+            return array_intersect_key($parts, ['year' => null, 'display_date' => null]);
+        }
+
+        return $parts;
     }
 }

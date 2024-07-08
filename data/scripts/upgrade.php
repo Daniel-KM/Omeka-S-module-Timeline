@@ -206,3 +206,15 @@ if (version_compare($oldVersion, '3.4.20', '<')) {
 
     $entityManager->flush();
 }
+
+if (version_compare($oldVersion, '3.4.19', '<')) {
+    $message = new Message(
+        'It is now possible to add groups, eras and extra-markers, for example historical events, in timelines.' // @translate
+    );
+    $messenger->addSuccess($message);
+
+    $message = new Message(
+        'The timeline for Knightlab has been updated to avoid a js transformation. Check if you used the output of the api directly.' // @translate
+    );
+    $messenger->addWarning($message);
+}

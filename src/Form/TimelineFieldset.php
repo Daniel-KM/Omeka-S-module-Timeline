@@ -2,6 +2,8 @@
 
 namespace Timeline\Form;
 
+// TODO Common is not a dependency of the module Timeline.
+use Common\Form\Element as CommonElement;
 use Laminas\Form\Element;
 use Laminas\Form\Fieldset;
 use Omeka\Form\Element as OmekaElement;
@@ -197,11 +199,16 @@ class TimelineFieldset extends Fieldset
             ])
             ->add([
                 'name' => 'o:block[__blockIndex__][o:data][markers]',
-                'type' => OmekaElement\ArrayTextarea::class,
+                'type' => CommonElement\DataTextarea::class,
                 'options' => [
                     'label' => 'Markers for well-known or extra events', // @translate
-                    'info' => 'Write one markers by line like "French Revolution = 1789-07-14". Year can be set alone. Require Knightlab.', // @ŧranslate
-                    'as_key_value' => true,
+                    'info' => 'Write one markers by line like "Night of the 4th August = 1789-08-04 = Abolition of feudalism in France". Year can be set alone. Require Knightlab.', // @ŧranslate
+                    // Important: these options should be set in the block layout too.
+                    'data_options' => [
+                        'heading' => null,
+                        'dates' => null,
+                        'body' => null,
+                    ],
                 ],
                 'attributes' => [
                     'id' => 'timeline-markers',

@@ -83,9 +83,13 @@ class TimelineExhibit extends AbstractBlockLayout implements TemplateableBlockLa
         if (empty($markers)) {
             $data['markers'] = [];
         } elseif (is_string($markers)) {
-            $arrayTextarea = new \Omeka\Form\Element\ArrayTextarea();
-            $arrayTextarea->setAsKeyValue(true);
-            $data['markers'] = $arrayTextarea->stringToArray($markers);
+            $dataTextarea = new \Common\Form\Element\DataTextarea();
+            $dataTextarea->setDataOptions([
+                'heading' => null,
+                'dates' => null,
+                'body' => null,
+            ]);
+            $data['markers'] = $dataTextarea->stringToArray($markers);
         }
 
         // Clean all values.

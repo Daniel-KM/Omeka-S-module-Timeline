@@ -184,7 +184,13 @@ trait TraitTimelineData
     {
         $result = [];
 
-        foreach (array_filter($markers) as $label => $dates) {
+        foreach (array_filter($markers) as $data) {
+            $heading = $data['heading'] ?? null;
+            $dates = $data['dates'] ?? null;
+            $body = $data['body'] ?? null;
+            if (!$heading || !$dates) {
+                continue;
+            }
             [$dateStart, $dateEnd] = strpos($dates, '/') ? explode('/', $dates) : [$dates, null];
             if (empty($dateStart)) {
                 continue;
@@ -195,8 +201,11 @@ trait TraitTimelineData
                 $event['end_date'] = $this->date($dateEnd);;
             }
             $event['text'] = [
-                'headline' =>  $label,
+                'headline' =>  $heading,
             ];
+            if ($body) {
+                $event['text']['text'] = $body;
+            }
             // Does not work with knighlab.
             $event['classname'] = 'extra-marker';
             $result[] = $event;
@@ -209,7 +218,13 @@ trait TraitTimelineData
     {
         $result = [];
 
-        foreach (array_filter($markers) as $label => $dates) {
+        foreach (array_filter($markers) as $data) {
+            $heading = $data['heading'] ?? null;
+            $dates = $data['dates'] ?? null;
+            $body = $data['body'] ?? null;
+            if (!$heading || !$dates) {
+                continue;
+            }
             [$dateStart, $dateEnd] = $this->convertAnyDate($dates, $this->renderYear);
             if (empty($dateStart)) {
                 continue;
@@ -219,7 +234,10 @@ trait TraitTimelineData
             if (!is_null($dateEnd)) {
                 $event['end'] = $dateEnd;
             }
-            $event['title'] = $label;
+            $event['title'] = $heading;
+            if ($body) {
+                $event['description'] = $body;
+            }
             $event['classname'] = 'extra-marker';
             $result[] = $event;
         }

@@ -117,6 +117,20 @@ class TimelineExhibitFieldset extends Fieldset
                 ],
             ])
             ->add([
+                'name' => 'o:block[__blockIndex__][o:data][markers]',
+                'type' => OmekaElement\ArrayTextarea::class,
+                'options' => [
+                    'label' => 'Markers for well-known or extra events', // @translate
+                    'info' => 'Write one markers by line like "French Revolution = 1789-07-14". Year can be set alone. Require Knightlab.', // @ŧranslate
+                    'as_key_value' => true,
+                ],
+                'attributes' => [
+                    'id' => 'timeline-exhibit-markers',
+                    'placeholder' => '',
+                    'rows' => 5,
+                ],
+            ])
+            ->add([
                 'name' => 'o:block[__blockIndex__][o:data][options]',
                 'type' => Element\Textarea::class,
                 'options' => [
@@ -125,6 +139,7 @@ class TimelineExhibitFieldset extends Fieldset
                     'documentation' => 'https://gitlab.com/daniel-km/omeka-s-module-timeline#knightlab-timeline',
                 ],
                 'attributes' => [
+                    'id' => 'timeline-exhibit-options',
                     'rows' => 5,
                 ],
             ])

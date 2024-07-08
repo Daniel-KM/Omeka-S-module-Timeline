@@ -3,7 +3,6 @@
 namespace Timeline\Mvc\Controller\Plugin;
 
 use DateTime;
-use DateTimeZone;
 use Laminas\Mvc\Controller\Plugin\AbstractPlugin;
 use Omeka\Api\Manager as ApiManager;
 use Omeka\Api\Representation\ItemRepresentation;
@@ -16,6 +15,11 @@ abstract class AbstractTimelineData extends AbstractPlugin
      * @var \Omeka\Api\Manager
      */
     protected $api;
+
+    /**
+     * @var \Laminas\I18n\View\Helper\Translate
+     */
+    protected $translate;
 
     public static $renderYears = [
         'january_1' => 'january_1',
@@ -42,6 +46,9 @@ abstract class AbstractTimelineData extends AbstractPlugin
     {
         $events = [];
 
+        $controller = $this->getController();
+        $this->translate = $controller->viewHelpers()->get('translate');
+
         $this->renderYear = $args['render_year'] ?? static::$renderYears['default'];
 
         $propertyItemTitle = $args['item_title'] === 'default' ? '' : $args['item_title'];
@@ -50,7 +57,8 @@ abstract class AbstractTimelineData extends AbstractPlugin
         $propertyItemDateEnd = $args['item_date_end'] ?? null;
         $fieldsItem = $args['item_metadata'] ?? [];
 
-        $eras = empty($args['eras']) ? [] : $this->eras($args['eras']);
+        $eras = empty($args['eras']) ? [] : $this->extractEras($args['eras']);
+        $markers = empty($args['markers']) ? [] : $this->extractMarkers($args['markers']);
 
         $thumbnailType = empty($args['thumbnail_type']) ? 'medium' : $args['thumbnail_type'];
         $thumbnailResource = !empty($args['thumbnail_resource']);
@@ -112,14 +120,21 @@ abstract class AbstractTimelineData extends AbstractPlugin
             }
         }
 
-        $data = [];
-        $data['dateTimeFormat'] = 'iso8601';
-        if ($eras) {
-            $data['eras'] = $eras;
+        // Append markers.
+        $groupLabel = $this->translate->__invoke('Events'); // @translate
+        foreach ($markers as $markerData) {
+            $markerData['group'] = $groupLabel;
+            $events[] = $markerData;
         }
-        $data['events'] = $events;
 
-        return $data;
+        $timeline = [];
+        $timeline['dateTimeFormat'] = 'iso8601';
+        if ($eras) {
+            $timeline['eras'] = $eras;
+        }
+        $timeline['events'] = $events;
+
+        return $timeline;
     }
 
     /**

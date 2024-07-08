@@ -58,7 +58,7 @@ trait TraitTimelineData
     protected $patternIso8601 = '^(?<date>(?<year>-?\d{1,})(-(?<month>\d{2}))?(-(?<day>\d{2}))?)(?<time>(T(?<hour>\d{2}))?(:(?<minute>\d{2}))?(:(?<second>\d{2}))?)(?<offset>((?<offset_hour>[+-]\d{2})?(:(?<offset_minute>\d{2}))?)|Z?)$';
 
     /**
-     * Append metadata for custom timelines.
+     * Get a list of metadata from a resource for custom timelines.
      */
     protected function resourceMetadata(AbstractResourceEntityRepresentation $resource, array $fields): array
     {
@@ -96,7 +96,7 @@ trait TraitTimelineData
     /**
      * @todo See TimelineExhibitData
      */
-    protected function eras(array $eras): array
+    protected function extractEras(array $eras): array
     {
         $result = [];
 
@@ -137,6 +137,32 @@ trait TraitTimelineData
                     'headline' => $label,
                 ],
             ];
+        }
+
+        return $result;
+    }
+
+    /**
+     * @todo See TimelineExhibitData
+     */
+    protected function extractMarkers(array $markers): array
+    {
+        $result = [];
+
+        foreach (array_filter($markers) as $label => $dates) {
+            [$dateStart, $dateEnd] = $this->convertAnyDate($dates, $this->renderYear);
+            if (empty($dateStart)) {
+                continue;
+            }
+            $event = [];
+            $event['start'] = $dateStart;
+            if (!is_null($dateEnd)) {
+                $event['end'] = $dateEnd;
+            }
+            $event['title'] = $label;
+            $event['classname'] = 'extra-marker';
+
+            $result[] = $event;
         }
 
         return $result;

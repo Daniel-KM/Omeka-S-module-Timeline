@@ -78,6 +78,16 @@ class TimelineExhibit extends AbstractBlockLayout implements TemplateableBlockLa
             $data['eras'] = $arrayTextarea->stringToArray($eras);
         }
 
+        // In some cases, the ArrayTextarray store values as string.
+        $markers = $data['markers'] ?? [];
+        if (empty($markers)) {
+            $data['markers'] = [];
+        } elseif (is_string($markers)) {
+            $arrayTextarea = new \Omeka\Form\Element\ArrayTextarea();
+            $arrayTextarea->setAsKeyValue(true);
+            $data['markers'] = $arrayTextarea->stringToArray($markers);
+        }
+
         // Clean all values.
         $data['slides'] = array_values(
             array_map(function ($v) {
@@ -176,7 +186,7 @@ class TimelineExhibit extends AbstractBlockLayout implements TemplateableBlockLa
         foreach ($data as $key => $value) {
             // Add fields for repeatable fieldsets with multiple fields.
             // But some keys have array as values (ArrayTextarea).
-            if (is_array($value) && !in_array($key, ['eras', 'item_metadata'])) {
+            if (is_array($value) && !in_array($key, ['eras', 'markers', 'item_metadata'])) {
                 $subFieldsetName = "o:block[__blockIndex__][o:data][$key]";
                 if (!$fieldset->has($subFieldsetName)) {
                     continue;

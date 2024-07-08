@@ -63,6 +63,16 @@ class Timeline extends AbstractBlockLayout implements TemplateableBlockLayoutInt
             $data['eras'] = $arrayTextarea->stringToArray($eras);
         }
 
+        // In some cases, the ArrayTextarray store values as string.
+        $markers = $data['markers'] ?? [];
+        if (empty($markers)) {
+            $data['markers'] = [];
+        } elseif (is_string($markers)) {
+            $arrayTextarea = new \Omeka\Form\Element\ArrayTextarea();
+            $arrayTextarea->setAsKeyValue(true);
+            $data['markers'] = $arrayTextarea->stringToArray($markers);
+        }
+
         $data['viewer'] = trim($data['viewer'] ?? '{}');
         if ($data['viewer'] === '') {
             $data['viewer'] = '{}';

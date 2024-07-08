@@ -111,6 +111,7 @@ return [
                 'render_year' => 'january_1',
                 'center_date' => '9999-99-99',
                 'eras' => [],
+                'markers' => [],
                 'thumbnail_type' => 'medium',
                 'thumbnail_resource' => true,
                 'viewer' => '{}',
@@ -124,6 +125,7 @@ return [
                 'item_metadata' => [],
                 'scale' => 'human',
                 'eras' => [],
+                'markers' => [],
                 'options' => '{}',
                 'slides' => [
                     [

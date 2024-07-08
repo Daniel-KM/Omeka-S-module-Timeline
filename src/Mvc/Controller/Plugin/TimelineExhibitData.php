@@ -24,9 +24,9 @@ class TimelineExhibitData extends AbstractPlugin
     protected $api;
 
     /**
-     * @var \Laminas\View\Helper\EscapeHtmlAttr
+     * @var \Laminas\I18n\View\Helper\Translate
      */
-    protected $escapeHtmlAttr;
+    protected $translate;
 
     /**
      * @var string
@@ -87,7 +87,7 @@ class TimelineExhibitData extends AbstractPlugin
     public function __invoke(array $args): array
     {
         $controller = $this->getController();
-        $this->escapeHtmlAttr = $controller->viewHelpers()->get('escapeHtmlAttr');
+        $this->translate = $controller->viewHelpers()->get('translate');
 
         $this->startDateProperty = $args['start_date_property'];
         $this->endDateProperty = $args['end_date_property'];
@@ -96,7 +96,8 @@ class TimelineExhibitData extends AbstractPlugin
         $this->fieldsItem = $args['item_metadata'] ?? [];
         $this->siteSlug = $args['site_slug'];
 
-        $eras = empty($args['eras']) ? [] : $this->eras($args['eras']);
+        $eras = empty($args['eras']) ? [] : $this->extractEras($args['eras']);
+        $markers = empty($args['markers']) ? [] : $this->extractMarkers($args['markers']);
 
         $timeline = [
             'scale' => $this->isCosmological ? 'cosmological' : 'human',
@@ -167,6 +168,13 @@ class TimelineExhibitData extends AbstractPlugin
                     }
                     break;
             }
+        }
+
+        // Append markers.
+        $groupLabel = $this->translate->__invoke('Events'); // @translate
+        foreach ($markers as $markerData) {
+            $markerData['group'] = $groupLabel;
+            $timeline['events'][] = $markerData;
         }
 
         return $timeline;

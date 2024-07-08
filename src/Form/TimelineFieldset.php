@@ -163,6 +163,20 @@ class TimelineFieldset extends Fieldset
                 ],
             ])
             ->add([
+                'name' => 'o:block[__blockIndex__][o:data][markers]',
+                'type' => OmekaElement\ArrayTextarea::class,
+                'options' => [
+                    'label' => 'Markers for well-known or extra events', // @translate
+                    'info' => 'Write one markers by line like "French Revolution = 1789-07-14". Year can be set alone. Require Knightlab.', // @ŧranslate
+                    'as_key_value' => true,
+                ],
+                'attributes' => [
+                    'id' => 'timeline-markers',
+                    'placeholder' => '',
+                    'rows' => 5,
+                ],
+            ])
+            ->add([
                 'name' => 'o:block[__blockIndex__][o:data][thumbnail_type]',
                 'type' => Element\Select::class,
                 'options' => [

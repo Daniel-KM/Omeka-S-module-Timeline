@@ -206,7 +206,7 @@ class TimelineExhibitData extends AbstractPlugin
                 $group = $group ? strip_tags($group) : null;
             }
         } else {
-            $group = strip_tags($slideData['group']):
+            $group = strip_tags($slideData['group']);
         }
 
         $slide = [

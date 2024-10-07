@@ -56,11 +56,12 @@ trait TraitTimelineData
      * include colons as separators. This follows the standard's best practices,
      * which notes that "The basic format should be avoided in plain text."
      *
-     * Unlike NumericDataTypes, allow non-padded date until 999 (no need 0999).
+     * Unlike NumericDataTypes, allow non-padded date until 999 (no need 0999)
+     * and allow missing ":" between hours and minutes in offset.
      *
      * @var string
      */
-    protected $patternIso8601 = '^(?<date>(?<year>-?\d{1,})(-(?<month>\d{2}))?(-(?<day>\d{2}))?)(?<time>(T(?<hour>\d{2}))?(:(?<minute>\d{2}))?(:(?<second>\d{2}))?)(?<offset>((?<offset_hour>[+-]\d{2})?(:(?<offset_minute>\d{2}))?)|Z?)$';
+    protected $patternIso8601 = '^(?<date>(?<year>-?\d{1,})(-(?<month>\d{2}))?(-(?<day>\d{2}))?)(?<time>(T(?<hour>\d{2}))?(:(?<minute>\d{2}))?(:(?<second>\d{2}))?)(?<offset>((?<offset_hour>[+-]\d{2})?(:?(?<offset_minute>\d{2}))?)|Z?)$';
 
     /**
      * Get a single metadata from a resource for custom timelines.
@@ -315,12 +316,18 @@ trait TraitTimelineData
      *
      * Copied in:
      * @see \BulkImport\Processor\DateTimeTrait
-     * @see \Timeline\Mvc\Controller\Plugin\AbstractTimelineData
+     * @see \Timeline\Mvc\Controller\Plugin\TraitTimelineData
      *
      * @todo See TimelineExhibitData
      */
-    protected function getDateTimeFromValue($value, bool $defaultFirst = true, bool $formatted = false, bool $fullDatetime = false, bool $forSql = false, $fullData = false)
-    {
+    protected function getDateTimeFromValue(
+        $value,
+        bool $defaultFirst = true,
+        bool $formatted = false,
+        bool $fullDatetime = false,
+        bool $forSql = false,
+        $fullData = false
+    ) {
         // Match against ISO 8601, allowing for reduced accuracy.
         $matches = [];
         $isMatch = preg_match('/' . $this->patternIso8601 . '/', (string) $value, $matches);
@@ -358,7 +365,7 @@ trait TraitTimelineData
         $dateTime['month_normalized'] = $dateTime['month'] ?? ($defaultFirst ? 1 : 12);
         // The last day takes special handling, as it depends on year/month.
         $dateTime['day_normalized'] = $dateTime['day']
-        ?? ($defaultFirst ? 1 : $this->getLastDay($dateTime['year'], $dateTime['month_normalized']));
+            ?? ($defaultFirst ? 1 : $this->getLastDay($dateTime['year'], $dateTime['month_normalized']));
         $dateTime['hour_normalized'] = $dateTime['hour'] ?? ($defaultFirst ? 0 : 23);
         $dateTime['minute_normalized'] = $dateTime['minute'] ?? ($defaultFirst ? 0 : 59);
         $dateTime['second_normalized'] = $dateTime['second'] ?? ($defaultFirst ? 0 : 59);
@@ -366,8 +373,8 @@ trait TraitTimelineData
         $dateTime['offset_minute_normalized'] = $dateTime['offset_minute'] ?? 0;
         // Set the UTC offset (+00:00) if no offset is provided.
         $dateTime['offset_normalized'] = isset($dateTime['offset_value'])
-        ? ('Z' === $dateTime['offset_value'] ? '+00:00' : $dateTime['offset_value'])
-        : '+00:00';
+            ? ('Z' === $dateTime['offset_value'] ? '+00:00' : $dateTime['offset_value'])
+            : '+00:00';
 
         // Validate ranges of the datetime component.
         if (($this->yearMin > $dateTime['year']) || ($this->yearMax < $dateTime['year'])) {

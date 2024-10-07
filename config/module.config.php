@@ -57,6 +57,7 @@ return [
         'routes' => [
             'api' => [
                 'child_routes' => [
+                    // The deprecated route "timeline-block" (for url "/timeline/:block-id/events.json") was removed in 3.4.22.
                     'timeline' => [
                         'type' => \Laminas\Router\Http\Segment::class,
                         'options' => [
@@ -68,22 +69,6 @@ return [
                                 'controller' => Controller\ApiController::class,
                             ],
                         ],
-                    ],
-                ],
-            ],
-            // @deprecated Use /api/timeline instead.
-            'timeline-block' => [
-                'type' => \Laminas\Router\Http\Segment::class,
-                'options' => [
-                    'route' => '/timeline/:block-id/events.json',
-                    'constraints' => [
-                        'block-id' => '\d+',
-                    ],
-                    'defaults' => [
-                        // '__NAMESPACE__' => 'Timeline\Controller',
-                        // 'controller' => 'ApiController',
-                        'controller' => Controller\ApiController::class,
-                        'action' => 'getList',
                     ],
                 ],
             ],

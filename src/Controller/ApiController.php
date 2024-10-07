@@ -4,7 +4,6 @@ namespace Timeline\Controller;
 
 use Doctrine\ORM\EntityManager;
 use Laminas\Http\Response;
-use Laminas\Mvc\MvcEvent;
 use Omeka\Api\Exception\NotFoundException;
 use Omeka\Api\Manager as ApiManager;
 use Omeka\Entity\SitePageBlock;
@@ -190,27 +189,6 @@ SQL;
             $this->translate('Page not found'), // @translate
             Response::STATUS_CODE_404
         );
-    }
-
-    /**
-     * Support of old deprecated route "/timeline/xxx/events.json".
-     *
-     * {@inheritDoc}
-     * @see \Omeka\Controller\ApiController::onDispatch()
-     */
-    public function onDispatch(MvcEvent $event)
-    {
-        $blockId = (int) $this->params('block-id');
-        if ($blockId) {
-            $params = [
-                'controller' => get_class($this),
-                'block-id' => $blockId,
-            ];
-            $routeMatch = new \Laminas\Router\Http\RouteMatch($params);
-            $routeMatch->setMatchedRouteName('api/timeline');
-            $event->setRouteMatch($routeMatch);
-        }
-        return parent::onDispatch($event);
     }
 
     protected function returnErrorMethodNotAllowed()

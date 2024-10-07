@@ -17,7 +17,7 @@
 
         oTimeline.loadTimeline(
             'timeline-<?= blockId ?>',
-            '<?= $this->url('timeline-block', ['block-id' => $blockId]) ?>',
+            '<?= $this->url('api/timeline', ['block-id' => $blockId]) ?>',
             params
         );
     });

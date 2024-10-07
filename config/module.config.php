@@ -33,6 +33,12 @@ return [
             'timelineExhibit' => Service\BlockLayout\TimelineExhibitFactory::class,
         ],
     ],
+    'resource_page_block_layouts' => [
+        'invokables' => [
+            'timeline' => Site\ResourcePageBlockLayout\Timeline::class,
+            'timelineKnightlab' => Site\ResourcePageBlockLayout\TimelineKnightlab::class,
+        ],
+    ],
     'form_elements' => [
         'invokables' => [
             Form\TimelineFieldset::class => Form\TimelineFieldset::class,
@@ -61,9 +67,10 @@ return [
                     'timeline' => [
                         'type' => \Laminas\Router\Http\Segment::class,
                         'options' => [
+                            // The block id may be an item set id.
                             'route' => '/timeline[/:block-id]',
                             'constraints' => [
-                                'block-id' => '\d+',
+                                'block-id' => '(?:b|r)?\d+',
                             ],
                             'defaults' => [
                                 'controller' => Controller\ApiController::class,

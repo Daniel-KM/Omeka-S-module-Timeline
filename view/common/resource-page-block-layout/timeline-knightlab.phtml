@@ -1,0 +1,62 @@
+<?php
+/**
+ * @var \Laminas\View\Renderer\PhpRenderer $this
+ * @var \Omeka\Api\Representation\ItemSetRepresentation $resource
+ * @var array $data
+ *
+ * @see https://timeline.knightlab.com/docs/options.html
+ */
+
+$plugins = $this->getHelperPluginManager();
+$url = $plugins->get('url');
+$setting = $plugins->get('setting');
+$assetUrl = $plugins->get('assetUrl');
+$siteSetting = $plugins->get('siteSetting');
+$escapeAttr = $plugins->get('escapeHtmlAttr');
+
+$language = substr($siteSetting('locale', ''), 0, 2) ?: (substr($setting('locale', ''), 0, 2) ?: 'en');
+
+// The container size is required inline to avoid 0-height issues with some themes.
+$containerStyle = 'width: 100%; height: 80vh;';
+
+$timelineId = 'timeline-r' . $resource->id() . 'k';
+$timelineUrl = json_encode($url('api/timeline', ['block-id' => 'r' . $resource->id()], ['query' => ['output' => 'knightlab']]), 320);
+
+// The viewer options are passed even when they are not valid json.
+$timelineParamsString = $data['viewer'];
+$timelineParams = json_decode($timelineParamsString, true) ?: [];
+if (is_array($timelineParams)) {
+    if (array_key_exists('container_style', $timelineParams)) {
+        $containerStyle = $timelineParams['container_style'];
+        unset($timelineParams['container_style']);
+    }
+    $timelineParams['centerDate'] = $data['center_date'] ?? '';
+    // Slide 0 is slide title, but there is no slide title.
+    $timelineParams['start_at_slide'] = $timelineParams['start_at_slide'] ?? 0;
+    $timelineParams['language'] = $timelineParams['language'] ?? $language;
+    $timelineParamsString = json_encode($timelineParams, 448);
+} elseif (mb_strlen(trim((string) $timelineParamsString)) < 6) {
+    $data['viewer'] = json_encode(['' => 1, 'language' => $language]);
+}
+
+$script = <<<JS
+if (typeof timelines === 'undefined') {
+    timelines = {};
+}
+timelines['$timelineId'] = {
+    id: '$timelineId',
+    type: 'knightlab',
+    url: $timelineUrl,
+    params: $timelineParamsString,
+};
+JS;
+
+$this->headLink()
+    ->appendStylesheet('https://cdn.knightlab.com/libs/timeline3/latest/css/timeline.css');
+$this->headScript()
+    ->appendFile('https://cdn.knightlab.com/libs/timeline3/latest/js/timeline.js', 'text/javascript', ['defer' => 'defer'])
+    ->appendFile($assetUrl('js/timeline-knightlab.js', 'Timeline'), 'text/javascript', ['defer' => 'defer'])
+    ->appendScript($script);
+?>
+
+<div id="<?= $timelineId ?>" class="timeline" style="<?= $escapeAttr($containerStyle) ?>"></div>

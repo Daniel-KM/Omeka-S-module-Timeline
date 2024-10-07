@@ -1,0 +1,54 @@
+<?php
+/**
+ * @var \Laminas\View\Renderer\PhpRenderer $this
+ * @var \Omeka\Api\Representation\ItemSetRepresentation $resource
+ * @var array $data
+ */
+
+$plugins = $this->getHelperPluginManager();
+$url = $plugins->get('url');
+$assetUrl = $plugins->get('assetUrl');
+
+$timelineAjaxUrl = $assetUrl('vendor/simile/ajax-api/simile-ajax-api.js', 'Timeline');
+$timelineUrlPrefix = dirname($assetUrl('vendor/simile/timeline-api/timeline-api.js', 'Timeline')) . '/';
+
+$timelineId = 'timeline-r' . $resource->id();
+$timelineUrl = json_encode($url('api/timeline', ['block-id' => 'r' . $resource->id()], ['query' => ['output' => 'simile']]), 320);
+
+// The viewer options are passed even when they are not valid json.
+$timelineParamsString = $data['viewer'];
+$timelineParams = json_decode($timelineParamsString, true) ?: [];
+if (is_array($timelineParams) && !array_key_exists('centerDate', $timelineParams)) {
+    $timelineParams['centerDate'] = $data['center_date'] ?? '';
+    $timelineParamsString = json_encode($timelineParams, 448);
+}
+
+// Variables for Timeline Simile. Should be set early.
+$scriptVariables = <<<JS
+Timeline_ajax_url = '$timelineAjaxUrl';
+Timeline_urlPrefix = '$timelineUrlPrefix';
+Timeline_parameters="bundle=true";
+JS;
+
+$script = <<<JS
+if (typeof timelines === 'undefined') {
+    timelines = {};
+}
+timelines['$timelineId'] = {
+    id: '$timelineId',
+    type: 'simile',
+    url: $timelineUrl,
+    params: $timelineParamsString,
+};
+JS;
+$this->headLink()
+    ->appendStylesheet($assetUrl('css/timeline.css', 'Timeline'));
+$this->headScript()
+    ->appendFile($assetUrl('js/timeline-simile.js', 'Timeline'))
+    ->appendScript($scriptVariables)
+    ->appendFile($assetUrl('vendor/simile/timeline-api/timeline-api.js', 'Timeline'))
+    ->appendScript('SimileAjax.History.enabled = false; // window.jQuery = SimileAjax.jQuery;')
+    ->appendScript($script);
+?>
+
+<div id="<?= $timelineId ?>" class="timeline"></div>

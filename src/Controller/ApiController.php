@@ -52,19 +52,35 @@ class ApiController extends \Omeka\Controller\ApiController
     public function getList()
     {
         $query = $this->cleanQuery();
-        $blockId = (int) $this->params('block-id');
+        $blockId = $this->params('block-id');
         if (!$blockId) {
-            $blockId = empty($query['block_id']) ? null : (int) $query['block_id'];
+            $blockId = empty($query['block_id']) ? null : $query['block_id'];
         }
         if ($blockId) {
-            /** @var \Omeka\Entity\SitePageBlock $block */
-            $block = $this->getBlock($blockId);
-            if (!$block) {
+            /** @var \Omeka\Entity\SitePageBlock|\Omeka\Api\Representation\ItemSetRepresentation $blockOrResource */
+            $blockOrResource = $this->getBlockOrResource($blockId);
+            if (!$blockOrResource) {
                 return $this->getErrorResult(
                     $this->getEvent(),
-                    new NotFoundException('Block not found') // @translate
+                    new NotFoundException('Block or resource not found') // @translate
                 );
             }
+
+            $isResource = $blockOrResource instanceof \Omeka\Api\Representation\AbstractResourceEntityRepresentation;
+            if ($isResource) {
+                // Warning: the site is undefined here, except if set in query.
+                $resource = $blockOrResource;
+                // Use the query and the options set in the config.
+                $blockData = $this->config['timeline']['block_settings']['timeline'];
+                $query['item_set_id'] = $resource->id();
+                $output = ($query['output'] ?? 'simile') === 'knightlab' ? 'knightlab' : 'simile';
+                $data = $output === 'knightlab'
+                    ? $this->timelineKnightlabData($query, $blockData)
+                    : $this->timelineSimileData($query, $blockData);
+                return new ApiJsonModel($data, $this->getViewOptions());
+            }
+
+            $block = $blockOrResource;
             $layout = $block->getLayout();
             if (!in_array($layout, ['timeline', 'timelineExhibit'])) {
                 return $this->getErrorResult(
@@ -132,16 +148,37 @@ SQL;
     }
 
     /**
-     * Helper to get a site page block.
+     * Helper to get a site page block or an item set.
      *
      * Note: Site page blocks are not available via the api or the adapter.
      * @see \Omeka\Api\Adapter\AbstractEntityAdapter::findEntity()
      *
-     * @param int $blockId
-     * @return \Omeka\Entity\SitePageBlock
+     * @param string|int $blockId
+     * @return \Omeka\Entity\SitePageBlock|\Omeka\Api\Representation\ItemSetRepresentation|null
      */
-    protected function getBlock($blockId): ?SitePageBlock
+    protected function getBlockOrResource($blockOrResourceId)
     {
+        if (!$blockOrResourceId) {
+            return null;
+        }
+
+        $first = substr((string) $blockOrResourceId, 0, 1);
+        if ($first === 'r') {
+            $resourceId = (int) substr((string) $blockOrResourceId, 1);
+            try {
+                return $this->api()->read('item_sets', $resourceId)->getContent();
+            } catch (\Exception $e) {
+                return null;
+            }
+        }
+
+        $blockId = $first === 'b'
+            ? (int) substr((string) $blockOrResourceId, 1)
+            : (int) $blockOrResourceId;
+        if (!$blockId) {
+            return null;
+        }
+
         $qb = $this->entityManager->createQueryBuilder();
         return $qb
             ->select('omeka_root')

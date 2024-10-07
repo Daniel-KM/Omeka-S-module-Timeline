@@ -18,15 +18,21 @@ use Omeka\View\Model\ApiJsonModel;
 class ApiController extends \Omeka\Controller\ApiController
 {
     /**
-     * @var EntityManager
+     * @var \Doctrine\ORM\EntityManager
      */
     protected $entityManager;
 
-    public function __construct(Paginator $paginator, ApiManager $api, EntityManager $entityManager)
+    /**
+     * @var array
+     */
+    protected $config;
+
+    public function __construct(Paginator $paginator, ApiManager $api, EntityManager $entityManager, array $config)
     {
         $this->paginator = $paginator;
         $this->api = $api;
         $this->entityManager = $entityManager;
+        $this->config = $config;
     }
 
     public function create($data, $fileData = [])
@@ -136,9 +142,8 @@ SQL;
                 'A query is needed to get a timeline.' // @translate
             ));
         } else {
-            // Use the default options of the module.
-            $config = require dirname(__DIR__, 2) . '/config/module.config.php';
-            $blockData = $config['timeline']['block_settings']['timeline'];
+            // Use the options set in the config.
+            $blockData = $this->config['timeline']['block_settings']['timeline'];
             $data = ($query['output'] ?? 'simile') === 'knightlab'
                 ? $this->timelineKnightlabData($query, $blockData)
                 : $this->timelineSimileData($query, $blockData);

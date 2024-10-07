@@ -2,7 +2,6 @@
 
 namespace Timeline\Mvc\Controller\Plugin;
 
-use DateTime;
 use Laminas\Mvc\Controller\Plugin\AbstractPlugin;
 use Laminas\Uri\Http as HttpUri;
 use NumericDataTypes\DataType\Timestamp;
@@ -229,9 +228,7 @@ class TimelineExhibitData extends AbstractPlugin
             $slide['unique_id'] .= '-asset-' . $slideData['background']->id();
         }
 
-        $slide = array_filter($slide, function ($v) {
-            return !is_null($v);
-        });
+        $slide = array_filter($slide, fn ($v) => !is_null($v));
 
         if ($this->fieldsItem && !empty($slideData['resource'])) {
             $slide['metadata'] = $this->resourceMetadata($slideData['resource'], $this->fieldsItem);

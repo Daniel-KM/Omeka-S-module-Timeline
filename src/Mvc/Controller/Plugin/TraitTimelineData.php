@@ -4,8 +4,6 @@ namespace Timeline\Mvc\Controller\Plugin;
 
 use DateTime;
 use DateTimeZone;
-use Laminas\Mvc\Controller\Plugin\AbstractPlugin;
-use Omeka\Api\Manager as ApiManager;
 use Omeka\Api\Representation\AbstractResourceEntityRepresentation;
 
 /**
@@ -199,10 +197,10 @@ trait TraitTimelineData
             $event = [];
             $event['start_date'] = $this->date($dateStart);
             if (!is_null($dateEnd)) {
-                $event['end_date'] = $this->date($dateEnd);;
+                $event['end_date'] = $this->date($dateEnd);
             }
             $event['text'] = [
-                'headline' =>  $heading,
+                'headline' => $heading,
             ];
             if ($body) {
                 $event['text']['text'] = $body;
@@ -595,9 +593,7 @@ trait TraitTimelineData
             $parts['day'] = (int) $dateTimeO->format('d');
         }
 
-        $parts = array_filter($parts, function ($v) {
-            return !is_null($v);
-        });
+        $parts = array_filter($parts, fn ($v) => !is_null($v));
 
         if (!isset($parts['year'])) {
             return null;

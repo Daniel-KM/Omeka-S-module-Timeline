@@ -117,7 +117,7 @@ abstract class AbstractTimelineData extends AbstractPlugin
                 if ($this->timelineJs === 'knightlab') {
                     $event['start_date'] = $this->dateToArray($dateStart);
                     if (!is_null($dateEnd)) {
-                        $event['end_date'] = $this->dateToArray($dateEnd);;
+                        $event['end_date'] = $this->dateToArray($dateEnd);
                     }
                     $event['text'] = [
                         'headline' => '<a href=' . $itemLink . '>' . $itemTitle . '</a>',

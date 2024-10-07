@@ -157,7 +157,7 @@ if (version_compare($oldVersion, '3.4.20', '<')) {
                 $b->setPosition(++$position);
                 $b->setData($hasBlockPlus
                     ? ['text' => $heading, 'level' => 2]
-                    :  ['html' => '<h2>' . $escape($heading) . '</h2>']
+                    : ['html' => '<h2>' . $escape($heading) . '</h2>']
                 );
                 $entityManager->persist($b);
                 $block->setPosition(++$position);

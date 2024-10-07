@@ -19,10 +19,10 @@ $language = substr($siteSetting('locale', ''), 0, 2) ?: (substr($setting('locale
 // The container size is required inline to avoid 0-height issues with some themes.
 $containerStyle = 'width: 100%; height: 80vh;';
 
-$data['viewer'] = json_decode($data['viewer']) ? $data['viewer'] : json_encode(['' => 1, 'language' => $language]);
-
 $timelineId = 'timeline-' . $block->id();
 $timelineUrl = json_encode($url('api/timeline', ['block-id' => $block->id()]), 320);
+
+// The viewer options are passed even when they are not valid json.
 $timelineParamsString = $data['viewer'];
 $timelineParams = json_decode($timelineParamsString, true) ?: [];
 if (is_array($timelineParams)) {
@@ -35,6 +35,8 @@ if (is_array($timelineParams)) {
     $timelineParams['start_at_slide'] = $timelineParams['start_at_slide'] ?? 0;
     $timelineParams['language'] = $timelineParams['language'] ?? $language;
     $timelineParamsString = json_encode($timelineParams, 448);
+} elseif (mb_strlen(trim((string) $timelineParamsString)) < 6) {
+    $data['viewer'] = json_encode(['' => 1, 'language' => $language]);
 }
 
 $script = <<<JS

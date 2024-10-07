@@ -86,7 +86,7 @@ class Timeline extends AbstractBlockLayout implements TemplateableBlockLayoutInt
         if (strlen(preg_replace('~\s*~', '', $data['viewer'])) <= 2) {
             $data['viewer'] = '{}';
         } elseif (!$viewer || !is_array($viewer)) {
-            $this->messenger->addError('The config of the Timeline viewer should be a valid json object.'); // @translate
+            $this->messenger->addWarning('The config of the Timeline viewer is not a valid json object. Nevertheless, the data are saved and it will be passed as it.'); // @translate
         }
 
         $property = $this->api

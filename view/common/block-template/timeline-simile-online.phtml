@@ -11,6 +11,8 @@ $assetUrl = $plugins->get('assetUrl');
 
 $timelineId = 'timeline-' . $block->id();
 $timelineUrl = json_encode($url('api/timeline', ['block-id' => $block->id()]), 320);
+
+// The viewer options are passed even when they are not valid json.
 $timelineParamsString = $data['viewer'];
 $timelineParams = json_decode($timelineParamsString, true) ?: [];
 if (is_array($timelineParams) && !array_key_exists('centerDate', $timelineParams)) {

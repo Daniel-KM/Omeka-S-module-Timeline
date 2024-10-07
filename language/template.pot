@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-07-08 00:00+0000\n"
+"POT-Creation-Date: 2024-10-28 00:00+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/Controller/ApiController.php:219
+#: src/Controller/ApiController.php:242
 msgid "Method Not Allowed"
 msgstr ""
 
@@ -57,11 +57,11 @@ msgstr ""
 msgid "collapse"
 msgstr ""
 
-#: data/scripts/upgrade.php:91
+#: data/scripts/upgrade.php:93
 msgid "The json is now built dynamically from the url /api/timeline."
 msgstr ""
 
-#: data/scripts/upgrade.php:179
+#: data/scripts/upgrade.php:181
 #, php-format
 msgid ""
 "The setting \"heading\" was removed from blocks. A new block "
@@ -69,24 +69,44 @@ msgid ""
 "had a filled heading. You may check pages for styles: %s"
 msgstr ""
 
-#: data/scripts/upgrade.php:191
+#: data/scripts/upgrade.php:193
 msgid "timeline-simile-online"
 msgstr ""
 
-#: data/scripts/upgrade.php:192
+#: data/scripts/upgrade.php:194
 msgid "timeline-knightlab"
 msgstr ""
 
-#: data/scripts/upgrade.php:212
+#: data/scripts/upgrade.php:214
 msgid ""
 "It is now possible to add groups, eras and extra-markers, for example "
 "historical events, in timelines."
 msgstr ""
 
-#: data/scripts/upgrade.php:217
+#: data/scripts/upgrade.php:219
 msgid ""
 "The timeline for Knightlab has been updated to avoid a js transformation. "
 "Check if you used the output of the api directly."
+msgstr ""
+
+#: data/scripts/upgrade.php:280
+#, php-format
+msgid ""
+"The deprecated route \"timeline-block\" (for url \"/timeline/:block-id/"
+"events.json\") was replaced by \"api/timeline\". Check your old themes if "
+"you used it. Matching templates: %s"
+msgstr ""
+
+#: data/scripts/upgrade.php:287
+msgid ""
+"The deprecated route \"timeline-block\" (for url \"/timeline/:block-id/"
+"events.json\") was replaced by \"api/timeline\". Check your old themes if "
+"you used it."
+msgstr ""
+
+#: data/scripts/upgrade.php:293
+msgid ""
+"It is now possible to add a timeline to an item set as a resource page block."
 msgstr ""
 
 #: src/Mvc/Controller/Plugin/TimelineExhibitData.php:181
@@ -336,29 +356,36 @@ msgstr ""
 msgid "Timeline viewer params"
 msgstr ""
 
-#: src/Controller/ApiController.php:66
-msgid "Block not found"
+#: src/Controller/ApiController.php:68
+msgid "A well-formed url or a query is needed to get a timeline."
 msgstr ""
 
-#: src/Controller/ApiController.php:74
+#: src/Controller/ApiController.php:78
+msgid "Block or resource not found"
+msgstr ""
+
+#: src/Controller/ApiController.php:102
 #, php-format
 msgid "Id %d is not a timeline."
 msgstr ""
 
-#: src/Controller/ApiController.php:121
-msgid "A query is needed to get a timeline."
+#: src/Site/ResourcePageBlockLayout/Timeline.php:16
+#: src/Site/BlockLayout/Timeline.php:41
+msgid "Timeline"
+msgstr ""
+
+#: src/Site/ResourcePageBlockLayout/TimelineKnightlab.php:16
+msgid "Timeline (Knightlab)"
 msgstr ""
 
 #: src/Site/BlockLayout/TimelineExhibit.php:47
 msgid "Timeline Exhibit"
 msgstr ""
 
-#: src/Site/BlockLayout/Timeline.php:41
-msgid "Timeline"
-msgstr ""
-
 #: src/Site/BlockLayout/Timeline.php:89
-msgid "The config of the Timeline viewer should be a valid json object."
+msgid ""
+"The config of the Timeline viewer is not a valid json object. Nevertheless, "
+"the data are saved and it will be passed as it."
 msgstr ""
 
 #: config/module.config.php:25

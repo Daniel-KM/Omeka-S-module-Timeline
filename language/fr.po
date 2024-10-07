@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Neatline\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-07-08 00:00+0000\n"
-"PO-Revision-Date: 2024-07-08 00:00+0000\n"
+"POT-Creation-Date: 2024-10-28 00:00+0000\n"
+"PO-Revision-Date: 2024-10-28 00:00+0000\n"
 "Last-Translator: Daniel Berthereau <Daniel.fr@Berthereau.net>\n"
 "Language-Team: French (http://www.transifex.com/projects/p/neatline/language/"
 "fr/)\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "X-Generator: Poedit 3.2.2\n"
 
-#: src/Controller/ApiController.php:219
+#: src/Controller/ApiController.php:242
 msgid "Method Not Allowed"
 msgstr "Méthode non autorisée"
 
@@ -66,12 +66,12 @@ msgstr ""
 msgid "collapse"
 msgstr "plier"
 
-#: data/scripts/upgrade.php:91
+#: data/scripts/upgrade.php:93
 msgid "The json is now built dynamically from the url /api/timeline."
 msgstr ""
 "Le json est désormais construit dynamiquement depuis l’url /api/timeline."
 
-#: data/scripts/upgrade.php:179
+#: data/scripts/upgrade.php:181
 #, php-format
 msgid ""
 "The setting \"heading\" was removed from blocks. A new block "
@@ -82,15 +82,15 @@ msgstr ""
 "« Titre » (module BlockPlus) ou « Html » a été ajouté pour tous les blocs "
 "qui l’utilisaient. Vous pouvez vérifier les pages pour les styles : %s"
 
-#: data/scripts/upgrade.php:191
+#: data/scripts/upgrade.php:193
 msgid "timeline-simile-online"
 msgstr "timeline-simile-online"
 
-#: data/scripts/upgrade.php:192
+#: data/scripts/upgrade.php:194
 msgid "timeline-knightlab"
 msgstr "timeline-knightlab"
 
-#: data/scripts/upgrade.php:212
+#: data/scripts/upgrade.php:214
 msgid ""
 "It is now possible to add groups, eras and extra-markers, for example "
 "historical events, in timelines."
@@ -98,13 +98,41 @@ msgstr ""
 "Il est désormais possible d’ajouter des groupes, des ères et des marqueurs "
 "autres, par exemple des événements historiques, dans les frises."
 
-#: data/scripts/upgrade.php:217
+#: data/scripts/upgrade.php:219
 msgid ""
 "The timeline for Knightlab has been updated to avoid a js transformation. "
 "Check if you used the output of the api directly."
 msgstr ""
 "La frise pour Knightlab a été mise à jour pour éviter une transformation js. "
 "Vérifiez si vous utilisez la sortie de l’api directement."
+
+#: data/scripts/upgrade.php:280
+#, php-format
+msgid ""
+"The deprecated route \"timeline-block\" (for url \"/timeline/:block-id/"
+"events.json\") was replaced by \"api/timeline\". Check your old themes if "
+"you used it. Matching templates: %s"
+msgstr ""
+"La route obsolète « timeline-block » (pour l’url « /timeline/:block-id/"
+"events.json ») a été remplacée par « api/timeline ». Vérifiez vos anciens "
+"thèmes si vous l’utilisez. Fichiers correspondants : %s"
+
+#: data/scripts/upgrade.php:287
+msgid ""
+"The deprecated route \"timeline-block\" (for url \"/timeline/:block-id/"
+"events.json\") was replaced by \"api/timeline\". Check your old themes if "
+"you used it."
+msgstr ""
+"La route obsolète « timeline-block » (pour l’url « /timeline/:block-id/"
+"events.json ») a été remplacée par « api/timeline ». Vérifiez vos anciens "
+"thèmes si vous l’utilisez."
+
+#: data/scripts/upgrade.php:293
+msgid ""
+"It is now possible to add a timeline to an item set as a resource page block."
+msgstr ""
+"Il est désormais d’ajouter une frise à une collection en tant que bloc de "
+"ressource."
 
 #: src/Mvc/Controller/Plugin/TimelineExhibitData.php:181
 #: src/Mvc/Controller/Plugin/AbstractTimelineData.php:163
@@ -365,30 +393,40 @@ msgstr "Utiliser la vignette spécifique de la ressource si présente"
 msgid "Timeline viewer params"
 msgstr "Paramètres de la frise"
 
-#: src/Controller/ApiController.php:66
-msgid "Block not found"
-msgstr "Bloc non trouvé"
+#: src/Controller/ApiController.php:68
+msgid "A well-formed url or a query is needed to get a timeline."
+msgstr ""
+"Une url bien formée ou une requête est nécessaire pour définir la frise."
 
-#: src/Controller/ApiController.php:74
+#: src/Controller/ApiController.php:78
+msgid "Block or resource not found"
+msgstr "Bloc ou ressource non trouvé"
+
+#: src/Controller/ApiController.php:102
 #, php-format
 msgid "Id %d is not a timeline."
 msgstr "Id %d n’est pas une frise."
 
-#: src/Controller/ApiController.php:121
-msgid "A query is needed to get a timeline."
-msgstr "Une requête est nécessaire pour définir la frise."
+#: src/Site/ResourcePageBlockLayout/Timeline.php:16
+#: src/Site/BlockLayout/Timeline.php:41
+msgid "Timeline"
+msgstr "Frise chronologique"
+
+#: src/Site/ResourcePageBlockLayout/TimelineKnightlab.php:16
+msgid "Timeline (Knightlab)"
+msgstr "Frise chronologique (Knightlab)"
 
 #: src/Site/BlockLayout/TimelineExhibit.php:47
 msgid "Timeline Exhibit"
 msgstr "Frise chronologique (exposition)"
 
-#: src/Site/BlockLayout/Timeline.php:41
-msgid "Timeline"
-msgstr "Frise chronologique"
-
 #: src/Site/BlockLayout/Timeline.php:89
-msgid "The config of the Timeline viewer should be a valid json object."
-msgstr "La configuration de la frise doit être un objet json valide."
+msgid ""
+"The config of the Timeline viewer is not a valid json object. Nevertheless, "
+"the data are saved and it will be passed as it."
+msgstr ""
+"La configuration de la frise n’est pas un objet json valide. Néanmoins, les "
+"données sont enregistrées et seront utilisées telles quelles."
 
 #: config/module.config.php:25
 msgid "Simile (use internal assets)"

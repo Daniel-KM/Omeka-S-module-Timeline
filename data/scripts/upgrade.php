@@ -11,6 +11,7 @@ use Omeka\Stdlib\Message;
  * @var string $oldVersion
  *
  * @var \Omeka\Api\Manager $api
+ * @var \Laminas\Log\Logger $logger
  * @var \Omeka\Settings\Settings $settings
  * @var \Doctrine\DBAL\Connection $connection
  * @var \Doctrine\ORM\EntityManager $entityManager
@@ -18,6 +19,7 @@ use Omeka\Stdlib\Message;
  */
 $plugins = $services->get('ControllerPluginManager');
 $api = $plugins->get('api');
+$logger = $services->get('Omeka\Logger');
 $settings = $services->get('Omeka\Settings');
 $connection = $services->get('Omeka\Connection');
 $messenger = $plugins->get('messenger');
@@ -115,8 +117,6 @@ if (version_compare($oldVersion, '3.4.19', '<')) {
 
 if (version_compare($oldVersion, '3.4.20', '<')) {
     /** @see /BlockPlus/data/scripts/upgrade.php */
-
-    $logger = $services->get('Omeka\Logger');
 
     $pageRepository = $entityManager->getRepository(\Omeka\Entity\SitePage::class);
     $blocksRepository = $entityManager->getRepository(\Omeka\Entity\SitePageBlock::class);
@@ -217,4 +217,78 @@ if (version_compare($oldVersion, '3.4.19', '<')) {
         'The timeline for Knightlab has been updated to avoid a js transformation. Check if you used the output of the api directly.' // @translate
     );
     $messenger->addWarning($message);
+}
+
+if (version_compare($oldVersion, '3.4.22', '<')) {
+    /** @see \Common\ManageModuleAndResources::checkStringsInFiles() */
+    $checkStringsInFiles = function ($stringsOrRegex, string $globPath = '', bool $invert = false): ?array {
+        if (!$stringsOrRegex) {
+            return [];
+        }
+
+        // Forbid fake paths.
+        if (strpos($globPath, '..') !== false || strpos($globPath, './') !== false) {
+            return null;
+        }
+
+        $start = mb_strlen(OMEKA_PATH . '/');
+        if (mb_substr($globPath, 0, 1) === '/') {
+            if (strpos($globPath, $start) !== 0) {
+                return null;
+            }
+        } else {
+            $globPath = OMEKA_PATH . '/' . $globPath;
+        }
+
+        $result = [];
+
+        $isStrings = is_array($stringsOrRegex);
+
+        $paths = glob($globPath, GLOB_BRACE);
+        foreach ($paths as $filepath) {
+            if (!is_file($filepath) || !is_readable($filepath) || !filesize($filepath)) {
+                continue;
+            }
+            $phtml = file_get_contents($filepath);
+            if ($isStrings) {
+                foreach ($stringsOrRegex as $check) {
+                    $pos = mb_strpos($phtml, $check);
+                    if ((!$invert && $pos) || ($invert && !$pos)) {
+                        $result[] = mb_substr($filepath, $start);
+                    }
+                }
+            } else {
+                $has = preg_match($phtml, $stringsOrRegex);
+                if ((!$invert && $has) || ($invert && !$has)) {
+                    $result[] = mb_substr($filepath, $start);
+                }
+            }
+        }
+
+        return $result;
+    };
+
+    $checks = [
+        "('timeline-block'",
+        '("timeline-block"',
+    ];
+    $result = $checkStringsInFiles($checks, 'themes/*/view/{,*/,*/*/,*/*/*/,*/*/*/*/}*.phtml');
+    if ($result) {
+        $message = new Message(
+            'The deprecated route "timeline-block" (for url "/timeline/:block-id/events.json") was replaced by "api/timeline". Check your old themes if you used it. Matching templates: %s', // @translate
+            json_encode($result, 448)
+        );
+        $logger->err($message);
+        throw new \Omeka\Module\Exception\ModuleCannotInstallException((string) $message);
+    } else {
+        $message = new Message(
+            'The deprecated route "timeline-block" (for url "/timeline/:block-id/events.json") was replaced by "api/timeline". Check your old themes if you used it.' // @translate
+        );
+        $messenger->addWarning($message);
+    }
+
+    $message = new Message(
+        'It is now possible to add a timeline to an item set as a resource page block.' // @translate
+    );
+    $messenger->addSuccess($message);
 }

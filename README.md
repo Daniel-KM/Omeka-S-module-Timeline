@@ -8,7 +8,8 @@ Timeline (module for Omeka S)
 [![Build Status](https://travis-ci.org/Daniel-KM/Omeka-S-module-Timeline.svg?branch=develop,master)](https://travis-ci.org/Daniel-KM/Omeka-S-module-Timeline)
 
 [Timeline] is a module for [Omeka S] that integrates the [SIMILE Timeline]
-widget and the online [Knightlab timeline] to create timelines.
+widget and the online [Knightlab timeline] to create timelines via page blocks
+and resource blocks.
 
 
 Installation
@@ -21,16 +22,26 @@ Then install it like any other Omeka module and follow the config instructions.
 Note: If Omeka is https, if external assets are used, and if the Simile library
 is used, the library will not load on recent browsers, because the online
 library contains an url with unsecure http. In that case, you need to set the
-option "Use Internal library for Simile".
+option "Use Internal library for Simile", that is the default anyway.
 
 
 Usage
 -----
 
-Once enabled, the module adds two new block for site pages. The first allows to
-create an automatic timeline, the other one an exhibit with selected items.
-Simply select one of them and config it (the item pool and eventually the
-options). Furthermore, any timeline can be created dynamically via `/api/timeline`.
+Once enabled, the module adds new block for site pages and resource pages.
+
+For resource pages, there are two blocks for item set: with the internal widget
+Simile or with the third party Knightlab. Simply set them in the config of the
+theme. The options used are the default one of the modules, that may be modified
+via the main config file of Omeka (`config/local.config.php`) (key ['timeline']['block_settings']['timeline']).
+
+For site pages, the first block allows to create an automatic timeline and the
+second one allows to create an exhibit with selected items. Simply select one of
+them and config it (the item pool and eventually the options).
+
+Furthermore, any timeline can be created dynamically via the api `/api/timeline`.
+
+The options for the blocks are the following ones.
 
 ### Fields
 
@@ -59,7 +70,8 @@ All these parameters can be customized for each timeline.
 
 The json is available at "/api/timeline?block-id=xxx". This url supports any
 dynamic standard item query too if you want to get the json without a block.
-The old "/timeline" is deprecated and will be removed in a future version.
+The old route "timeline-block" (for url "/timeline/:block-id/events.json") was
+deprecated and removed in a version 3.4.22.
 
 By default, the timeline is formatted for Simile. To get the Knightlab format,
 append `?output=knightlab` to the query.
@@ -210,6 +222,7 @@ for Omeka Classic, and the [examples] of customization on the wiki.
 TODO
 ----
 
+- [ ] Create a view helper and restructure the blocks.
 - [ ] Integrate attachments for the exhibit and improve the form (hide all by default except resource),
 - [ ] Integrate Numeric data type Interval and Duration (?).
 - [ ] Create the json for knightlab directly from the controller, not the js in view.
@@ -269,7 +282,7 @@ Copyright
 ### Module
 
 * Copyright The Board and Visitors of the University of Virginia, 2010–2012
-* Copyright Daniel Berthereau, 2016-2023 (see [Daniel-KM] on GitLab)
+* Copyright Daniel Berthereau, 2016-2024 (see [Daniel-KM] on GitLab)
 
 ### Translations
 

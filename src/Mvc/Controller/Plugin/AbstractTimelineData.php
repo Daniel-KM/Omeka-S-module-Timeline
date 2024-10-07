@@ -93,12 +93,15 @@ abstract class AbstractTimelineData extends AbstractPlugin
 
             if ($thumbnailResource && $item->thumbnail()) {
                 $thumbnailUrl = $item->thumbnail()->assetUrl();
+                $thumbnailAltText = null;
             } elseif ($media = $item->primaryMedia()) {
                 $thumbnailUrl = $thumbnailResource && $media->thumbnail()
                     ? $media->thumbnail()->assetUrl()
                     : $media->thumbnailUrl($thumbnailType);
+                $thumbnailAltText = $media->altText();
             } else {
                 $thumbnailUrl = null;
+                $thumbnailAltText = null;
             }
             foreach ($itemDates as $key => $valueItemDate) {
                 $event = [];
@@ -132,6 +135,9 @@ abstract class AbstractTimelineData extends AbstractPlugin
                         $event['media']['url'] = $thumbnailUrl;
                         $event['media']['link'] = $itemLink;
                         $event['media']['link_target'] = '_blank';
+                        if ($thumbnailAltText) {
+                            $event['media']['alt'] = $thumbnailAltText;
+                        }
                     }
                 } else {
                     $event['start'] = $dateStart;

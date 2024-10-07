@@ -339,6 +339,7 @@ class TimelineExhibitData extends AbstractPlugin
                     case 'file':
                         // May use embed.ly for unmanaged formats.
                         $media['url'] = $primaryMedia->originalUrl();
+                        $media['alt'] = $primaryMedia->altText();
                         break;
                     case 'html':
                         $media['url'] = '<blockquote>' . $data['html'] . '</blockquote>';

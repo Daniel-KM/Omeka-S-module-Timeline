@@ -2,14 +2,14 @@
 
 namespace Timeline\Service;
 
-use DirectoryIterator;
-use SplFileInfo;
 use Composer\Semver\Semver;
-use Omeka\Module as CoreModule;
-use Omeka\Site\Theme\Manager as ThemeManager;
+use DirectoryIterator;
+use Interop\Container\ContainerInterface;
 use Laminas\Config\Reader\Ini as IniReader;
 use Laminas\ServiceManager\Factory\FactoryInterface;
-use Interop\Container\ContainerInterface;
+use Omeka\Module as CoreModule;
+use Omeka\Site\Theme\Manager as ThemeManager;
+use SplFileInfo;
 
 /**
  * Override Omeka S theme factory to inject module page and block templates.

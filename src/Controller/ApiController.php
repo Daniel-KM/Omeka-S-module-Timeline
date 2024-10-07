@@ -4,9 +4,9 @@ namespace Timeline\Controller;
 
 use Doctrine\ORM\EntityManager;
 use Laminas\Http\Response;
-use Omeka\Api\Exception\NotFoundException;
 use Omeka\Api\Manager as ApiManager;
 use Omeka\Entity\SitePageBlock;
+use Omeka\Mvc\Exception\NotFoundException;
 use Omeka\Stdlib\Message;
 use Omeka\Stdlib\Paginator;
 use Omeka\View\Model\ApiJsonModel;
@@ -62,6 +62,13 @@ class ApiController extends \Omeka\Controller\ApiController
         if (!$blockId) {
             $blockId = empty($query['block_id']) ? null : $query['block_id'];
         }
+
+        if (!$blockId && empty($query)) {
+            throw new \Omeka\Mvc\Exception\NotFoundException((string) new Message(
+                'A well-formed url or a query is needed to get a timeline.' // @translate
+            ));
+        }
+
         if ($blockId) {
             /** @var \Omeka\Entity\SitePageBlock|\Omeka\Api\Representation\ItemSetRepresentation $blockOrResource */
             $blockOrResource = $this->getBlockOrResource($blockId);
@@ -137,18 +144,14 @@ SQL;
                     ? $this->timelineKnightlabData($query, $blockData)
                     : $this->timelineSimileData($query, $blockData);
             }
-        } elseif (empty($query)) {
-            new NotFoundException((string) new Message(
-                'A query is needed to get a timeline.' // @translate
-            ));
-        } else {
-            // Use the options set in the config.
-            $blockData = $this->config['timeline']['block_settings']['timeline'];
-            $data = ($query['output'] ?? 'simile') === 'knightlab'
-                ? $this->timelineKnightlabData($query, $blockData)
-                : $this->timelineSimileData($query, $blockData);
+            return new ApiJsonModel($data, $this->getViewOptions());
         }
 
+        // Use the query and the options set in the config.
+        $blockData = $this->config['timeline']['block_settings']['timeline'];
+        $data = ($query['output'] ?? 'simile') === 'knightlab'
+            ? $this->timelineKnightlabData($query, $blockData)
+            : $this->timelineSimileData($query, $blockData);
         return new ApiJsonModel($data, $this->getViewOptions());
     }
 
@@ -187,7 +190,7 @@ SQL;
         $qb = $this->entityManager->createQueryBuilder();
         return $qb
             ->select('omeka_root')
-            ->from(\Omeka\Entity\SitePageBlock::class, 'omeka_root')
+            ->from(SitePageBlock::class, 'omeka_root')
             ->andWhere($qb->expr()->eq('omeka_root.id', ':id'))
             ->setParameter('id', $blockId)
             ->setMaxResults(1)

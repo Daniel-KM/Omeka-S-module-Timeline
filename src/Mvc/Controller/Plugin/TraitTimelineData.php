@@ -307,7 +307,7 @@ trait TraitTimelineData
      * Also used to validate the datetime since validation is a side effect of
      * parsing the value into its component datetime pieces.
      *
-     * @return DateTime|string|null
+     * @return DateTime|string|array|null
      *
      * Adapted from module Numeric Data Type.
      * @see \NumericDataTypes\DataType\AbstractDateTimeDataType::getDateTimeFromValue()
@@ -478,22 +478,15 @@ trait TraitTimelineData
     /**
      * Get the last day of a given year/month.
      */
-    protected function getLastDay(int $year, int $month): int
+    protected function getLastDay($year, $month): int
     {
-        switch ($month) {
-            case 2:
-                // February (accounting for leap year)
-                $leapYear = date('L', mktime(0, 0, 0, 1, 1, $year));
-                return $leapYear ? 29 : 28;
-            case 4:
-            case 6:
-            case 9:
-            case 11:
-                // April, June, September, November
-                return 30;
-            default:
-                // January, March, May, July, August, October, December
-                return 31;
+        $month = (int) $month;
+        if (in_array($month, [4, 6, 9, 11], true)) {
+            return 30;
+        } elseif ($month === 2) {
+            return date('L', mktime(0, 0, 0, 1, 1, $year)) ? 29 : 28;
+        } else {
+            return 31;
         }
     }
 
@@ -527,7 +520,10 @@ trait TraitTimelineData
 
         // Set the start and end "date" objects.
         if (is_object($date) && $date->type() === 'numeric:timestamp') {
-            $dateTime = Timestamp::getDateTimeFromValue($date->value());
+            $dateTime = $this->getDateTimeFromValue($date->value(), true, false, false, false, true);
+            if (!is_array($dateTime)) {
+                return null;
+            }
             $parts = array_intersect_key($dateTime, $parts);
             if (!is_null($displayDate)) {
                 $parts['displayDate'] = $displayDate;

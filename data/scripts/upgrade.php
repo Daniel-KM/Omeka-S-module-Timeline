@@ -95,7 +95,8 @@ if (version_compare($oldVersion, '3.4.13.3', '<')) {
     $messenger->addWarning($message);
 }
 
-if (version_compare($oldVersion, '3.4.19', '<')) {
+// The version was not set in v3.4.19.
+if (version_compare($oldVersion, '3.4.20', '<')) {
     // Fix a possible issue in upgrade 3.4.7.
     $repository = $entityManager->getRepository(\Omeka\Entity\SitePageBlock::class);
     /** @var \Omeka\Entity\SitePageBlock[] $blocks */
@@ -207,7 +208,7 @@ if (version_compare($oldVersion, '3.4.20', '<')) {
     $entityManager->flush();
 }
 
-if (version_compare($oldVersion, '3.4.19', '<')) {
+if (version_compare($oldVersion, '3.4.21', '<')) {
     $message = new Message(
         'It is now possible to add groups, eras and extra-markers, for example historical events, in timelines.' // @translate
     );

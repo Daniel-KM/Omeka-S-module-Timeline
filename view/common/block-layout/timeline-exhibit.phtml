@@ -22,7 +22,7 @@ $containerStyle = 'width: 100%; height: 80vh;';
 $timelineId = 'timeline-' . $block->id();
 $timelineUrl = json_encode($url('api/timeline', ['block-id' => $block->id()]), 320);
 $timelineParamsString = $options;
-$timelineParams = json_decode($timelineParamsString, true) ?: [];
+$timelineParams = json_decode($timelineParamsString, true);
 if (is_array($timelineParams)) {
     // The container size is required inline to avoid 0-height issues with some themes.
     if (array_key_exists('container_style', $timelineParams)) {

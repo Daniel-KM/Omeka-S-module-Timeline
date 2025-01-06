@@ -24,7 +24,7 @@ $timelineUrl = json_encode($url('api/timeline', ['block-id' => $block->id()]), 3
 
 // The viewer options are passed even when they are not valid json.
 $timelineParamsString = $data['viewer'];
-$timelineParams = json_decode($timelineParamsString, true) ?: [];
+$timelineParams = json_decode($timelineParamsString, true);
 if (is_array($timelineParams)) {
     if (array_key_exists('container_style', $timelineParams)) {
         $containerStyle = $timelineParams['container_style'];

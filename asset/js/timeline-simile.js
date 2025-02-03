@@ -1,3 +1,5 @@
+'use strict';
+
 const oTimeline = {
     resizeTimerID: null,
 
@@ -70,7 +72,7 @@ const oTimeline = {
 
         var bandInfos = [];
         if (typeof timelineParams.bandInfos !== 'undefined' && timelineParams.bandInfos.length) {
-            for (i = 0; i < timelineParams.bandInfos.length; ++i) {
+            for (var i = 0; i < timelineParams.bandInfos.length; ++i) {
                 if (typeof timelineParams.bandInfos[i].eventSource === 'undefined') {
                     timelineParams.bandInfos[i].eventSource = eventSource;
                 }
@@ -109,7 +111,7 @@ const oTimeline = {
         }
 
         // All bands are synchronized with the first.
-        for (i = 1; i < bandInfos.length; ++i) {
+        for (var i = 1; i < bandInfos.length; ++i) {
             bandInfos[i].syncWith = 0;
             bandInfos[i].highlight = true;
         }

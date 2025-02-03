@@ -119,14 +119,14 @@ class ApiController extends \Omeka\Controller\ApiController
                 /** @see https://github.com/Daniel-KM/Omeka-S-module-Timeline/issues/25 */
                 $blockData['site_slug'] = $block->getPage()->getSite()->getSlug();
             } catch (\Exception $e) {
-                $sql = <<<SQL
-SELECT site.slug
-FROM site
-JOIN site_page ON site_page.site_id = site.id
-JOIN site_page_block ON site_page_block.page_id = site_page.id
-WHERE site_page_block.id = :block_id
-;
-SQL;
+                $sql = <<<'SQL'
+                    SELECT site.slug
+                    FROM site
+                    JOIN site_page ON site_page.site_id = site.id
+                    JOIN site_page_block ON site_page_block.page_id = site_page.id
+                    WHERE site_page_block.id = :block_id
+                    ;
+                    SQL;
                 $blockData['site_slug'] = $this->entityManager->getConnection()
                     ->executeQuery($sql, ['block_id' => $blockId], ['block_id' => \Doctrine\DBAL\ParameterType::INTEGER])
                     ->fetchOne();

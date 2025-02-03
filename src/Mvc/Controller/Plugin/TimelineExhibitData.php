@@ -315,7 +315,7 @@ class TimelineExhibitData extends AbstractPlugin
             $text['text'] = (string) $slideData['resource']->displayDescription();
         }
 
-        return array_filter($text, 'strlen') ?: null;
+        return array_filter(array_map('strval', $text), 'strlen') ?: null;
     }
 
     /**

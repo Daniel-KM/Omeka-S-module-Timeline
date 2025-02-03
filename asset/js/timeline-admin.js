@@ -1,5 +1,8 @@
+'use strict';
+
 (function ($) {
     $(document).ready(function () {
+
         // TODO Make multiple assets form sortable.
         // TODO Use the removed base fieldset as a hidden base.
         $('#content').on('click', '.timeline-slide-add', function () {
@@ -68,5 +71,6 @@
         $('#content').on('click', '.timeline-slide-remove', function () {
             $(this).closest('.slide-data').remove();
         });
+
     });
 })(jQuery);

@@ -53,6 +53,11 @@ class TimelineExhibitData extends AbstractPlugin
     protected $groupDefault = null;
 
     /**
+     * @var bool
+     */
+    protected $linkToSelf = false;
+
+    /**
      * @var string
      */
     protected $siteSlug;
@@ -101,6 +106,7 @@ class TimelineExhibitData extends AbstractPlugin
         $this->fieldGroup = $args['group'] ?? null;
         $this->groupDefault = empty($args['group_default']) ? null : $args['group_default'];
         $this->siteSlug = $args['site_slug'];
+        $this->linkToSelf = !empty($args['link_to_self']);
 
         $eras = empty($args['eras']) ? [] : $this->extractEras($args['eras']);
         $markers = empty($args['markers']) ? [] : $this->extractMarkers($args['markers']);
@@ -310,7 +316,7 @@ class TimelineExhibitData extends AbstractPlugin
             'alt' => null,
             'title' => null,
             'link' => null,
-            'link_target' => '_blank',
+            'link_target' => $this->linkToSelf ? null : '_blank',
         ];
 
         // When a media is set, the item is used for data, according to most
@@ -417,13 +423,13 @@ class TimelineExhibitData extends AbstractPlugin
             'alt' => null,
             'title' => null,
             'link' => null,
-            'link_target' => null,
+            'link_target' => $this->linkToSelf ? null : '_blank',
         ];
 
         /* // No link.
         if (filter_var($slideData['content'], FILTER_VALIDATE_URL)) {
             $media['link'] = $slideData['content'];
-            $media['link_target'] = '_blank';
+            $media['link_target'] = $this->linkToSelf ? null : '_blank',
         }
         */
 

@@ -63,6 +63,7 @@ abstract class AbstractTimelineData extends AbstractPlugin
         $fieldsItem = $args['item_metadata'] ?? [];
         $fieldGroup = $args['group'] ?? null;
         $groupDefault = empty($args['group_default']) ? null : $args['group_default'];
+        $linkToSelf = !empty($args['link_to_self']);
 
         $eras = empty($args['eras']) ? [] : $this->extractEras($args['eras']);
         $markers = empty($args['markers']) ? [] : $this->extractMarkers($args['markers']);
@@ -134,7 +135,7 @@ abstract class AbstractTimelineData extends AbstractPlugin
                     if ($thumbnailUrl) {
                         $event['media']['url'] = $thumbnailUrl;
                         $event['media']['link'] = $itemLink;
-                        $event['media']['link_target'] = '_blank';
+                        $event['media']['link_target'] = $linkToSelf ? null : '_blank';
                         if ($thumbnailAltText) {
                             $event['media']['alt'] = $thumbnailAltText;
                         }

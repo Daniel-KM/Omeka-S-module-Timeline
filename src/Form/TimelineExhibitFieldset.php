@@ -184,6 +184,17 @@ class TimelineExhibitFieldset extends Fieldset
                 ],
             ])
 
+            ->add([
+                'name' => 'o:block[__blockIndex__][o:data][link_to_self]',
+                'type' => Element\Checkbox::class,
+                'options' => [
+                    'label' => 'Open links in current browse tab', // @translate
+                ],
+                'attributes' => [
+                    'id' => 'timeline-link-to-self',
+                ],
+            ])
+
             // TODO Use a js to load the file and create slides in real time.
             // TODO Update slides in real time (but in that case, use Knightlab directly!).
             ->add([

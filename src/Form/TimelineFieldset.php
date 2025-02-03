@@ -256,6 +256,17 @@ class TimelineFieldset extends Fieldset
                     'id' => 'timeline-viewer',
                     'rows' => 5,
                 ],
-            ]);
+            ])
+            ->add([
+                'name' => 'o:block[__blockIndex__][o:data][link_to_self]',
+                'type' => Element\Checkbox::class,
+                'options' => [
+                    'label' => 'Open links in current browse tab', // @translate
+                ],
+                'attributes' => [
+                    'id' => 'timeline-link-to-self',
+                ],
+            ])
+        ;
     }
 }

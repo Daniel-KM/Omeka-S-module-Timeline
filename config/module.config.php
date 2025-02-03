@@ -111,6 +111,7 @@ return [
                 'viewer' => '{}',
                 // The id of dcterms:date in the standard install of Omeka S.
                 'item_date_id' => '7',
+                'link_to_self' => false,
             ],
             'timelineExhibit' => [
                 'start_date_property' => 'dcterms:date',
@@ -123,6 +124,7 @@ return [
                 'eras' => [],
                 'markers' => [],
                 'options' => '{}',
+                'link_to_self' => false,
                 // 'spreadsheet' => null,
                 'slides' => [
                     [

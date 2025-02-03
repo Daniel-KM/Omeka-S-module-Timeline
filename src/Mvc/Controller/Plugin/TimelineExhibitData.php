@@ -58,16 +58,6 @@ class TimelineExhibitData extends AbstractPlugin
     protected $linkToSelf = false;
 
     /**
-     * @var string
-     */
-    protected $siteSlug;
-
-    /**
-     * @var string
-     */
-    protected $startDateProperty = 'dcterms:date';
-
-    /**
      * List of extensions that are managed directly by the viewer.
      *
      * @link https://timeline.knightlab.com/docs/media-types.html
@@ -84,6 +74,37 @@ class TimelineExhibitData extends AbstractPlugin
         'm4a',
         'wav',
     ];
+
+    /**
+     * @var int
+     */
+    protected $renderYear;
+
+    public static $renderYears = [
+        'january_1' => 'january_1',
+        'july_1' => 'july_1',
+        'december_31' => 'december_31',
+        'june_30' => 'june_30',
+        'full_year' => 'full_year',
+        // Render a year as a range: use convertSingleDate().
+        'skip' => 'skip',
+        'default' => 'january_1',
+    ];
+
+    /**
+     * @var string
+     */
+    protected $siteSlug;
+
+    /**
+     * @var string
+     */
+    protected $startDateProperty = 'dcterms:date';
+
+    /**
+     * @var string "simile" or "knightlab".
+     */
+    protected $timelineJs = null;
 
     public function __construct(ApiManager $api)
     {

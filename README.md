@@ -200,6 +200,13 @@ Notes:
   generally an url, but the viewer supports some other content.
 - Events are automatically sorted.
 
+#### Knightlab timeline with a file
+
+The views of the exhibit can be filled with a [spreadsheet formatted as indicated].
+You should set the filename in the input field. It can be a locally loaded file
+via [Easy Admin] or any url. The format should be csv or tsv (tab separated values)
+for now. There should not be line jump in any cell for now.
+
 ### Modifying the block template for Timeline
 
 Before Omeka S v4.1, copy it in your theme (file `view/common/block-layout/timeline.phtml`).
@@ -307,6 +314,7 @@ improvements were integrated for the digital library of [Saint-Quentin Art & His
 [ISO 8601]: http://www.iso.org/iso/home/standards/iso8601.htm
 [Knightlab timeline]: https://timeline.knightlab.com
 [Knightlab timeline documentation]: https://timeline.knightlab.com/docs/options.html
+[spreadsheet formatted as indicated]: https://timeline.knightlab.com/docs/using-spreadsheets.html
 [example of use]: https://docs.neatline.org/working-with-the-simile-timeline-widget.html
 [examples]: http://www.simile-widgets.org/timeline/examples/index.html
 [module issues]: https://gitlab.com/Daniel-KM/Omeka-S-module-Timeline/-/issues

@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Neatline\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-10-28 00:00+0000\n"
-"PO-Revision-Date: 2024-10-28 00:00+0000\n"
+"POT-Creation-Date: 2025-02-03 00:00+0000\n"
+"PO-Revision-Date: 2025-02-03 00:00+0000\n"
 "Last-Translator: Daniel Berthereau <Daniel.fr@Berthereau.net>\n"
 "Language-Team: French (http://www.transifex.com/projects/p/neatline/language/"
 "fr/)\n"
@@ -17,10 +17,6 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "X-Generator: Poedit 3.2.2\n"
-
-#: src/Controller/ApiController.php:242
-msgid "Method Not Allowed"
-msgstr "Méthode non autorisée"
 
 #: view/common/block-layout/admin/timeline-form.phtml:19
 msgid ""
@@ -66,7 +62,7 @@ msgstr ""
 msgid "collapse"
 msgstr "plier"
 
-#: data/scripts/upgrade.php:93
+#: data/scripts/upgrade.php:94
 msgid "The json is now built dynamically from the url /api/timeline."
 msgstr ""
 "Le json est désormais construit dynamiquement depuis l’url /api/timeline."
@@ -134,8 +130,16 @@ msgstr ""
 "Il est désormais d’ajouter une frise à une collection en tant que bloc de "
 "ressource."
 
-#: src/Mvc/Controller/Plugin/TimelineExhibitData.php:181
-#: src/Mvc/Controller/Plugin/AbstractTimelineData.php:163
+#: data/scripts/upgrade.php:300
+msgid ""
+"It is now possible to fill slides for timeline exhibit with a spreadsheet "
+"(csv, tsv) formatted according to {link}Knightslab{link_end}."
+msgstr ""
+"Il est désormais possible de préparer les vues automatiquement avec un "
+"tableur (csv, tsv) au format {link}Knightslab{link_end}."
+
+#: src/Mvc/Controller/Plugin/TimelineExhibitData.php:207
+#: src/Mvc/Controller/Plugin/AbstractTimelineData.php:135
 msgid "Events"
 msgstr "Événements"
 
@@ -230,67 +234,92 @@ msgstr ""
 "Indiquer les paramètres par défaut de la visionneuse en json. Laisser vide "
 "pour conserver les paramètres par défaut."
 
-#: src/Form/TimelineExhibitFieldset.php:193
+#: src/Form/TimelineExhibitFieldset.php:191 src/Form/TimelineFieldset.php:264
+msgid "Open links in current browse tab"
+msgstr "Ouvrir les liens dans l’onglet en cours"
+
+#: src/Form/TimelineExhibitFieldset.php:204
+msgid ""
+"Spreadsheet filename or url (csv or tsv) to fill following exhibit slides "
+"automatically"
+msgstr ""
+"Chemin ou url du tableur (csv ou tsv) pour préparer les vues automatiquement"
+
+#: src/Form/TimelineExhibitFieldset.php:205
+msgid ""
+"The file may be uploaded via the module Easy Admin or an url. The column "
+"\"Media\" may be a numeric item or media id, in which case other columns "
+"will be filled if empty. Warning: when a valid file is uploaded, all "
+"existing slides will be replaced. The page should be saved to regenerate "
+"slides."
+msgstr ""
+"Le fichier peut être téléversé via le module Easy Admin ou via une url. La "
+"colonne « Media » peut être le numéro d’un contenu ou d’un média, auquel cas "
+"les autres colonnes seront remplies automatiquement si vide. Attention : "
+"quand un fichier valide est téléversé, toutes les vignettes existantes sont "
+"remplacées. La page doit être enregistrée pour régénérer les vues."
+
+#: src/Form/TimelineExhibitFieldset.php:219
 msgid "Slides"
 msgstr "Vues"
 
-#: src/Form/TimelineExhibitFieldset.php:225
+#: src/Form/TimelineExhibitFieldset.php:251
 msgid "Resource for content"
 msgstr "Ressource pour le contenu"
 
-#: src/Form/TimelineExhibitFieldset.php:241
+#: src/Form/TimelineExhibitFieldset.php:267
 msgid "Era"
 msgstr "Ère"
 
-#: src/Form/TimelineExhibitFieldset.php:254
+#: src/Form/TimelineExhibitFieldset.php:280
 msgid "Start date"
 msgstr "Date de début"
 
-#: src/Form/TimelineExhibitFieldset.php:267
+#: src/Form/TimelineExhibitFieldset.php:293
 msgid "Display date for start"
 msgstr "Date à afficher pour le début"
 
-#: src/Form/TimelineExhibitFieldset.php:277
+#: src/Form/TimelineExhibitFieldset.php:303
 msgid "End date"
 msgstr "Date de fin"
 
-#: src/Form/TimelineExhibitFieldset.php:290
+#: src/Form/TimelineExhibitFieldset.php:316
 msgid "Display date for end"
 msgstr "Date à afficher pour la fin"
 
-#: src/Form/TimelineExhibitFieldset.php:300
+#: src/Form/TimelineExhibitFieldset.php:326
 msgid "Display main date"
 msgstr "Date principale à afficher"
 
-#: src/Form/TimelineExhibitFieldset.php:310
+#: src/Form/TimelineExhibitFieldset.php:336
 msgid "Headline"
 msgstr "Titre principal"
 
-#: src/Form/TimelineExhibitFieldset.php:324
+#: src/Form/TimelineExhibitFieldset.php:350
 msgid "block-html full wysiwyg"
 msgstr "bloc html wysiwyg"
 
-#: src/Form/TimelineExhibitFieldset.php:356
+#: src/Form/TimelineExhibitFieldset.php:382
 msgid "External content"
 msgstr "Contenu externe"
 
-#: src/Form/TimelineExhibitFieldset.php:378
+#: src/Form/TimelineExhibitFieldset.php:404
 msgid "Credit"
 msgstr "Crédits"
 
-#: src/Form/TimelineExhibitFieldset.php:399
+#: src/Form/TimelineExhibitFieldset.php:425
 msgid "Background color"
 msgstr "Couleur d’arrière-plan"
 
-#: src/Form/TimelineExhibitFieldset.php:400
+#: src/Form/TimelineExhibitFieldset.php:426
 msgid "A css color as hexadecimal or keyword."
 msgstr "Une couleur css en hexadécimal ou mot-clé."
 
-#: src/Form/TimelineExhibitFieldset.php:422
+#: src/Form/TimelineExhibitFieldset.php:448
 msgid "Add another slide"
 msgstr "Ajouter une autre vue"
 
-#: src/Form/TimelineExhibitFieldset.php:433
+#: src/Form/TimelineExhibitFieldset.php:459
 msgid "Remove this slide"
 msgstr "Supprimer cette vue"
 
@@ -407,6 +436,10 @@ msgstr "Bloc ou ressource non trouvé"
 msgid "Id %d is not a timeline."
 msgstr "Id %d n’est pas une frise."
 
+#: src/Controller/ApiController.php:242
+msgid "Method Not Allowed"
+msgstr "Méthode non autorisée"
+
 #: src/Site/ResourcePageBlockLayout/Timeline.php:16
 #: src/Site/BlockLayout/Timeline.php:41
 msgid "Timeline"
@@ -416,9 +449,34 @@ msgstr "Frise chronologique"
 msgid "Timeline (Knightlab)"
 msgstr "Frise chronologique (Knightlab)"
 
-#: src/Site/BlockLayout/TimelineExhibit.php:47
+#: src/Site/BlockLayout/TimelineExhibit.php:60
 msgid "Timeline Exhibit"
 msgstr "Frise chronologique (exposition)"
+
+#: src/Site/BlockLayout/TimelineExhibit.php:462
+msgid "A spreadsheet file path was set, but the Easy Admin is not enabled."
+msgstr ""
+"Un tableur a été indiqué, mais le module Easy Admin n’est pas disponible."
+
+#: src/Site/BlockLayout/TimelineExhibit.php:464
+msgid ""
+"The spreadsheet file path cannot contains a double \".\" in its path for "
+"security."
+msgstr ""
+"Le chemin du tableur ne peut pas contenir un double« . » dans son chemin par "
+"sécurité."
+
+#: src/Site/BlockLayout/TimelineExhibit.php:466
+msgid "The spreadsheet file path contains forbidden characters."
+msgstr "Le chemin du tableur contient des caractères interdits."
+
+#: src/Site/BlockLayout/TimelineExhibit.php:470
+msgid "The spreadsheet file is not readable."
+msgstr "Le tableur n’est pas lisible."
+
+#: src/Site/BlockLayout/TimelineExhibit.php:472
+msgid "The spreadsheet file is empty."
+msgstr "Le tableur est vide."
 
 #: src/Site/BlockLayout/Timeline.php:89
 msgid ""

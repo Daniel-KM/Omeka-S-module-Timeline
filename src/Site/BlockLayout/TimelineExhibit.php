@@ -2,6 +2,7 @@
 
 namespace Timeline\Site\BlockLayout;
 
+use Common\Stdlib\PsrMessage;
 use Laminas\View\Renderer\PhpRenderer;
 use Omeka\Api\Exception\NotFoundException;
 use Omeka\Api\Manager as ApiManager;
@@ -22,24 +23,36 @@ class TimelineExhibit extends AbstractBlockLayout implements TemplateableBlockLa
     const PARTIAL_NAME = 'common/block-layout/timeline-exhibit';
 
     /**
-     * @var HtmlPurifier
-     */
-    protected $htmlPurifier;
-
-    /**
      * @var ApiManager
      */
     protected $api;
 
     /**
+     * @var HtmlPurifier
+     */
+    protected $htmlPurifier;
+
+    /**
+     * @var string
+     */
+    protected $localPath;
+
+    /**
+     * @var string
+     */
+    protected $startDateProperty;
+
+    /**
      * @param HtmlPurifier $htmlPurifier
      */
     public function __construct(
+        ApiManager $api,
         HtmlPurifier $htmlPurifier,
-        ApiManager $api
+        ?string $localPath
     ) {
-        $this->htmlPurifier = $htmlPurifier;
         $this->api = $api;
+        $this->htmlPurifier = $htmlPurifier;
+        $this->localPath = $localPath;
     }
 
     public function getLabel()
@@ -102,52 +115,24 @@ class TimelineExhibit extends AbstractBlockLayout implements TemplateableBlockLa
             }, $data['slides'])
         );
 
-        // Normalize values and purify html.
-        $data['slides'] = array_map(function ($v) {
-            // Simplify checks.
-            $v += [
-                'resource' => null,
-                'type' => 'event',
-                'start_date' => '',
-                'start_display_date' => '',
-                'end_date' => '',
-                'end_display_date' => '',
-                'display_date' => '',
-                'headline' => '',
-                'html' => '',
-                'content' => '',
-                'caption' => '',
-                'credit' => '',
-                'background' => null,
-                'background_color' => '',
-                'group' => '',
-            ];
-            if (empty($v['type'])) {
-                $v['type'] = 'event';
-            }
-            if (empty($v['resource'])) {
-                $v['resource'] = null;
-            }
-            if ($v['html']) {
-                $v['html'] = $this->fixEndOfLine($this->htmlPurifier->purify($v['html']));
-            }
-            if ($v['content']) {
-                $v['content'] = $this->fixEndOfLine($this->htmlPurifier->purify($v['content']));
-                if ($v['resource'] == strip_tags($v['content'])) {
-                    $v['content'] = '';
-                } elseif (empty($v['resource']) && is_numeric($v['content']) && $v['content']) {
-                    $v['resource'] = (string) (int) $v['content'];
-                    $v['content'] = '';
+        // Use a file if it exists.
+
+        $slides = null;
+        if (!empty($data['spreadsheet'])) {
+            $content = $this->getFileContent($data['spreadsheet'], $errorStore);
+            if ($content) {
+                $slides = $this->prepareSlidesFromSpreadsheet($content, $errorStore);
+                if ($slides) {
+                    $data['slides'] = $slides;
                 }
             }
-            if ($v['caption']) {
-                $v['caption'] = $this->fixEndOfLine($this->htmlPurifier->purify($v['caption']));
-            }
-            if ($v['credit']) {
-                $v['credit'] = $this->fixEndOfLine($this->htmlPurifier->purify($v['credit']));
-            }
-            return $v;
-        }, $data['slides']);
+        }
+
+        // The process to normalize values and purify html is done even for
+        // spreadsheet.
+
+        // Normalize values and purify html.
+        $data['slides'] = array_map([$this, 'normalizeSlide'], $data['slides']);
 
         // Remove empty slides.
         $data['slides'] = array_filter($data['slides'], function ($v) {
@@ -158,6 +143,8 @@ class TimelineExhibit extends AbstractBlockLayout implements TemplateableBlockLa
         // Reorder slides chronologically.
         $this->startDateProperty = $data['start_date_property'];
         usort($data['slides'], [$this, 'sortEvent']);
+
+        unset($data['spreadsheet']);
 
         $data = $block->setData($data);
     }
@@ -411,5 +398,356 @@ class TimelineExhibit extends AbstractBlockLayout implements TemplateableBlockLa
     protected function fixEndOfLine($string)
     {
         return str_replace(["\r\n", "\n\r", "\r"], ["\n", "\n", "\n"], $string);
+    }
+
+    /**
+     * Check and fill all values of a slide.
+     */
+    protected function normalizeSlide(array $slide): array
+    {
+        // Simplify checks.
+        $slide += [
+            'resource' => null,
+            'type' => 'event',
+            'start_date' => '',
+            'start_display_date' => '',
+            'end_date' => '',
+            'end_display_date' => '',
+            'display_date' => '',
+            'headline' => '',
+            'html' => '',
+            'content' => '',
+            'caption' => '',
+            'credit' => '',
+            'background' => null,
+            'background_color' => '',
+            'group' => '',
+        ];
+        if (empty($slide['type'])) {
+            $slide['type'] = 'event';
+        }
+        if (empty($slide['resource'])) {
+            $slide['resource'] = null;
+        }
+        if ($slide['html']) {
+            $slide['html'] = $this->fixEndOfLine($this->htmlPurifier->purify($slide['html']));
+        }
+        if ($slide['content']) {
+            $slide['content'] = $this->fixEndOfLine($this->htmlPurifier->purify($slide['content']));
+            if ($slide['resource'] == strip_tags($slide['content'])) {
+                $slide['content'] = '';
+            } elseif (empty($slide['resource']) && is_numeric($slide['content']) && $slide['content']) {
+                $slide['resource'] = (string) (int) $slide['content'];
+                $slide['content'] = '';
+            }
+        }
+        if ($slide['caption']) {
+            $slide['caption'] = $this->fixEndOfLine($this->htmlPurifier->purify($slide['caption']));
+        }
+        if ($slide['credit']) {
+            $slide['credit'] = $this->fixEndOfLine($this->htmlPurifier->purify($slide['credit']));
+        }
+        return $slide;
+    }
+
+    protected function getFileContent($filepath, ErrorStore $errorStore): ?string
+    {
+        $isUrl = strpos($filepath, 'https:') === 0 || strpos($filepath, 'http:') === 0;
+        if ($isUrl) {
+            $content = file_get_contents($filepath);
+            return $content ?: null;
+        }
+        // The file should be inside the EasyAdmin tmp directory.
+        if (!$this->localPath) {
+            $errorStore->addError('A spreadsheet file path was set, but the Easy Admin is not enabled.'); // @translate
+        } elseif (strpos($filepath, '..') !== false) {
+            $errorStore->addError('The spreadsheet file path cannot contains a double "." in its path for security.'); // @translate
+        } elseif (strlen(preg_replace('/[[:cntrl:]\/\\\?<>:\*\%\|\"\'`\&\;#+\^\$]/', '', $filepath)) !== strlen($filepath)) {
+            $errorStore->addError('The spreadsheet file path contains forbidden characters.'); // @translate
+        } else {
+            $filepath = rtrim($this->localPath, '//') . '/' . $filepath;
+            if (!file_exists($filepath) || !is_readable($filepath)) {
+                $errorStore->addError('The spreadsheet file is not readable.'); // @translate
+            } elseif (!filesize($filepath)) {
+                $errorStore->addError('The spreadsheet file is empty.'); // @translate
+            } else {
+                return file_get_contents($filepath) ?: null;
+            }
+        }
+        return null;
+    }
+
+    protected function prepareSlidesFromSpreadsheet(string $spreadsheet, ErrorStore $errorStore): ?array
+    {
+        // TODO The "@" avoids the deprecation notice. Replace by html_entity_decode/htmlentities.
+        $spreadsheet = trim((string) @mb_convert_encoding($spreadsheet, 'HTML-ENTITIES', 'UTF-8'));
+        if (substr($spreadsheet, 0, 3) === chr(0xEF) . chr(0xBB) . chr(0xBF)) {
+            $spreadsheet = substr($spreadsheet, 3);
+        }
+
+        if (mb_strpos($spreadsheet, "\t") !== false) {
+            $separator = "\t";
+            $enclosure = chr(0);
+            $escape = chr(0);
+        } else {
+            $separator = ',';
+            $enclosure = '"';
+            $escape = '\\';
+        }
+
+        $first = true;
+        $rows = array_map(fn ($v) => str_getcsv($v, $separator, $enclosure, $escape), array_map('trim', explode("\n", $spreadsheet)));
+        foreach ($rows as $key => $row) {
+            if (empty(array_filter($row))) {
+                unset($rows[$key]);
+                continue;
+            }
+            // First row is headers.
+            if ($first) {
+                $first = false;
+                $headers = array_combine($row, $row);
+                $countHeaders = count($headers);
+                // Headers should not be empty and duplicates are forbidden.
+                if (!$countHeaders
+                    || $countHeaders !== count($row)
+                ) {
+                    $errorStore->addError('spreadsheet', 'Some headers are duplicated.'); // @ŧranslate
+                    return null;
+                }
+                $rows[$key] = $headers;
+                continue;
+            }
+            if (count($row) < $countHeaders) {
+                $row = array_slice(array_merge($row, array_fill(0, $countHeaders, '')), 0, $countHeaders);
+            } elseif (count($row) > $countHeaders) {
+                $row = array_slice($row, 0, $countHeaders);
+            }
+            $rows[$key] = array_combine($headers, array_map('trim', $row));
+        }
+
+        $rows = array_values(array_filter($rows));
+        if (count($rows) <= 1) {
+            return [];
+        }
+
+        $columns = [
+            'Year',
+            'Month',
+            'Day',
+            'Time',
+            'End Year',
+            'End Month',
+            'End Day',
+            'End Time',
+            'Display Date',
+            'Headline',
+            'Text',
+            'Media',
+            'Media Credit',
+            'Media Caption',
+            'Media Thumbnail',
+            'Alt Text',
+            'Type',
+            'Group',
+            'Background'
+        ];
+
+        if ($rows[0] !== array_combine($columns, $columns)) {
+            $errorStore->addError('spreadsheet', 'The exact list of 19 headers of a Knightlab spreadsheet should be used.'); // @ŧranslate
+            return null;
+        }
+
+        // Remove headers.
+        unset($rows[0]);
+
+        // Convert rows into slides.
+        $slideDefault = [
+            'resource' => null,
+            'type' => 'event',
+            'start_date' => '',
+            'start_display_date' => '',
+            'end_date' => '',
+            'end_display_date' => '',
+            'display_date' => '',
+            'headline' => '',
+            'html' => '',
+            'content' => '',
+            'caption' => '',
+            'credit' => '',
+            'background' => null,
+            'background_color' => '',
+            'group' => '',
+        ];
+
+        // The empty fields are filled in a second step when a resource is set.
+
+        $resourceOrAssetOrString = function ($val, $index) use ($errorStore) {
+            if (is_numeric($val)) {
+                try {
+                    return $this->api->read('resources', ['id' => $val])->getContent();
+                } catch (NotFoundException $e) {
+                    $errorStore->addError('spreadsheet', new PsrMessage(
+                        'Spreadsheet row #{index}: The Media "{media}" is an unknown resource.', // @ŧranslate
+                        ['index' => $index, 'media' => $val]
+                    ));
+                    return null;
+                }
+            } elseif (substr($val, 0, 6) === 'asset/' && is_numeric(substr($val, 6))) {
+                try {
+                    /** @var \Omeka\Api\Representation\AssetRepresentation $asset */
+                    return $this->api->read('assets', ['id' => substr($val, 6)])->getContent();
+                } catch (NotFoundException $e) {
+                    $errorStore->addError('spreadsheet', new PsrMessage(
+                        'Spreadsheet row #{index}: The asset "{asset}" is unknown.', // @ŧranslate
+                        ['index' => $index, 'asset' => $val]
+                    ));
+                    return null;
+                }
+            }
+            return $val;
+        };
+
+        $slides = [];
+        foreach ($rows as $index => $row) {
+            ++$index;
+            $slideHasError = false;
+            $slide = $slideDefault;
+
+            $resource = null;
+            $asset = null;
+            $res = $resourceOrAssetOrString($row['Media'], $index);
+            if ($res instanceof \Omeka\Api\Representation\AbstractResourceEntityRepresentation) {
+                $resource = $this->api->read('resources', ['id' => $row['Media']])->getContent();
+                $slide['resource'] = $resource->id();
+            } elseif ($res instanceof \Omeka\Api\Representation\AssetRepresentation) {
+                $asset = $this->api->read('assets', ['id' => substr($row['Media'], 6)])->getContent();
+                $slide['content'] = $asset->assetUrl();
+            } elseif ($res !== null) {
+                $slide['content'] = $res;
+            } else {
+                $slideHasError = true;
+            }
+
+            if (empty($row['Type'])) {
+                $slide['type'] = 'event';
+            } else {
+                if (in_array($row['Type'], ['event', 'era', 'title'])) {
+                    $slide['type'] = $row['Type'];
+                } else {
+                    $slideHasError = true;
+                    $errorStore->addError('spreadsheet', new PsrMessage(
+                        'Spreadsheet row #{index}: The Type "{type}" is unmanaged.', // @ŧranslate
+                        ['index' => $index, 'type' => $row['Type']]
+                    ));
+                }
+            }
+
+            if (empty($row['Year'])) {
+                $slideHasError = true;
+                $errorStore->addError('spreadsheet', new PsrMessage(
+                    'Spreadsheet row #{index}: The start year is empty.', // @ŧranslate
+                    ['index' => $index]
+                ));
+            } elseif (empty($row['Month']) && !empty($row['Day'])) {
+                $slideHasError = true;
+                $errorStore->addError('spreadsheet', new PsrMessage(
+                    'Spreadsheet row #{index}: The start day "{day}" is set, but the month is empty.', // @ŧranslate
+                    ['index' => $index, 'day' => $row['Day']]
+                ));
+            } elseif (empty($row['Day']) && !empty($row['Time'])) {
+                $slideHasError = true;
+                $errorStore->addError('spreadsheet', new PsrMessage(
+                    'Spreadsheet row #{index}: The start time "{time}" is set, but the day is empty.', // @ŧranslate
+                    ['index' => $index, 'time' => $row['Time']]
+                ));
+            } else {
+                $slide['start_date'] = $row['Year'];
+                if ($row['Month']) {
+                    $slide['start_date'] .= '-' . sprintf('%02d', $row['Month']);
+                    if ($row['Day']) {
+                        $slide['start_date'] .= '-' . sprintf('%02d', $row['Day']);
+                        if ($row['Time']) {
+                            $slide['start_date'] .= 'T' . $row['Time'];
+                        }
+                    }
+                }
+            }
+
+            if (empty($row['End Year']) && !empty($row['End Month'])) {
+                $slideHasError = true;
+                $errorStore->addError('spreadsheet', new PsrMessage(
+                    'Spreadsheet row #{index}: The end month "{month}" is set, but the year is empty.', // @ŧranslate
+                    ['index' => $index, 'month' => $row['End Month']]
+                ));
+            } elseif (empty($row['End Month']) && !empty($row['End Day'])) {
+                $slideHasError = true;
+                $errorStore->addError('spreadsheet', new PsrMessage(
+                    'Spreadsheet row #{index}: The end day "{day}" is set, but the month is empty.', // @ŧranslate
+                    ['index' => $index, 'day' => $row['End Day']]
+                ));
+            } elseif (empty($row['End Day']) && !empty($row['End Time'])) {
+                $slideHasError = true;
+                $errorStore->addError('spreadsheet', new PsrMessage(
+                    'Spreadsheet row #{index}: The end time "{time}" is set, but the day is empty.', // @ŧranslate
+                    ['index' => $index, 'time' => $row['End Time']]
+                ));
+            } else {
+                $slide['end_date'] = $row['End Year'];
+                if ($row['End Month']) {
+                    $slide['end_date'] .= '-' . sprintf('%02d', $row['End Month']);
+                    if ($row['End Day']) {
+                        $slide['end_date'] .= '-' . sprintf('%02d', $row['End Day']);
+                        if ($row['End Time']) {
+                            $slide['end_date'] .= 'T' . $row['End Time'];
+                        }
+                    }
+                }
+            }
+
+            // TODO Check if display date is divided as start/end.
+            $slide['start_display_date'] = $row['Display Date'];
+
+            $slide['headline'] = $row['Headline'];
+
+            $slide['html'] = $row['Text'];
+
+            // $slide['content'] = $row['Media'];
+
+            $slide['caption'] = $row['Media Caption'];
+
+            $slide['credit'] = $row['Media Credit'];
+
+            // TODO Manage external Background.
+            // TODO Manage external Media Thumbnail.
+            // TODO Manage Alt Text.
+
+            // TODO Allow to use a resource as a background.
+            if ($row['Background'] && preg_match('~^(?:asset/)?\d+$~', $row['Background'])) {
+                try {
+                    /** @var \Omeka\Api\Representation\AssetRepresentation $asset */
+                    $assetId = is_numeric($row['Background']) ? (int) $row['Background'] : (int) substr($row['Background'], 6);
+                    $asset = $this->api->read('assets', ['id' => $assetId])->getContent();
+                    $slide['background'] = $asset->id();
+                } catch (NotFoundException $e) {
+                    $slideHasError = true;
+                    $errorStore->addError('spreadsheet', new PsrMessage(
+                        'Spreadsheet row #{index}: The asset "{media}" is an unknown asset.', // @ŧranslate
+                        ['index' => $index, 'media' => $row['Media']]
+                    ));
+                }
+            } elseif ($row['Background']) {
+                $slide['background_color'] = $row['Background'];
+            }
+
+            $slide['group'] = $row['Group'];
+
+            if ($slideHasError) {
+                continue;
+            }
+
+            $slides[] = $slide;
+        }
+
+        return $slides;
     }
 }

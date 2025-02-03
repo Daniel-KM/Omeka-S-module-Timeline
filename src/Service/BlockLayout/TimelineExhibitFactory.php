@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 namespace Timeline\Service\BlockLayout;
 
 use Interop\Container\ContainerInterface;
@@ -16,8 +17,9 @@ class TimelineExhibitFactory implements FactoryInterface
     public function __invoke(ContainerInterface $services, $requestedName, array $options = null)
     {
         return new TimelineExhibit(
+            $services->get('Omeka\ApiManager'),
             $services->get('Omeka\HtmlPurifier'),
-            $services->get('Omeka\ApiManager')
+            $services->get('Omeka\Settings')->get('easyadmin_local_path') ?: null
         );
     }
 }

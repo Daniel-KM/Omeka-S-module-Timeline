@@ -183,6 +183,21 @@ class TimelineExhibitFieldset extends Fieldset
                     'rows' => 5,
                 ],
             ])
+
+            // TODO Use a js to load the file and create slides in real time.
+            // TODO Update slides in real time (but in that case, use Knightlab directly!).
+            ->add([
+                'name' => 'o:block[__blockIndex__][o:data][spreadsheet]',
+                'type' => Element\Text::class,
+                'options' => [
+                    'label' => 'Spreadsheet filename or url (csv or tsv) to fill following exhibit slides automatically', // @translate
+                    'info' => 'The file may be uploaded via the module Easy Admin or an url. The column "Media" may be a numeric item or media id, in which case other columns will be filled if empty. Warning: when a valid file is uploaded, all existing slides will be replaced. The page should be saved to regenerate slides.', // @translate
+                    'documentation' => 'https://timeline.knightlab.com/docs/using-spreadsheets.html',
+                ],
+                'attributes' => [
+                    'id' => 'timeline-exhibit-spreadsheet',
+                ],
+            ])
         ;
 
         $this

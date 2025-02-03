@@ -123,6 +123,7 @@ return [
                 'eras' => [],
                 'markers' => [],
                 'options' => '{}',
+                // 'spreadsheet' => null,
                 'slides' => [
                     [
                         'resource' => null,

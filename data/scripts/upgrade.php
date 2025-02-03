@@ -2,6 +2,7 @@
 
 namespace Timeline;
 
+use Common\Stdlib\PsrMessage;
 use Omeka\Stdlib\Message;
 
 /**
@@ -30,10 +31,10 @@ $localConfig = require dirname(__DIR__, 2) . '/config/module.config.php';
 if (version_compare($oldVersion, '3.4.6', '<')) {
     // Replace item pool by a search query.
     $sql = <<<'SQL'
-SELECT id, data
-FROM site_page_block
-WHERE layout = 'timeline';
-SQL;
+        SELECT id, data
+        FROM site_page_block
+        WHERE layout = 'timeline';
+        SQL;
     $timelines = $connection->executeQuery($sql)->fetchAllKeyValue();
     foreach ($timelines as $id => $data) {
         $data = json_decode($data, true);
@@ -49,10 +50,10 @@ SQL;
         $data = json_encode($data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
         $data = $connection->quote($data);
         $sql = <<<SQL
-UPDATE site_page_block
-SET data = $data
-WHERE id = $id;
-SQL;
+            UPDATE site_page_block
+            SET data = $data
+            WHERE id = $id;
+            SQL;
         $connection->executeStatement($sql);
     }
 }
@@ -291,5 +292,14 @@ if (version_compare($oldVersion, '3.4.22', '<')) {
     $message = new Message(
         'It is now possible to add a timeline to an item set as a resource page block.' // @translate
     );
+    $messenger->addSuccess($message);
+}
+
+if (version_compare($oldVersion, '3.4.23', '<')) {
+    $message = new PsrMessage(
+        'It is now possible to fill slides for timeline exhibit with a spreadsheet (csv, tsv) formatted according to {link}Knightslab{link_end}.', // @translate
+        ['link' => '<a href="https://timeline.knightlab.com/docs/using-spreadsheets.html" target="_blank" rel="noopener">', 'link_end' => '</a>']
+    );
+    $message->setEscapeHtml(false);
     $messenger->addSuccess($message);
 }

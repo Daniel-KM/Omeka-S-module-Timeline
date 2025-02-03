@@ -289,7 +289,7 @@ Copyright
 ### Module
 
 * Copyright The Board and Visitors of the University of Virginia, 2010–2012
-* Copyright Daniel Berthereau, 2016-2024 (see [Daniel-KM] on GitLab)
+* Copyright Daniel Berthereau, 2016-2025 (see [Daniel-KM] on GitLab)
 
 ### Translations
 

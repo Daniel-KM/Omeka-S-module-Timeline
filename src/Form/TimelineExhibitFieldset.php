@@ -202,7 +202,7 @@ class TimelineExhibitFieldset extends Fieldset
                 'type' => Element\Text::class,
                 'options' => [
                     'label' => 'Spreadsheet filename or url (csv or tsv) to fill following exhibit slides automatically', // @translate
-                    'info' => 'The file may be uploaded via the module Easy Admin or an url. The column "Media" may be a numeric item or media id, in which case other columns will be filled if empty. Warning: when a valid file is uploaded, all existing slides will be replaced. The page should be saved to regenerate slides.', // @translate
+                    'info' => 'The file may be uploaded via the module Easy Admin or an url. The column "Media" may be a numeric item or media id, in which case other columns will be filled if empty, asset/xxx, or any url to a media. Warning: when a valid file is uploaded, all existing slides will be replaced. The page should be saved to regenerate slides.', // @translate
                     'documentation' => 'https://timeline.knightlab.com/docs/using-spreadsheets.html',
                 ],
                 'attributes' => [

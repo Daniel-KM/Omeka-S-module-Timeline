@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-02-03 00:00+0000\n"
+"POT-Creation-Date: 2025-03-03 00:00+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -214,9 +214,9 @@ msgstr ""
 msgid ""
 "The file may be uploaded via the module Easy Admin or an url. The column "
 "\"Media\" may be a numeric item or media id, in which case other columns "
-"will be filled if empty. Warning: when a valid file is uploaded, all "
-"existing slides will be replaced. The page should be saved to regenerate "
-"slides."
+"will be filled if empty, asset/xxx, or any url to a media. Warning: when a "
+"valid file is uploaded, all existing slides will be replaced. The page "
+"should be saved to regenerate slides."
 msgstr ""
 
 #: src/Form/TimelineExhibitFieldset.php:219
@@ -407,25 +407,25 @@ msgstr ""
 msgid "Timeline Exhibit"
 msgstr ""
 
-#: src/Site/BlockLayout/TimelineExhibit.php:462
+#: src/Site/BlockLayout/TimelineExhibit.php:464
 msgid "A spreadsheet file path was set, but the Easy Admin is not enabled."
 msgstr ""
 
-#: src/Site/BlockLayout/TimelineExhibit.php:464
+#: src/Site/BlockLayout/TimelineExhibit.php:466
 msgid ""
 "The spreadsheet file path cannot contains a double \".\" in its path for "
 "security."
 msgstr ""
 
-#: src/Site/BlockLayout/TimelineExhibit.php:466
+#: src/Site/BlockLayout/TimelineExhibit.php:468
 msgid "The spreadsheet file path contains forbidden characters."
 msgstr ""
 
-#: src/Site/BlockLayout/TimelineExhibit.php:470
+#: src/Site/BlockLayout/TimelineExhibit.php:472
 msgid "The spreadsheet file is not readable."
 msgstr ""
 
-#: src/Site/BlockLayout/TimelineExhibit.php:472
+#: src/Site/BlockLayout/TimelineExhibit.php:474
 msgid "The spreadsheet file is empty."
 msgstr ""
 

@@ -322,7 +322,7 @@ class TimelineExhibit extends AbstractBlockLayout implements TemplateableBlockLa
             if (empty($dateA)) {
                 return 1;
             }
-            $dateA = $dateA->value();
+            $dateA = (string) $dateA->value();
         } else {
             return 1;
         }
@@ -370,6 +370,8 @@ class TimelineExhibit extends AbstractBlockLayout implements TemplateableBlockLa
         preg_match($regex, $dateB, $partsB);
 
         for ($i = 2; $i <= 6; $i++) {
+            $partsA[$i] ??= '';
+            $partsB[$i] ??= '';
             if ($partsA[$i] === '' && $partsB[$i] === '') {
                 return 0;
             }
@@ -397,7 +399,7 @@ class TimelineExhibit extends AbstractBlockLayout implements TemplateableBlockLa
      */
     protected function fixEndOfLine($string)
     {
-        return str_replace(["\r\n", "\n\r", "\r"], ["\n", "\n", "\n"], $string);
+        return str_replace(["\r\n", "\n\r", "\r"], ["\n", "\n", "\n"], (string) $string);
     }
 
     /**

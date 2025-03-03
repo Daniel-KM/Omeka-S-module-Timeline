@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Neatline\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-02-03 00:00+0000\n"
-"PO-Revision-Date: 2025-02-03 00:00+0000\n"
+"POT-Creation-Date: 2025-03-03 00:00+0000\n"
+"PO-Revision-Date: 2025-03-03 00:00+0000\n"
 "Last-Translator: Daniel Berthereau <Daniel.fr@Berthereau.net>\n"
 "Language-Team: French (http://www.transifex.com/projects/p/neatline/language/"
 "fr/)\n"
@@ -249,15 +249,16 @@ msgstr ""
 msgid ""
 "The file may be uploaded via the module Easy Admin or an url. The column "
 "\"Media\" may be a numeric item or media id, in which case other columns "
-"will be filled if empty. Warning: when a valid file is uploaded, all "
-"existing slides will be replaced. The page should be saved to regenerate "
-"slides."
+"will be filled if empty, asset/xxx, or any url to a media. Warning: when a "
+"valid file is uploaded, all existing slides will be replaced. The page "
+"should be saved to regenerate slides."
 msgstr ""
 "Le fichier peut être téléversé via le module Easy Admin ou via une url. La "
 "colonne « Media » peut être le numéro d’un contenu ou d’un média, auquel cas "
-"les autres colonnes seront remplies automatiquement si vide. Attention : "
-"quand un fichier valide est téléversé, toutes les vignettes existantes sont "
-"remplacées. La page doit être enregistrée pour régénérer les vues."
+"les autres colonnes seront remplies automatiquement si vide, asset/xxx, ou "
+"toute autre url vers un média. Attention : quand un fichier valide est "
+"téléversé, toutes les vignettes existantes sont remplacées. La page doit "
+"être enregistrée pour régénérer les vues."
 
 #: src/Form/TimelineExhibitFieldset.php:219
 msgid "Slides"
@@ -453,12 +454,12 @@ msgstr "Frise chronologique (Knightlab)"
 msgid "Timeline Exhibit"
 msgstr "Frise chronologique (exposition)"
 
-#: src/Site/BlockLayout/TimelineExhibit.php:462
+#: src/Site/BlockLayout/TimelineExhibit.php:464
 msgid "A spreadsheet file path was set, but the Easy Admin is not enabled."
 msgstr ""
 "Un tableur a été indiqué, mais le module Easy Admin n’est pas disponible."
 
-#: src/Site/BlockLayout/TimelineExhibit.php:464
+#: src/Site/BlockLayout/TimelineExhibit.php:466
 msgid ""
 "The spreadsheet file path cannot contains a double \".\" in its path for "
 "security."
@@ -466,15 +467,15 @@ msgstr ""
 "Le chemin du tableur ne peut pas contenir un double« . » dans son chemin par "
 "sécurité."
 
-#: src/Site/BlockLayout/TimelineExhibit.php:466
+#: src/Site/BlockLayout/TimelineExhibit.php:468
 msgid "The spreadsheet file path contains forbidden characters."
 msgstr "Le chemin du tableur contient des caractères interdits."
 
-#: src/Site/BlockLayout/TimelineExhibit.php:470
+#: src/Site/BlockLayout/TimelineExhibit.php:472
 msgid "The spreadsheet file is not readable."
 msgstr "Le tableur n’est pas lisible."
 
-#: src/Site/BlockLayout/TimelineExhibit.php:472
+#: src/Site/BlockLayout/TimelineExhibit.php:474
 msgid "The spreadsheet file is empty."
 msgstr "Le tableur est vide."
 

@@ -480,7 +480,8 @@ class TimelineExhibit extends AbstractBlockLayout implements TemplateableBlockLa
     protected function prepareSlidesFromSpreadsheet(string $spreadsheet, ErrorStore $errorStore): ?array
     {
         // TODO The "@" avoids the deprecation notice. Replace by html_entity_decode/htmlentities.
-        $spreadsheet = trim((string) @mb_convert_encoding($spreadsheet, 'HTML-ENTITIES', 'UTF-8'));
+        // Do not trim early.
+        $spreadsheet = (string) @mb_convert_encoding($spreadsheet, 'HTML-ENTITIES', 'UTF-8');
         if (substr($spreadsheet, 0, 3) === chr(0xEF) . chr(0xBB) . chr(0xBF)) {
             $spreadsheet = substr($spreadsheet, 3);
         }
@@ -496,7 +497,7 @@ class TimelineExhibit extends AbstractBlockLayout implements TemplateableBlockLa
         }
 
         $first = true;
-        $rows = array_map(fn ($v) => str_getcsv($v, $separator, $enclosure, $escape), array_map('trim', explode("\n", $spreadsheet)));
+        $rows = array_map(fn ($v) => array_map('trim', array_map('strval', str_getcsv($v, $separator, $enclosure, $escape))), explode("\n", $spreadsheet));
         foreach ($rows as $key => $row) {
             if (empty(array_filter($row))) {
                 unset($rows[$key]);
@@ -634,7 +635,11 @@ class TimelineExhibit extends AbstractBlockLayout implements TemplateableBlockLa
             if (empty($row['Type'])) {
                 $slide['type'] = 'event';
             } else {
-                if (in_array($row['Type'], ['event', 'era', 'title'])) {
+                if (in_array($row['Type'], [
+                    'event',
+                    'era',
+                    'title'
+                ])) {
                     $slide['type'] = $row['Type'];
                 } else {
                     $slideHasError = true;
@@ -645,11 +650,15 @@ class TimelineExhibit extends AbstractBlockLayout implements TemplateableBlockLa
                 }
             }
 
-            if (empty($row['Year'])) {
+            $isSlideTitle = $slide['type'] === 'title';
+            $isSlideEra = $slide['type'] === 'era';
+            // $isSlideEvent = !$isSlideTitle && !$isSlideEra;
+
+            if (empty($row['End Year']) && !empty($row['End Month'])) {
                 $slideHasError = true;
                 $errorStore->addError('spreadsheet', new PsrMessage(
-                    'Spreadsheet row #{index}: The start year is empty.', // @ŧranslate
-                    ['index' => $index]
+                    'Spreadsheet row #{index}: The start month "{month}" is set, but the year is empty.', // @ŧranslate
+                    ['index' => $index, 'month' => $row['End Month']]
                 ));
             } elseif (empty($row['Month']) && !empty($row['Day'])) {
                 $slideHasError = true;
@@ -705,6 +714,24 @@ class TimelineExhibit extends AbstractBlockLayout implements TemplateableBlockLa
                         }
                     }
                 }
+            }
+
+            // The date is optional for title.
+            if (!$isSlideTitle && empty($row['Year'])) {
+                $slideHasError = true;
+                $errorStore->addError('spreadsheet', new PsrMessage(
+                    'Spreadsheet row #{index}: A start year is required, except for title.', // @ŧranslate
+                    ['index' => $index]
+                ));
+            }
+
+            // The era requires a start and an end dates.
+            if ($isSlideEra && (empty($slide['start_date']) || empty($slide['end_date']))) {
+                $slideHasError = true;
+                $errorStore->addError('spreadsheet', new PsrMessage(
+                    'Spreadsheet row #{index}: A slide with type "Era" should have a stard and a end end date.', // @ŧranslate
+                    ['index' => $index, 'time' => $row['End Time']]
+                ));
             }
 
             // TODO Check if display date is divided as start/end.

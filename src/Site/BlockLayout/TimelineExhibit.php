@@ -552,6 +552,9 @@ class TimelineExhibit extends AbstractBlockLayout implements TemplateableBlockLa
             'Background'
         ];
 
+        // Skip next columns to avoid issues with fake empty columns.
+        $rows[0] = array_slice($rows[0], 0, count($columns), true);
+
         if ($rows[0] !== array_combine($columns, $columns)) {
             $errorStore->addError('spreadsheet', 'The exact list of 19 headers of a Knightlab spreadsheet should be used.'); // @ŧranslate
             return null;

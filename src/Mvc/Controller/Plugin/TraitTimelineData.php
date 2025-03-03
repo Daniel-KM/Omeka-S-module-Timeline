@@ -16,10 +16,16 @@ use Omeka\Api\Representation\AbstractResourceEntityRepresentation;
  */
 trait TraitTimelineData
 {
-    /**
-     * @var bool
-     */
-    protected $isCosmological = false;
+    public static $renderYears = [
+        'january_1' => 'january_1',
+        'july_1' => 'july_1',
+        'december_31' => 'december_31',
+        'june_30' => 'june_30',
+        'full_year' => 'full_year',
+        // Render a year as a range: use convertSingleDate().
+        'skip' => 'skip',
+        'default' => 'january_1',
+    ];
 
     /**
      * Minimum and maximum years.
@@ -60,6 +66,21 @@ trait TraitTimelineData
      * @var string
      */
     protected $patternIso8601 = '^(?<date>(?<year>-?\d{1,})(-(?<month>\d{2}))?(-(?<day>\d{2}))?)(?<time>(T(?<hour>\d{2}))?(:(?<minute>\d{2}))?(:(?<second>\d{2}))?)(?<offset>((?<offset_hour>[+-]\d{2})?(:?(?<offset_minute>\d{2}))?)|Z?)$';
+
+    /**
+     * @var bool
+     */
+    protected $isCosmological = false;
+
+    /**
+     * @var int
+     */
+    protected $renderYear;
+
+    /**
+     * @var string "simile" or "knightlab".
+     */
+    protected $timelineJs = null;
 
     /**
      * Get a single metadata from a resource for custom timelines.

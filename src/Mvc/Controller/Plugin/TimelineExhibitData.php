@@ -7,6 +7,7 @@ use Laminas\Uri\Http as HttpUri;
 use NumericDataTypes\DataType\Timestamp;
 use Omeka\Api\Manager as ApiManager;
 use Omeka\Api\Representation\AbstractResourceEntityRepresentation;
+use Omeka\Mvc\Controller\Plugin\Translate;
 
 /**
  * Create an exhibit for Knightlab timeline.
@@ -23,7 +24,7 @@ class TimelineExhibitData extends AbstractPlugin
     protected $api;
 
     /**
-     * @var \Laminas\I18n\View\Helper\Translate
+     * @var \Omeka\Mvc\Controller\Plugin\Translate
      */
     protected $translate;
 
@@ -76,22 +77,6 @@ class TimelineExhibitData extends AbstractPlugin
     ];
 
     /**
-     * @var int
-     */
-    protected $renderYear;
-
-    public static $renderYears = [
-        'january_1' => 'january_1',
-        'july_1' => 'july_1',
-        'december_31' => 'december_31',
-        'june_30' => 'june_30',
-        'full_year' => 'full_year',
-        // Render a year as a range: use convertSingleDate().
-        'skip' => 'skip',
-        'default' => 'january_1',
-    ];
-
-    /**
      * @var string
      */
     protected $siteSlug;
@@ -101,14 +86,10 @@ class TimelineExhibitData extends AbstractPlugin
      */
     protected $startDateProperty = 'dcterms:date';
 
-    /**
-     * @var string "simile" or "knightlab".
-     */
-    protected $timelineJs = null;
-
-    public function __construct(ApiManager $api)
+    public function __construct(ApiManager $api, Translate $translate)
     {
         $this->api = $api;
+        $this->translate = $translate;
     }
 
     /**
@@ -116,9 +97,6 @@ class TimelineExhibitData extends AbstractPlugin
      */
     public function __invoke(array $args): array
     {
-        $controller = $this->getController();
-        $this->translate = $controller->viewHelpers()->get('translate');
-
         $this->startDateProperty = $args['start_date_property'];
         $this->endDateProperty = $args['end_date_property'];
         $this->creditProperty = $args['credit_property'];

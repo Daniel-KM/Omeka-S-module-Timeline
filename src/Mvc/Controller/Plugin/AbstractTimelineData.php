@@ -3,11 +3,29 @@
 namespace Timeline\Mvc\Controller\Plugin;
 
 use Laminas\Mvc\Controller\Plugin\AbstractPlugin;
+use Omeka\Api\Manager as ApiManager;
 use Omeka\Api\Representation\ItemRepresentation;
+use Omeka\Mvc\Controller\Plugin\Translate;
 
 abstract class AbstractTimelineData extends AbstractPlugin
 {
     use TraitTimelineData;
+
+    /**
+     * @var \Omeka\Api\Manager
+     */
+    protected $api;
+
+    /**
+     * @var \Omeka\Mvc\Controller\Plugin\Translate
+     */
+    protected $translate;
+
+    public function __construct(ApiManager $api, Translate $translate)
+    {
+        $this->api = $api;
+        $this->translate = $translate;
+    }
 
     /**
      * Extract titles, descriptions and dates from the timeline’s pool of items.
@@ -15,9 +33,6 @@ abstract class AbstractTimelineData extends AbstractPlugin
     public function __invoke(array $itemPool, array $args): array
     {
         $events = [];
-
-        $controller = $this->getController();
-        $this->translate = $controller->viewHelpers()->get('translate');
 
         $this->renderYear = $args['render_year'] ?? static::$renderYears['default'];
 

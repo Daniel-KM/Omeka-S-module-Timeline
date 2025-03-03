@@ -155,6 +155,7 @@ timeline. The default is automatically included when the field is empty.
 
 ```javascript
 {
+    "centerDate": "1000-01-01",
     "bandInfos": [
         {
             "width": "80%",
@@ -184,6 +185,28 @@ timeline. The default is automatically included when the field is empty.
     ]
 }
 ```
+
+For Simile, these constants can be used:
+
+```js
+SimileAjax.DateTime.MILLISECOND    = 0;
+SimileAjax.DateTime.SECOND         = 1;
+SimileAjax.DateTime.MINUTE         = 2;
+SimileAjax.DateTime.HOUR           = 3;
+SimileAjax.DateTime.DAY            = 4;
+SimileAjax.DateTime.WEEK           = 5;
+SimileAjax.DateTime.MONTH          = 6;
+SimileAjax.DateTime.YEAR           = 7;
+SimileAjax.DateTime.DECADE         = 8;
+SimileAjax.DateTime.CENTURY        = 9;
+SimileAjax.DateTime.MILLENNIUM     = 10;
+
+SimileAjax.DateTime.EPOCH          = -1;
+SimileAjax.DateTime.ERA            = -2;
+```
+
+If wanted, in order to use a strict json array in the config, without constants,
+you should replace them by the matching integer.
 
 #### Knightlab timeline
 

@@ -8,6 +8,7 @@ use NumericDataTypes\DataType\Timestamp;
 use Omeka\Api\Manager as ApiManager;
 use Omeka\Api\Representation\AbstractResourceEntityRepresentation;
 use Omeka\Mvc\Controller\Plugin\Translate;
+use Omeka\Api\Representation\MediaRepresentation;
 
 /**
  * Create an exhibit for Knightlab timeline.
@@ -17,6 +18,37 @@ use Omeka\Mvc\Controller\Plugin\Translate;
 class TimelineExhibitData extends AbstractPlugin
 {
     use TraitTimelineData;
+
+    /**
+     * Copied:
+     * @see \Timeline\Site\BlockLayout\TimelineExhibit
+     * @see \Timeline\Mvc\Controller\Plugin\TimelineExhibitData
+     *
+     * @var array
+     */
+    protected $slideDefault = [
+        // Main resource to display: one of next three media.
+        'resource' => null,
+        'asset' => null,
+        'external' => null,
+        // Default type is empty, that means "event".
+        'type' => 'event',
+        'start_date' => '',
+        'start_display_date' => '',
+        'end_date' => '',
+        'end_display_date' => '',
+        'display_date' => '',
+        'headline' => '',
+        'html' => '',
+        'caption' => '',
+        'credit' => '',
+        // Background resource to display: one of next three media.
+        'background_resource' => null,
+        'background_asset' => null,
+        'background_external' => null,
+        'background_color' => '',
+        'group' => '',
+    ];
 
     /**
      * @var \Omeka\Api\Manager
@@ -121,40 +153,44 @@ class TimelineExhibitData extends AbstractPlugin
             $slideData['position'] = $key + 1;
 
             // Simplify checks.
-            $slideData += [
-                'type' => '',
-                'start_date' => '',
-                'end_date' => '',
-                'start_display_date' => '',
-                'end_display_date' => '',
-                'display_date' => '',
-                'metadata' => [],
-                'headline' => '',
-                'html' => '',
-                'resource' => null,
-                'content' => '',
-                'caption' => '',
-                'credit' => '',
-                'background' => null,
-                'background_color' => '',
-                'group' => '',
-            ];
+            $slideData += $this->slideDefault;
 
-            // Prepare attachments so they will be available in all cases.
+            // Prepare attachments early so they will be available in all cases.
             if ($slideData['resource']) {
                 try {
-                    /** @see \Omeka\Api\Representation\AbstractResourceEntityRepresentation $resource */
                     $slideData['resource'] = $this->api->read('resources', ['id' => $slideData['resource']])->getContent();
+                    $slideData['asset'] = null;
+                    $slideData['external'] = null;
                 } catch (\Omeka\Api\Exception\NotFoundException $e) {
                     $slideData['resource'] = null;
                 }
             }
-            if ($slideData['background']) {
+
+            if ($slideData['asset']) {
                 try {
-                    /** @see \Omeka\Api\Representation\AssetRepresentation $background */
-                    $slideData['background'] = $this->api->read('assets', $slideData['background'])->getContent();
+                    $slideData['asset'] = $this->api->read('assets', ['id' => $slideData['asset']])->getContent();
+                    $slideData['external'] = null;
                 } catch (\Omeka\Api\Exception\NotFoundException $e) {
-                    $slideData['background'] = null;
+                    $slideData['asset'] = null;
+                }
+            }
+
+            if ($slideData['background_resource']) {
+                try {
+                    $slideData['background_resource'] = $this->api->read('resources', $slideData['background_resource'])->getContent();
+                    $slideData['background_asset'] = null;
+                    $slideData['background_external'] = null;
+                } catch (\Omeka\Api\Exception\NotFoundException $e) {
+                    $slideData['background_rsource'] = null;
+                }
+            }
+
+            if ($slideData['background_asset']) {
+                try {
+                    $slideData['background_asset'] = $this->api->read('assets', $slideData['background_asset'])->getContent();
+                    $slideData['background_external'] = null;
+                } catch (\Omeka\Api\Exception\NotFoundException $e) {
+                    $slideData['background_asset'] = null;
                 }
             }
 
@@ -198,12 +234,12 @@ class TimelineExhibitData extends AbstractPlugin
     {
         $interval = $this->intervalDate($slideData);
 
+        // Prepare the group when needed.
         $group = $this->groupDefault;
         if (empty($slideData['group'])) {
             if ($this->fieldGroup
                 && $slideData['resource']
-                && $slideData['type'] !== 'title'
-                && $slideData['type'] !== 'era'
+                && !in_array($slideData['type'], ['title', 'era'])
             ) {
                 $group = $this->resourceMetadataSingle($slideData['resource'], $this->fieldGroup)
                     ?: $this->groupDefault;
@@ -229,12 +265,17 @@ class TimelineExhibitData extends AbstractPlugin
         $slide['unique_id'] = 'slide-' . $slideData['position'];
         if ($slide['media'] && $slideData['resource']) {
             $slide['unique_id'] .= '-' . $slideData['resource']->getControllerName() . '-' . $slideData['resource']->id();
-        } elseif ($slide['background'] && $slideData['background']) {
-            $slide['unique_id'] .= '-asset-' . $slideData['background']->id();
+        } elseif ($slide['media'] && $slideData['asset']) {
+            $slide['unique_id'] .= '-asset-' . $slideData['asset']->id();
+        } elseif ($slide['background'] && $slideData['background_resource']) {
+            $slide['unique_id'] .= '-b-' . $slideData['background_resource']->getControllerName() . '-' . $slideData['background_resource']->id();
+        } elseif ($slide['background'] && $slideData['background_asset']) {
+            $slide['unique_id'] .= '-b-asset-' . $slideData['background_asset']->id();
         }
 
-        $slide = array_filter($slide, fn ($v) => !is_null($v));
+        $slide = array_filter($slide, fn ($v) => $v !== null);
 
+        // "metadata" allows to pass data to customize Knightslab via css/js.
         if ($this->fieldsItem && !empty($slideData['resource'])) {
             $slide['metadata'] = $this->resourceMetadata($slideData['resource'], $this->fieldsItem);
         }
@@ -277,14 +318,21 @@ class TimelineExhibitData extends AbstractPlugin
             'text' => null,
         ];
 
+        // When a media is set, the item is used for data, according to most
+        // common cases.
+
         if ($slideData['headline']) {
             $text['headline'] = $slideData['headline'];
         } elseif ($slideData['resource']) {
-            $text['headline'] = (string) $slideData['resource']->displayTitle();
+            $text['headline'] = $slideData['resource'] instanceof MediaRepresentation
+                ? (string) $slideData['resource']->displayTitle()
+                : (string) $slideData['resource']->displayTitle();
         }
 
         if ($text['headline'] && $slideData['resource']) {
-            $text['headline'] = $slideData['resource']->link($text['headline'], null, ['target' => '_blank']);
+            $text['headline'] = $slideData['resource'] instanceof MediaRepresentation
+                ? $slideData['resource']->item()->link($text['headline'], null, ['target' => '_blank'])
+                : $slideData['resource']->link($text['headline'], null, ['target' => '_blank']);
         }
 
         if ($slideData['html']) {
@@ -302,9 +350,10 @@ class TimelineExhibitData extends AbstractPlugin
     protected function media(array $slideData): ?array
     {
         if (empty($slideData['resource'])) {
-            return $this->mediaContent($slideData);
+            return $this->mediaFromAssetOrExternal($slideData);
         }
 
+        /** @var \Omeka\Api\Representation\AbstractResourceEntityRepresentation $resource */
         $resource = $slideData['resource'];
 
         $media = [
@@ -320,7 +369,8 @@ class TimelineExhibitData extends AbstractPlugin
 
         // When a media is set, the item is used for data, according to most
         // common cases.
-        $isMedia = $resource->resourceName() === 'media';
+        $isMedia = $resource instanceof MediaRepresentation;
+
         $mainResource = $isMedia
             ? $resource->item()
             : $resource;
@@ -408,31 +458,46 @@ class TimelineExhibitData extends AbstractPlugin
     /**
      * Get the media content from the slide data.
      */
-    protected function mediaContent(array $slideData): ?array
+    protected function mediaFromAssetOrExternal(array $slideData): ?array
     {
-        if (empty($slideData['content'])) {
-            return null;
+        $media = [];
+
+        if (!empty($slideData['asset'])) {
+            /** @var \Omeka\Api\Representation\AssetRepresentation $asset */
+            $asset = $slideData['asset'];
+            $media = [
+                'url' => $asset->assetUrl(),
+                'caption' => $slideData['caption'],
+                'credit' => $slideData['credit'],
+                'thumbnail' => null,
+                'alt' => $asset->altText(),
+                'title' => $slideData['headline'],
+                // No link.
+                'link' => null,
+                'link_target' => null,
+            ];
+        } elseif (!empty($slideData['external'])) {
+            $media = [
+                'url' => $slideData['external'],
+                'caption' => $slideData['caption'],
+                'credit' => $slideData['credit'],
+                'thumbnail' => null,
+                'alt' => null,
+                'title' => $slideData['headline'],
+                // No link.
+                'link' => null,
+                'link_target' => null,
+            ];
         }
 
-        $media = [
-            'url' => $slideData['content'],
-            'caption' => $slideData['caption'],
-            'credit' => $slideData['credit'],
-            'thumbnail' => null,
-            'alt' => null,
-            'title' => null,
-            'link' => null,
-            'link_target' => $this->linkToSelf ? null : '_blank',
-        ];
-
         /* // No link.
-        if (filter_var($slideData['content'], FILTER_VALIDATE_URL)) {
-            $media['link'] = $slideData['content'];
+        if (filter_var($media['url'], FILTER_VALIDATE_URL)) {
+            $media['link'] = $media['url'];
             $media['link_target'] = $this->linkToSelf ? null : '_blank',
         }
         */
 
-        return array_filter($media);
+        return array_filter($media) ?: null;
     }
 
     /**
@@ -441,13 +506,31 @@ class TimelineExhibitData extends AbstractPlugin
     protected function background(array $slideData): ?array
     {
         $background = [];
-        if ($slideData['background']) {
-            $background['url'] = $slideData['background']->assetUrl();
+
+        if (!empty($slideData['background_resource'])) {
+            /** @var \Omeka\Api\Representation\AbstractResourceEntityRepresentation $resource */
+            $resource = $slideData['background_resource'];
+            $background = [
+                'url' => $resource->thumbnailDisplayUrl('large'),
+            ];
+        } elseif (!empty($slideData['background_asset'])) {
+            /** @var \Omeka\Api\Representation\AssetRepresentation $asset */
+            $asset = $slideData['background_asset'];
+            $background = [
+                'url' => $asset->assetUrl(),
+            ];
+        } elseif (!empty($slideData['background_external'])) {
+            $background = [
+                'url' => $slideData['background_external'],
+            ];
         }
+
+        // if (filter_var($background['url'], FILTER_VALIDATE_URL)) {}
         if ($slideData['background_color']) {
             $background['color'] = $slideData['background_color'];
         }
-        return $background ?: null;
+
+        return array_filter($background) ?: null;
     }
 
     /**

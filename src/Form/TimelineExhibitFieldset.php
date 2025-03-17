@@ -241,14 +241,39 @@ class TimelineExhibitFieldset extends Fieldset
                     'data-index' => '__slideIndex__',
                 ],
             ]);
+        // TODO Make a quick exhibit with attachments.
         $fieldsetRepeat = $fieldsetBase->get('o:block[__blockIndex__][o:data][slides][__slideIndex__]');
         $fieldsetRepeat
-            // TODO Make a quick exhibit with attachments.
+            /* // TODO Use attachement or a dynamic resource callback.
+            ->add([
+                'name' => 'o:block[__blockIndex__][o:data][slides][__slideIndex__][resource]',
+                'type' => OmekaElement\ResourceSelect::class,
+                'options' => [
+                    'label' => 'Resource', // @translate
+                    'empty_option' => '',
+                    'resource_value_options' => [
+                        'resource' => 'media',
+                        'query' => [],
+                        'option_text_callback' => function ($resource) {
+                            return $resource->displayTitle();
+                        },
+                    ],
+                ],
+                'attributes' => [
+                    'id' => 'timeline-exhibit-resource',
+                    'class' => 'chosen-select',
+                    'multiple' => false,
+                    'required' => false,
+                    'data-placeholder' => 'Select one resource…', // @translate
+                    'data-api-base-url' => $urlHelper('api/default', ['resource' => 'resource']),
+                ],
+            ])
+            */
             ->add([
                 'name' => 'o:block[__blockIndex__][o:data][slides][__slideIndex__][resource]',
                 'type' => Element\Number::class,
                 'options' => [
-                    'label' => 'Resource for content', // @translate
+                    'label' => 'Main content: Resource', // @translate
                 ],
                 'attributes' => [
                     'id' => 'timeline-exhibit-resource',
@@ -257,6 +282,28 @@ class TimelineExhibitFieldset extends Fieldset
                     'min' => 0,
                 ],
             ])
+            ->add([
+                'name' => 'o:block[__blockIndex__][o:data][slides][__slideIndex__][asset]',
+                'type' => Element\Number::class,
+                'options' => [
+                    'label' => 'Main content: Or asset', // @translate
+                ],
+                'attributes' => [
+                    'id' => 'timeline-exhibit-asset',
+                ],
+            ])
+            ->add([
+                'name' => 'o:block[__blockIndex__][o:data][slides][__slideIndex__][external]',
+                'type' => Element\Text::class,
+                'options' => [
+                    'label' => 'Main content: Or external media', // @translate
+                ],
+                'attributes' => [
+                    'id' => 'timeline-exhibit-external',
+                    'required' => false,
+                ],
+            ])
+
             ->add([
                 'name' => 'o:block[__blockIndex__][o:data][slides][__slideIndex__][type]',
                 'type' => Element\Radio::class,
@@ -350,42 +397,6 @@ class TimelineExhibitFieldset extends Fieldset
                     'class' => 'block-html full wysiwyg',
                 ],
             ])
-            /* // TODO Use attachement or a dynamic resource callback.
-            ->add([
-                'name' => 'o:block[__blockIndex__][o:data][slides][__slideIndex__][resource]',
-                'type' => OmekaElement\ResourceSelect::class,
-                'options' => [
-                    'label' => 'Resource', // @translate
-                    'empty_option' => '',
-                    'resource_value_options' => [
-                        'resource' => 'media',
-                        'query' => [],
-                        'option_text_callback' => function ($resource) {
-                            return $resource->displayTitle();
-                        },
-                    ],
-                ],
-                'attributes' => [
-                   'id' => 'timeline-exhibit-resource',
-                    'class' => 'chosen-select',
-                    'multiple' => false,
-                    'required' => false,
-                    'data-placeholder' => 'Select one resource…', // @translate
-                    'data-api-base-url' => $urlHelper('api/default', ['resource' => 'resource']),
-                ],
-            ])
-            */
-            ->add([
-                'name' => 'o:block[__blockIndex__][o:data][slides][__slideIndex__][content]',
-                'type' => Element\Text::class,
-                'options' => [
-                    'label' => 'External content', // @translate
-                ],
-                'attributes' => [
-                    'id' => 'timeline-exhibit-content',
-                    'required' => false,
-                ],
-            ])
             ->add([
                 'name' => 'o:block[__blockIndex__][o:data][slides][__slideIndex__][caption]',
                 'type' => Element\Textarea::class,
@@ -408,21 +419,47 @@ class TimelineExhibitFieldset extends Fieldset
                     // 'class' => 'block-html full wysiwyg',
                 ],
             ])
+
             ->add([
-                'name' => 'o:block[__blockIndex__][o:data][slides][__slideIndex__][background]',
-                'type' => OmekaElement\Asset::class,
+                'name' => 'o:block[__blockIndex__][o:data][slides][__slideIndex__][background_resource]',
+                'type' => Element\Number::class,
                 'options' => [
-                    'label' => 'Background', // @translate
+                    'label' => 'Background: Resource', // @translate
                 ],
                 'attributes' => [
-                    'id' => 'timeline-exhibit-background',
+                    'id' => 'timeline-exhibit-background-resource',
+                    'multiple' => false,
+                    'required' => false,
+                    'min' => 0,
                 ],
             ])
+            ->add([
+                'name' => 'o:block[__blockIndex__][o:data][slides][__slideIndex__][background_asset]',
+                'type' => Element\Number::class,
+                'options' => [
+                    'label' => 'Background: Or asset', // @translate
+                ],
+                'attributes' => [
+                    'id' => 'timeline-exhibit-background-asset',
+                ],
+            ])
+            ->add([
+                'name' => 'o:block[__blockIndex__][o:data][slides][__slideIndex__][background_external]',
+                'type' => Element\Text::class,
+                'options' => [
+                    'label' => 'Background: Or external file', // @translate
+                ],
+                'attributes' => [
+                    'id' => 'timeline-exhibit-background-external',
+                    'required' => false,
+                ],
+            ])
+
             ->add([
                 'name' => 'o:block[__blockIndex__][o:data][slides][__slideIndex__][background_color]',
                 'type' => Element\Text::class,
                 'options' => [
-                    'label' => 'Background color', // @translate
+                    'label' => 'Background: Or color', // @translate
                     'info' => 'A css color as hexadecimal or keyword.', // @translate
                 ],
                 'attributes' => [

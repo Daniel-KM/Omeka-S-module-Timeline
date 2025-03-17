@@ -129,6 +129,8 @@ return [
                 'slides' => [
                     [
                         'resource' => null,
+                        'asset' => null,
+                        'external' => null,
                         'type' => 'event',
                         'start_date' => '',
                         'start_display_date' => '',
@@ -137,10 +139,12 @@ return [
                         'display_date' => '',
                         'headline' => '',
                         'html' => '',
-                        'content' => '',
                         'caption' => '',
                         'credit' => '',
-                        'background' => null,
+                        // 'alt_text' => '',
+                        'background_resource' => null,
+                        'background_asset' => null,
+                        'background_external' => null,
                         'background_color' => '',
                         'group' => '',
                     ],

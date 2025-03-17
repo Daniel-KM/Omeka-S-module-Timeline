@@ -303,3 +303,10 @@ if (version_compare($oldVersion, '3.4.23', '<')) {
     $message->setEscapeHtml(false);
     $messenger->addSuccess($message);
 }
+
+if (version_compare($oldVersion, '3.4.25', '<')) {
+    $message = new PsrMessage(
+        'It is now possible to fill a resource, asset or external url as main content or background for timeline exhibit.' // @translate
+    );
+    $messenger->addSuccess($message);
+}

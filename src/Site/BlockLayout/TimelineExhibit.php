@@ -6,6 +6,8 @@ use Common\Stdlib\PsrMessage;
 use Laminas\View\Renderer\PhpRenderer;
 use Omeka\Api\Exception\NotFoundException;
 use Omeka\Api\Manager as ApiManager;
+use Omeka\Api\Representation\AbstractResourceEntityRepresentation;
+use Omeka\Api\Representation\AssetRepresentation;
 use Omeka\Api\Representation\SitePageBlockRepresentation;
 use Omeka\Api\Representation\SitePageRepresentation;
 use Omeka\Api\Representation\SiteRepresentation;
@@ -41,6 +43,37 @@ class TimelineExhibit extends AbstractBlockLayout implements TemplateableBlockLa
      * @var string
      */
     protected $startDateProperty;
+
+    /**
+     * Copied:
+     * @see \Timeline\Site\BlockLayout\TimelineExhibit
+     * @see \Timeline\Mvc\Controller\Plugin\TimelineExhibitData
+     *
+     * @var array
+     */
+    protected $slideDefault = [
+        // Main resource to display: one of next three media.
+        'resource' => null,
+        'asset' => null,
+        'external' => null,
+        // Default type is empty, that means "event".
+        'type' => 'event',
+        'start_date' => '',
+        'start_display_date' => '',
+        'end_date' => '',
+        'end_display_date' => '',
+        'display_date' => '',
+        'headline' => '',
+        'html' => '',
+        'caption' => '',
+        'credit' => '',
+        // Background resource to display: one of next three media.
+        'background_resource' => null,
+        'background_asset' => null,
+        'background_external' => null,
+        'background_color' => '',
+        'group' => '',
+    ];
 
     /**
      * @param HtmlPurifier $htmlPurifier
@@ -408,40 +441,19 @@ class TimelineExhibit extends AbstractBlockLayout implements TemplateableBlockLa
     protected function normalizeSlide(array $slide): array
     {
         // Simplify checks.
-        $slide += [
-            'resource' => null,
-            'type' => 'event',
-            'start_date' => '',
-            'start_display_date' => '',
-            'end_date' => '',
-            'end_display_date' => '',
-            'display_date' => '',
-            'headline' => '',
-            'html' => '',
-            'content' => '',
-            'caption' => '',
-            'credit' => '',
-            'background' => null,
-            'background_color' => '',
-            'group' => '',
-        ];
+        $slide += $this->slideDefault;
+
         if (empty($slide['type'])) {
             $slide['type'] = 'event';
         }
-        if (empty($slide['resource'])) {
-            $slide['resource'] = null;
-        }
+
+        [$slide['resource'], $slide['asset'], $slide['external']]
+            = $this->extractResourceOrAssetOrExternal($slide['resource'], $slide['asset'], $slide['external']);
+        [$slide['background_resource'], $slide['background_asset'], $slide['background_external']]
+            = $this->extractResourceOrAssetOrExternal($slide['background_resource'], $slide['background_asset'], $slide['background_external']);
+
         if ($slide['html']) {
             $slide['html'] = $this->fixEndOfLine($this->htmlPurifier->purify($slide['html']));
-        }
-        if ($slide['content']) {
-            $slide['content'] = $this->fixEndOfLine($this->htmlPurifier->purify($slide['content']));
-            if ($slide['resource'] == strip_tags($slide['content'])) {
-                $slide['content'] = '';
-            } elseif (empty($slide['resource']) && is_numeric($slide['content']) && $slide['content']) {
-                $slide['resource'] = (string) (int) $slide['content'];
-                $slide['content'] = '';
-            }
         }
         if ($slide['caption']) {
             $slide['caption'] = $this->fixEndOfLine($this->htmlPurifier->purify($slide['caption']));
@@ -449,7 +461,53 @@ class TimelineExhibit extends AbstractBlockLayout implements TemplateableBlockLa
         if ($slide['credit']) {
             $slide['credit'] = $this->fixEndOfLine($this->htmlPurifier->purify($slide['credit']));
         }
+
         return $slide;
+    }
+
+    protected function extractResourceOrAssetOrExternal($resource, $asset, $external): array
+    {
+        if (is_numeric($resource)) {
+            return [(int) $resource, null, null];
+        }
+
+        if (is_numeric($asset)) {
+            return [null, (int) $asset, null];
+        }
+
+        // The external may be a numeric (so a resource) or asset/xxx (so an
+        // asset), or an external url.
+        $resourceOrAssetOrString = function ($val) {
+            if (empty($val)) {
+                return null;
+            } elseif (is_numeric($val)) {
+                try {
+                    return $this->api->read('resources', ['id' => $val])->getContent();
+                } catch (NotFoundException $e) {
+                    return null;
+                }
+            } elseif (substr($val, 0, 6) === 'asset/' && is_numeric(substr($val, 6))) {
+                try {
+                    /** @var \Omeka\Api\Representation\AssetRepresentation $asset */
+                    return $this->api->read('assets', ['id' => substr($val, 6)])->getContent();
+                } catch (NotFoundException $e) {
+                    return null;
+                }
+            }
+            return $val ?: null;
+        };
+
+        $result = $resourceOrAssetOrString($external);
+
+        if (!$result) {
+            return [null, null, null];
+        } elseif ($result instanceof AbstractResourceEntityRepresentation) {
+            return [$result->id(), null, null];
+        } elseif ($result instanceof AssetRepresentation) {
+            return [null, $result->id(), null];
+        } else {
+            return [null, null, $result];
+        }
     }
 
     protected function getFileContent($filepath, ErrorStore $errorStore): ?string
@@ -567,28 +625,13 @@ class TimelineExhibit extends AbstractBlockLayout implements TemplateableBlockLa
         unset($rows[0]);
 
         // Convert rows into slides.
-        $slideDefault = [
-            'resource' => null,
-            'type' => 'event',
-            'start_date' => '',
-            'start_display_date' => '',
-            'end_date' => '',
-            'end_display_date' => '',
-            'display_date' => '',
-            'headline' => '',
-            'html' => '',
-            'content' => '',
-            'caption' => '',
-            'credit' => '',
-            'background' => null,
-            'background_color' => '',
-            'group' => '',
-        ];
 
         // The empty fields are filled in a second step when a resource is set.
 
         $resourceOrAssetOrString = function ($val, $index) use ($errorStore) {
-            if (is_numeric($val)) {
+            if (empty($val)) {
+                return null;
+            } elseif (is_numeric($val)) {
                 try {
                     return $this->api->read('resources', ['id' => $val])->getContent();
                 } catch (NotFoundException $e) {
@@ -617,21 +660,25 @@ class TimelineExhibit extends AbstractBlockLayout implements TemplateableBlockLa
         foreach ($rows as $index => $row) {
             ++$index;
             $slideHasError = false;
-            $slide = $slideDefault;
+            $slide = $this->slideDefault;
 
             $resource = null;
             $asset = null;
             $res = $resourceOrAssetOrString($row['Media'], $index);
-            if ($res instanceof \Omeka\Api\Representation\AbstractResourceEntityRepresentation) {
-                $resource = $this->api->read('resources', ['id' => $row['Media']])->getContent();
-                $slide['resource'] = $resource->id();
-            } elseif ($res instanceof \Omeka\Api\Representation\AssetRepresentation) {
-                $asset = $this->api->read('assets', ['id' => substr($row['Media'], 6)])->getContent();
-                $slide['content'] = $asset->assetUrl();
-            } elseif ($res !== null) {
-                $slide['content'] = $res;
-            } else {
+            if ($res instanceof AbstractResourceEntityRepresentation) {
+                $resource = $res;
+                $slide['resource'] = (int) $resource->id();
+            } elseif ($res instanceof AssetRepresentation) {
+                $asset = $res;
+                $slide['asset'] = (int) $asset->id();
+            } elseif ($res) {
+                $slide['external'] = $res;
+            } elseif ($row['Media']) {
                 $slideHasError = true;
+                $errorStore->addError('spreadsheet', new PsrMessage(
+                    'Spreadsheet row #{index}: column Media is invalid.', // @ŧranslate
+                    ['index' => $index]
+                ));
             }
 
             if (empty($row['Type'])) {
@@ -640,7 +687,7 @@ class TimelineExhibit extends AbstractBlockLayout implements TemplateableBlockLa
                 if (in_array($row['Type'], [
                     'event',
                     'era',
-                    'title'
+                    'title',
                 ])) {
                     $slide['type'] = $row['Type'];
                 } else {
@@ -743,32 +790,35 @@ class TimelineExhibit extends AbstractBlockLayout implements TemplateableBlockLa
 
             $slide['html'] = $row['Text'];
 
+            // The content is now resource/asset/external above.
             // $slide['content'] = $row['Media'];
 
             $slide['caption'] = $row['Media Caption'];
 
             $slide['credit'] = $row['Media Credit'];
 
-            // TODO Manage external Background.
-            // TODO Manage external Media Thumbnail.
             // TODO Manage Alt Text.
 
-            // TODO Allow to use a resource as a background.
-            if ($row['Background'] && preg_match('~^(?:asset/)?\d+$~', $row['Background'])) {
-                try {
-                    /** @var \Omeka\Api\Representation\AssetRepresentation $asset */
-                    $assetId = is_numeric($row['Background']) ? (int) $row['Background'] : (int) substr($row['Background'], 6);
-                    $asset = $this->api->read('assets', ['id' => $assetId])->getContent();
-                    $slide['background'] = $asset->id();
-                } catch (NotFoundException $e) {
-                    $slideHasError = true;
-                    $errorStore->addError('spreadsheet', new PsrMessage(
-                        'Spreadsheet row #{index}: The asset "{media}" is an unknown asset.', // @ŧranslate
-                        ['index' => $index, 'media' => $row['Media']]
-                    ));
+            $res = $resourceOrAssetOrString($row['Background'], $index);
+            if ($res instanceof AbstractResourceEntityRepresentation) {
+                $resource = $res;
+                $slide['background_resource'] = (int) $resource->id();
+            } elseif ($res instanceof AssetRepresentation) {
+                $asset = $res;
+                $slide['background_asset'] = (int) $asset->id();
+            } elseif ($res) {
+                // The value may be a url or a color.
+                if (mb_substr($res, 0, 4) === 'http') {
+                    $slide['background_external'] = $res;
+                } else {
+                    $slide['background_color'] = $res;
                 }
             } elseif ($row['Background']) {
-                $slide['background_color'] = $row['Background'];
+                $slideHasError = true;
+                $errorStore->addError('spreadsheet', new PsrMessage(
+                    'Spreadsheet row #{index}: column Background is invalid.', // @ŧranslate
+                    ['index' => $index]
+                ));
             }
 
             $slide['group'] = $row['Group'];

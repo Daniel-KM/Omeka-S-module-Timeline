@@ -15,7 +15,24 @@ and resource blocks.
 Installation
 ------------
 
-Uncompress files in the module directory and rename module folder `Timeline`.
+See general end user documentation for [installing a module].
+
+The module uses an external library to allow to load timeline from a standard
+spreadsheet, so use the release zip to install it, or use and init the source.
+
+* From the zip
+
+Download the last release [Timeline.zip] from the list of releases (the master
+does not contain the dependency), and uncompress it in the `modules` directory.
+
+* From the source and for development:
+
+If the module was installed from the source, rename the name of the folder of
+the module to `Timeline`, and go to the root module, and run:
+
+```sh
+composer install --no-dev
+```
 
 Then install it like any other Omeka module and follow the config instructions.
 
@@ -227,8 +244,25 @@ Notes:
 
 The views of the exhibit can be filled with a [spreadsheet formatted as indicated].
 You should set the filename in the input field. It can be a locally loaded file
-via [Easy Admin] or any url. The format should be csv or tsv (tab separated values)
-for now. There should not be line jump in any cell for now.
+via [Easy Admin] or any url.
+
+The format should be ods (standard OpenDocument Spreadsheet), csv or tsv
+(tab separated values). If you use, csv or tsv, the file should be utf8 encoded
+(unicode) and there should not be line jump in any cell for now. That's why ods
+is the recommended format, allowing cells and descriptions with multiple lines.
+The format "ods" is supported only if the php version is at least 8.1.
+
+For columns Media and Background, it is possible the numeric internal id of the
+resource, a string like `asset/xxx` to use an asset, or a valid external
+absolute url. It may be an item identifier (Dublin Core) too.
+
+If the Media is a resource, the columns date, title and description will be
+automatically filled if empty.
+
+The page should be saved to regenerate slides.
+
+**Warning**: When a valid file is uploaded, all existing slides will be
+replaced.
 
 ### Modifying the block template for Timeline
 
@@ -324,7 +358,8 @@ Copyright
 This [Omeka S] module is a full rewrite of the [fork of NeatlineTime plugin] for
 [Omeka Classic]. The original NeatlineTime plugin was created by the [Scholars’ Lab]
 at the University of Virginia Library and improved by various authors. Some
-improvements were integrated for the digital library of [Saint-Quentin Art & Histoire].
+improvements were integrated for the digital library of [Saint-Quentin Art & Histoire]
+and the [Curiothèque] of the [Institut Curie].
 
 
 [Timeline]: https://gitlab.com/Daniel-KM/Omeka-S-module-Timeline
@@ -348,5 +383,7 @@ improvements were integrated for the digital library of [Saint-Quentin Art & His
 [themeing-plugin-pages]: http://omeka.org/codex/Theming_Plugin_Pages "Theming Plugin Pages"
 [Scholars’ Lab]: https://github.com/scholarslab
 [Saint-Quentin Art & Histoire]: http://saintquentinartethistoire.fr
+[Curiothèque]: https://curiotheque.musee.curie.fr/
+[Institut Curie]: https://curie.fr/
 [GitLab]: https://gitlab.com/Daniel-KM
 [Daniel-KM]: https://gitlab.com/Daniel-KM "Daniel Berthereau"

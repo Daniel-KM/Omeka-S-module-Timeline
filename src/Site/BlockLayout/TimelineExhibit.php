@@ -613,6 +613,16 @@ class TimelineExhibit extends AbstractBlockLayout implements TemplateableBlockLa
                     ));
                     return null;
                 }
+            } elseif (filter_var($val, FILTER_VALIDATE_URL)) {
+                return $val;
+            } else {
+                // Check if the value is an identifier of a resource.
+                // Only "items" and "dcterms:identifier" are managed.
+                // The api searches does not allow to search "resources".
+                $res = $this->api->search('items', ['property' => [['property' => 'dcterms:identifier', 'type' => 'eq', 'text' => $val]], 'limit' => 1])->getContent();
+                if ($res) {
+                    return $res;
+                }
             }
             return $val;
         };

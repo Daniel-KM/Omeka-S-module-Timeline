@@ -206,7 +206,7 @@ class TimelineExhibitFieldset extends Fieldset
                         : 'Spreadsheet filename or url (ods, csv or tsv) to fill following exhibit slides automatically', // @translate,
                     'info' => <<<'TXT'
                         The file may be uploaded via the module Easy Admin or an url.
-                        The column "Media" may be a numeric item or media id,  asset/xxx, or any url to a media.
+                        The column "Media" may be a numeric item or media id,  asset/xxx, any url to a media, or a item identifier (Dublin Core).
                         When Media is a resource, other columns will be filled when empty (title, description, dates).
                         Warning: when a valid file is uploaded, all existing slides will be replaced. The page should be saved to regenerate slides.
                         TXT, // @translate

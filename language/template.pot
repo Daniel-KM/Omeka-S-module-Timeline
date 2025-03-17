@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-03-03 00:00+0000\n"
+"POT-Creation-Date: 2025-03-17 00:00+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -53,11 +53,11 @@ msgstr ""
 msgid "collapse"
 msgstr ""
 
-#: data/scripts/upgrade.php:94
+#: data/scripts/upgrade.php:102
 msgid "The json is now built dynamically from the url /api/timeline."
 msgstr ""
 
-#: data/scripts/upgrade.php:181
+#: data/scripts/upgrade.php:189
 #, php-format
 msgid ""
 "The setting \"heading\" was removed from blocks. A new block "
@@ -65,27 +65,27 @@ msgid ""
 "had a filled heading. You may check pages for styles: %s"
 msgstr ""
 
-#: data/scripts/upgrade.php:193
+#: data/scripts/upgrade.php:201
 msgid "timeline-simile-online"
 msgstr ""
 
-#: data/scripts/upgrade.php:194
+#: data/scripts/upgrade.php:202
 msgid "timeline-knightlab"
 msgstr ""
 
-#: data/scripts/upgrade.php:214
+#: data/scripts/upgrade.php:222
 msgid ""
 "It is now possible to add groups, eras and extra-markers, for example "
 "historical events, in timelines."
 msgstr ""
 
-#: data/scripts/upgrade.php:219
+#: data/scripts/upgrade.php:227
 msgid ""
 "The timeline for Knightlab has been updated to avoid a js transformation. "
 "Check if you used the output of the api directly."
 msgstr ""
 
-#: data/scripts/upgrade.php:280
+#: data/scripts/upgrade.php:288
 #, php-format
 msgid ""
 "The deprecated route \"timeline-block\" (for url \"/timeline/:block-id/"
@@ -93,26 +93,43 @@ msgid ""
 "you used it. Matching templates: %s"
 msgstr ""
 
-#: data/scripts/upgrade.php:287
+#: data/scripts/upgrade.php:295
 msgid ""
 "The deprecated route \"timeline-block\" (for url \"/timeline/:block-id/"
 "events.json\") was replaced by \"api/timeline\". Check your old themes if "
 "you used it."
 msgstr ""
 
-#: data/scripts/upgrade.php:293
+#: data/scripts/upgrade.php:301
 msgid ""
 "It is now possible to add a timeline to an item set as a resource page block."
 msgstr ""
 
-#: data/scripts/upgrade.php:300
+#: data/scripts/upgrade.php:308
 msgid ""
 "It is now possible to fill slides for timeline exhibit with a spreadsheet "
 "(csv, tsv) formatted according to {link}Knightslab{link_end}."
 msgstr ""
 
-#: src/Mvc/Controller/Plugin/TimelineExhibitData.php:207
-#: src/Mvc/Controller/Plugin/AbstractTimelineData.php:135
+#: data/scripts/upgrade.php:375
+msgid "The settings for exhibits were improved. You may check pages: {json}"
+msgstr ""
+
+#: data/scripts/upgrade.php:383
+msgid ""
+"It is now possible to fill a resource, asset or external url as main content "
+"or background for timeline exhibit."
+msgstr ""
+
+#: data/scripts/upgrade.php:388
+msgid ""
+"Furthermore, the file can be a native standard spreadsheet file (ods, "
+"OpenDocument Spreadsheet), avoiding issues with encoding and end of lines "
+"and allowing cells with multilines."
+msgstr ""
+
+#: src/Mvc/Controller/Plugin/TimelineExhibitData.php:221
+#: src/Mvc/Controller/Plugin/AbstractTimelineData.php:150
 msgid "Events"
 msgstr ""
 
@@ -204,82 +221,106 @@ msgstr ""
 msgid "Open links in current browse tab"
 msgstr ""
 
-#: src/Form/TimelineExhibitFieldset.php:204
+#: src/Form/TimelineExhibitFieldset.php:205
 msgid ""
 "Spreadsheet filename or url (csv or tsv) to fill following exhibit slides "
 "automatically"
 msgstr ""
 
-#: src/Form/TimelineExhibitFieldset.php:205
+#: src/Form/TimelineExhibitFieldset.php:206
 msgid ""
-"The file may be uploaded via the module Easy Admin or an url. The column "
-"\"Media\" may be a numeric item or media id, in which case other columns "
-"will be filled if empty, asset/xxx, or any url to a media. Warning: when a "
-"valid file is uploaded, all existing slides will be replaced. The page "
-"should be saved to regenerate slides."
+"Spreadsheet filename or url (ods, csv or tsv) to fill following exhibit "
+"slides automatically"
 msgstr ""
 
-#: src/Form/TimelineExhibitFieldset.php:219
+#: src/Form/TimelineExhibitFieldset.php:207
+msgid ""
+"The file may be uploaded via the module Easy Admin or an url.\n"
+"The column \"Media\" may be a numeric item or media id,  asset/xxx, any url "
+"to a media, or a item identifier (Dublin Core).\n"
+"When Media is a resource, other columns will be filled when empty (title, "
+"description, dates).\n"
+"Warning: when a valid file is uploaded, all existing slides will be "
+"replaced. The page should be saved to regenerate slides."
+msgstr ""
+
+#: src/Form/TimelineExhibitFieldset.php:226
 msgid "Slides"
 msgstr ""
 
-#: src/Form/TimelineExhibitFieldset.php:251
-msgid "Resource for content"
+#: src/Form/TimelineExhibitFieldset.php:252
+msgid "o:block[__blockIndex__][o:data][slides][__slideIndex__]"
 msgstr ""
 
-#: src/Form/TimelineExhibitFieldset.php:267
+#: src/Form/TimelineExhibitFieldset.php:283
+msgid "Main content: Resource"
+msgstr ""
+
+#: src/Form/TimelineExhibitFieldset.php:296
+msgid "Main content: Or asset"
+msgstr ""
+
+#: src/Form/TimelineExhibitFieldset.php:306
+msgid "Main content: Or external media"
+msgstr ""
+
+#: src/Form/TimelineExhibitFieldset.php:321
 msgid "Era"
 msgstr ""
 
-#: src/Form/TimelineExhibitFieldset.php:280
+#: src/Form/TimelineExhibitFieldset.php:334
 msgid "Start date"
 msgstr ""
 
-#: src/Form/TimelineExhibitFieldset.php:293
+#: src/Form/TimelineExhibitFieldset.php:347
 msgid "Display date for start"
 msgstr ""
 
-#: src/Form/TimelineExhibitFieldset.php:303
+#: src/Form/TimelineExhibitFieldset.php:357
 msgid "End date"
 msgstr ""
 
-#: src/Form/TimelineExhibitFieldset.php:316
+#: src/Form/TimelineExhibitFieldset.php:370
 msgid "Display date for end"
 msgstr ""
 
-#: src/Form/TimelineExhibitFieldset.php:326
+#: src/Form/TimelineExhibitFieldset.php:380
 msgid "Display main date"
 msgstr ""
 
-#: src/Form/TimelineExhibitFieldset.php:336
+#: src/Form/TimelineExhibitFieldset.php:390
 msgid "Headline"
 msgstr ""
 
-#: src/Form/TimelineExhibitFieldset.php:350
-msgid "block-html full wysiwyg"
-msgstr ""
-
-#: src/Form/TimelineExhibitFieldset.php:382
-msgid "External content"
-msgstr ""
-
-#: src/Form/TimelineExhibitFieldset.php:404
+#: src/Form/TimelineExhibitFieldset.php:422
 msgid "Credit"
 msgstr ""
 
-#: src/Form/TimelineExhibitFieldset.php:425
-msgid "Background color"
+#: src/Form/TimelineExhibitFieldset.php:434
+msgid "Background: Resource"
 msgstr ""
 
-#: src/Form/TimelineExhibitFieldset.php:426
+#: src/Form/TimelineExhibitFieldset.php:447
+msgid "Background: Or asset"
+msgstr ""
+
+#: src/Form/TimelineExhibitFieldset.php:457
+msgid "Background: Or external file"
+msgstr ""
+
+#: src/Form/TimelineExhibitFieldset.php:469
+msgid "Background: Or color"
+msgstr ""
+
+#: src/Form/TimelineExhibitFieldset.php:470
 msgid "A css color as hexadecimal or keyword."
 msgstr ""
 
-#: src/Form/TimelineExhibitFieldset.php:448
+#: src/Form/TimelineExhibitFieldset.php:492
 msgid "Add another slide"
 msgstr ""
 
-#: src/Form/TimelineExhibitFieldset.php:459
+#: src/Form/TimelineExhibitFieldset.php:503
 msgid "Remove this slide"
 msgstr ""
 
@@ -403,29 +444,29 @@ msgstr ""
 msgid "Timeline (Knightlab)"
 msgstr ""
 
-#: src/Site/BlockLayout/TimelineExhibit.php:60
+#: src/Site/BlockLayout/TimelineExhibit.php:93
 msgid "Timeline Exhibit"
 msgstr ""
 
-#: src/Site/BlockLayout/TimelineExhibit.php:464
+#: src/Site/BlockLayout/TimelineExhibit.php:522
 msgid "A spreadsheet file path was set, but the Easy Admin is not enabled."
 msgstr ""
 
-#: src/Site/BlockLayout/TimelineExhibit.php:466
+#: src/Site/BlockLayout/TimelineExhibit.php:524
 msgid ""
 "The spreadsheet file path cannot contains a double \".\" in its path for "
 "security."
 msgstr ""
 
-#: src/Site/BlockLayout/TimelineExhibit.php:468
+#: src/Site/BlockLayout/TimelineExhibit.php:526
 msgid "The spreadsheet file path contains forbidden characters."
 msgstr ""
 
-#: src/Site/BlockLayout/TimelineExhibit.php:472
+#: src/Site/BlockLayout/TimelineExhibit.php:530
 msgid "The spreadsheet file is not readable."
 msgstr ""
 
-#: src/Site/BlockLayout/TimelineExhibit.php:474
+#: src/Site/BlockLayout/TimelineExhibit.php:532
 msgid "The spreadsheet file is empty."
 msgstr ""
 

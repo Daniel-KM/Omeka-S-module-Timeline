@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Neatline\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-03-03 00:00+0000\n"
-"PO-Revision-Date: 2025-03-03 00:00+0000\n"
+"POT-Creation-Date: 2025-03-17 00:00+0000\n"
+"PO-Revision-Date: 2025-03-17 00:00+0000\n"
 "Last-Translator: Daniel Berthereau <Daniel.fr@Berthereau.net>\n"
 "Language-Team: French (http://www.transifex.com/projects/p/neatline/language/"
 "fr/)\n"
@@ -62,12 +62,12 @@ msgstr ""
 msgid "collapse"
 msgstr "plier"
 
-#: data/scripts/upgrade.php:94
+#: data/scripts/upgrade.php:102
 msgid "The json is now built dynamically from the url /api/timeline."
 msgstr ""
 "Le json est désormais construit dynamiquement depuis l’url /api/timeline."
 
-#: data/scripts/upgrade.php:181
+#: data/scripts/upgrade.php:189
 #, php-format
 msgid ""
 "The setting \"heading\" was removed from blocks. A new block "
@@ -78,15 +78,15 @@ msgstr ""
 "« Titre » (module BlockPlus) ou « Html » a été ajouté pour tous les blocs "
 "qui l’utilisaient. Vous pouvez vérifier les pages pour les styles : %s"
 
-#: data/scripts/upgrade.php:193
+#: data/scripts/upgrade.php:201
 msgid "timeline-simile-online"
 msgstr "timeline-simile-online"
 
-#: data/scripts/upgrade.php:194
+#: data/scripts/upgrade.php:202
 msgid "timeline-knightlab"
 msgstr "timeline-knightlab"
 
-#: data/scripts/upgrade.php:214
+#: data/scripts/upgrade.php:222
 msgid ""
 "It is now possible to add groups, eras and extra-markers, for example "
 "historical events, in timelines."
@@ -94,7 +94,7 @@ msgstr ""
 "Il est désormais possible d’ajouter des groupes, des ères et des marqueurs "
 "autres, par exemple des événements historiques, dans les frises."
 
-#: data/scripts/upgrade.php:219
+#: data/scripts/upgrade.php:227
 msgid ""
 "The timeline for Knightlab has been updated to avoid a js transformation. "
 "Check if you used the output of the api directly."
@@ -102,7 +102,7 @@ msgstr ""
 "La frise pour Knightlab a été mise à jour pour éviter une transformation js. "
 "Vérifiez si vous utilisez la sortie de l’api directement."
 
-#: data/scripts/upgrade.php:280
+#: data/scripts/upgrade.php:288
 #, php-format
 msgid ""
 "The deprecated route \"timeline-block\" (for url \"/timeline/:block-id/"
@@ -113,7 +113,7 @@ msgstr ""
 "events.json ») a été remplacée par « api/timeline ». Vérifiez vos anciens "
 "thèmes si vous l’utilisez. Fichiers correspondants : %s"
 
-#: data/scripts/upgrade.php:287
+#: data/scripts/upgrade.php:295
 msgid ""
 "The deprecated route \"timeline-block\" (for url \"/timeline/:block-id/"
 "events.json\") was replaced by \"api/timeline\". Check your old themes if "
@@ -123,14 +123,14 @@ msgstr ""
 "events.json ») a été remplacée par « api/timeline ». Vérifiez vos anciens "
 "thèmes si vous l’utilisez."
 
-#: data/scripts/upgrade.php:293
+#: data/scripts/upgrade.php:301
 msgid ""
 "It is now possible to add a timeline to an item set as a resource page block."
 msgstr ""
 "Il est désormais d’ajouter une frise à une collection en tant que bloc de "
 "ressource."
 
-#: data/scripts/upgrade.php:300
+#: data/scripts/upgrade.php:308
 msgid ""
 "It is now possible to fill slides for timeline exhibit with a spreadsheet "
 "(csv, tsv) formatted according to {link}Knightslab{link_end}."
@@ -138,8 +138,32 @@ msgstr ""
 "Il est désormais possible de préparer les vues automatiquement avec un "
 "tableur (csv, tsv) au format {link}Knightslab{link_end}."
 
-#: src/Mvc/Controller/Plugin/TimelineExhibitData.php:207
-#: src/Mvc/Controller/Plugin/AbstractTimelineData.php:135
+#: data/scripts/upgrade.php:375
+msgid "The settings for exhibits were improved. You may check pages: {json}"
+msgstr ""
+"Les paramètres pour les expositions ont été améliorées. Vous pouvez vérifier "
+"les pages : {json}"
+
+#: data/scripts/upgrade.php:383
+msgid ""
+"It is now possible to fill a resource, asset or external url as main content "
+"or background for timeline exhibit."
+msgstr ""
+"Il est désormais possible de définir une ressource, un fichier ou une url "
+"externe comme contenu principal et comme arrière-plan pour les expositions."
+
+#: data/scripts/upgrade.php:388
+msgid ""
+"Furthermore, the file can be a native standard spreadsheet file (ods, "
+"OpenDocument Spreadsheet), avoiding issues with encoding and end of lines "
+"and allowing cells with multilines."
+msgstr ""
+"De plus, le fichier peut être un tableur standard (ods, OpenDocument "
+"Spreadsheet), évitant ainsi les problèmes d’encodage et de fin de ligne et "
+"permettant d’avoir des cellules avec plusieurs lignes."
+
+#: src/Mvc/Controller/Plugin/TimelineExhibitData.php:221
+#: src/Mvc/Controller/Plugin/AbstractTimelineData.php:150
 msgid "Events"
 msgstr "Événements"
 
@@ -238,89 +262,118 @@ msgstr ""
 msgid "Open links in current browse tab"
 msgstr "Ouvrir les liens dans l’onglet en cours"
 
-#: src/Form/TimelineExhibitFieldset.php:204
+#: src/Form/TimelineExhibitFieldset.php:205
 msgid ""
 "Spreadsheet filename or url (csv or tsv) to fill following exhibit slides "
 "automatically"
 msgstr ""
-"Chemin ou url du tableur (csv ou tsv) pour préparer les vues automatiquement"
+"Nom ou url du tableur (csv ou tsv) pour préparer les vues automatiquement"
 
-#: src/Form/TimelineExhibitFieldset.php:205
+#: src/Form/TimelineExhibitFieldset.php:206
 msgid ""
-"The file may be uploaded via the module Easy Admin or an url. The column "
-"\"Media\" may be a numeric item or media id, in which case other columns "
-"will be filled if empty, asset/xxx, or any url to a media. Warning: when a "
-"valid file is uploaded, all existing slides will be replaced. The page "
-"should be saved to regenerate slides."
+"Spreadsheet filename or url (ods, csv or tsv) to fill following exhibit "
+"slides automatically"
 msgstr ""
-"Le fichier peut être téléversé via le module Easy Admin ou via une url. La "
-"colonne « Media » peut être le numéro d’un contenu ou d’un média, auquel cas "
-"les autres colonnes seront remplies automatiquement si vide, asset/xxx, ou "
-"toute autre url vers un média. Attention : quand un fichier valide est "
-"téléversé, toutes les vignettes existantes sont remplacées. La page doit "
-"être enregistrée pour régénérer les vues."
+"Nom ou url du tableur (ods, csv ou tsv) pour préparer les vues "
+"automatiquement"
 
-#: src/Form/TimelineExhibitFieldset.php:219
+#: src/Form/TimelineExhibitFieldset.php:207
+msgid ""
+"The file may be uploaded via the module Easy Admin or an url.\n"
+"The column \"Media\" may be a numeric item or media id,  asset/xxx, any url "
+"to a media, or a item identifier (Dublin Core).\n"
+"When Media is a resource, other columns will be filled when empty (title, "
+"description, dates).\n"
+"Warning: when a valid file is uploaded, all existing slides will be "
+"replaced. The page should be saved to regenerate slides."
+msgstr ""
+"Le fichier peut être téléversé via le module Easy Admin ou via une url.\n"
+"La colonne « Media » peut être le numéro d’un contenu ou d’un média, asset/"
+"xxx, toute autre url vers un média, ou un identifiant de contenu (Dublin "
+"Core).\n"
+"Lorsque Media est une ressource, les autres colonnes seront seront remplies "
+"automatiquement si vide (titre, description, dates).\n"
+" Attention : quand un fichier valide est téléversé, toutes les vignettes "
+"existantes sont remplacées. La page doit être enregistrée pour régénérer les "
+"vues."
+
+#: src/Form/TimelineExhibitFieldset.php:226
 msgid "Slides"
 msgstr "Vues"
 
-#: src/Form/TimelineExhibitFieldset.php:251
-msgid "Resource for content"
-msgstr "Ressource pour le contenu"
+#: src/Form/TimelineExhibitFieldset.php:252
+msgid "o:block[__blockIndex__][o:data][slides][__slideIndex__]"
+msgstr "o:block[__blockIndex__][o:data][slides][__slideIndex__]"
 
-#: src/Form/TimelineExhibitFieldset.php:267
+#: src/Form/TimelineExhibitFieldset.php:283
+msgid "Main content: Resource"
+msgstr "Contenu principal : ressource"
+
+#: src/Form/TimelineExhibitFieldset.php:296
+msgid "Main content: Or asset"
+msgstr "Contenu principal : ou fichier"
+
+#: src/Form/TimelineExhibitFieldset.php:306
+msgid "Main content: Or external media"
+msgstr "Contenu principal : ou média externe"
+
+#: src/Form/TimelineExhibitFieldset.php:321
 msgid "Era"
 msgstr "Ère"
 
-#: src/Form/TimelineExhibitFieldset.php:280
+#: src/Form/TimelineExhibitFieldset.php:334
 msgid "Start date"
 msgstr "Date de début"
 
-#: src/Form/TimelineExhibitFieldset.php:293
+#: src/Form/TimelineExhibitFieldset.php:347
 msgid "Display date for start"
 msgstr "Date à afficher pour le début"
 
-#: src/Form/TimelineExhibitFieldset.php:303
+#: src/Form/TimelineExhibitFieldset.php:357
 msgid "End date"
 msgstr "Date de fin"
 
-#: src/Form/TimelineExhibitFieldset.php:316
+#: src/Form/TimelineExhibitFieldset.php:370
 msgid "Display date for end"
 msgstr "Date à afficher pour la fin"
 
-#: src/Form/TimelineExhibitFieldset.php:326
+#: src/Form/TimelineExhibitFieldset.php:380
 msgid "Display main date"
 msgstr "Date principale à afficher"
 
-#: src/Form/TimelineExhibitFieldset.php:336
+#: src/Form/TimelineExhibitFieldset.php:390
 msgid "Headline"
 msgstr "Titre principal"
 
-#: src/Form/TimelineExhibitFieldset.php:350
-msgid "block-html full wysiwyg"
-msgstr "bloc html wysiwyg"
-
-#: src/Form/TimelineExhibitFieldset.php:382
-msgid "External content"
-msgstr "Contenu externe"
-
-#: src/Form/TimelineExhibitFieldset.php:404
+#: src/Form/TimelineExhibitFieldset.php:422
 msgid "Credit"
 msgstr "Crédits"
 
-#: src/Form/TimelineExhibitFieldset.php:425
-msgid "Background color"
-msgstr "Couleur d’arrière-plan"
+#: src/Form/TimelineExhibitFieldset.php:434
+msgid "Background: Resource"
+msgstr "Arrière-plan : ressource"
 
-#: src/Form/TimelineExhibitFieldset.php:426
+#: src/Form/TimelineExhibitFieldset.php:447
+msgid "Background: Or asset"
+msgstr "Arrière-plan : ou fichier"
+
+#: src/Form/TimelineExhibitFieldset.php:457
+msgid "Background: Or external file"
+msgstr "Arrière-plan : ou fichier externe"
+
+#: src/Form/TimelineExhibitFieldset.php:469
+msgid "Background: Or color"
+msgstr "Arrière-plan : ou couleur"
+
+#: src/Form/TimelineExhibitFieldset.php:470
 msgid "A css color as hexadecimal or keyword."
 msgstr "Une couleur css en hexadécimal ou mot-clé."
 
-#: src/Form/TimelineExhibitFieldset.php:448
+#: src/Form/TimelineExhibitFieldset.php:492
 msgid "Add another slide"
 msgstr "Ajouter une autre vue"
 
-#: src/Form/TimelineExhibitFieldset.php:459
+#: src/Form/TimelineExhibitFieldset.php:503
 msgid "Remove this slide"
 msgstr "Supprimer cette vue"
 
@@ -450,16 +503,16 @@ msgstr "Frise chronologique"
 msgid "Timeline (Knightlab)"
 msgstr "Frise chronologique (Knightlab)"
 
-#: src/Site/BlockLayout/TimelineExhibit.php:60
+#: src/Site/BlockLayout/TimelineExhibit.php:93
 msgid "Timeline Exhibit"
 msgstr "Frise chronologique (exposition)"
 
-#: src/Site/BlockLayout/TimelineExhibit.php:464
+#: src/Site/BlockLayout/TimelineExhibit.php:522
 msgid "A spreadsheet file path was set, but the Easy Admin is not enabled."
 msgstr ""
 "Un tableur a été indiqué, mais le module Easy Admin n’est pas disponible."
 
-#: src/Site/BlockLayout/TimelineExhibit.php:466
+#: src/Site/BlockLayout/TimelineExhibit.php:524
 msgid ""
 "The spreadsheet file path cannot contains a double \".\" in its path for "
 "security."
@@ -467,15 +520,15 @@ msgstr ""
 "Le chemin du tableur ne peut pas contenir un double« . » dans son chemin par "
 "sécurité."
 
-#: src/Site/BlockLayout/TimelineExhibit.php:468
+#: src/Site/BlockLayout/TimelineExhibit.php:526
 msgid "The spreadsheet file path contains forbidden characters."
 msgstr "Le chemin du tableur contient des caractères interdits."
 
-#: src/Site/BlockLayout/TimelineExhibit.php:472
+#: src/Site/BlockLayout/TimelineExhibit.php:530
 msgid "The spreadsheet file is not readable."
 msgstr "Le tableur n’est pas lisible."
 
-#: src/Site/BlockLayout/TimelineExhibit.php:474
+#: src/Site/BlockLayout/TimelineExhibit.php:532
 msgid "The spreadsheet file is empty."
 msgstr "Le tableur est vide."
 
@@ -498,6 +551,18 @@ msgstr "Simile en ligne (utilise js/css en ligne)"
 #: config/module.config.php:27
 msgid "Knightlab"
 msgstr "Knightlab"
+
+#~ msgid "info"
+#~ msgstr "info"
+
+#~ msgid "Resource for content"
+#~ msgstr "Ressource pour le contenu"
+
+#~ msgid "block-html full wysiwyg"
+#~ msgstr "bloc html wysiwyg"
+
+#~ msgid "External content"
+#~ msgstr "Contenu externe"
 
 #~ msgid "The next version (3.4.20) will require Omeka S v4.1."
 #~ msgstr "La version suivante (3.4.20) nécessitera Omeka S v4.1."

@@ -519,17 +519,17 @@ class TimelineExhibit extends AbstractBlockLayout implements TemplateableBlockLa
         }
         // The file should be inside the EasyAdmin tmp directory.
         if (!$this->localPath) {
-            $errorStore->addError('A spreadsheet file path was set, but the Easy Admin is not enabled.'); // @translate
+            $errorStore->addError('spreadsheet', 'A spreadsheet file path was set, but the Easy Admin is not enabled.'); // @translate
         } elseif (strpos($filepath, '..') !== false) {
-            $errorStore->addError('The spreadsheet file path cannot contains a double "." in its path for security.'); // @translate
+            $errorStore->addError('spreadsheet', 'The spreadsheet file path cannot contains a double "." in its path for security.'); // @translate
         } elseif (strlen(preg_replace('/[[:cntrl:]\/\\\?<>:\*\%\|\"\'`\&\;#+\^\$]/', '', $filepath)) !== strlen($filepath)) {
-            $errorStore->addError('The spreadsheet file path contains forbidden characters.'); // @translate
+            $errorStore->addError('spreadsheet', 'The spreadsheet file path contains forbidden characters.'); // @translate
         } else {
             $filepath = rtrim($this->localPath, '//') . '/' . $filepath;
             if (!file_exists($filepath) || !is_readable($filepath)) {
-                $errorStore->addError('The spreadsheet file is not readable.'); // @translate
+                $errorStore->addError('spreadsheet', 'The spreadsheet file is not readable.'); // @translate
             } elseif (!filesize($filepath)) {
-                $errorStore->addError('The spreadsheet file is empty.'); // @translate
+                $errorStore->addError('spreadsheet', 'The spreadsheet file is empty.'); // @translate
             } else {
                 return file_get_contents($filepath) ?: null;
             }
@@ -571,14 +571,22 @@ class TimelineExhibit extends AbstractBlockLayout implements TemplateableBlockLa
             'Alt Text',
             'Type',
             'Group',
-            'Background'
+            'Background',
         ];
+        $columns = array_combine($columns, $columns);
 
         // Skip next columns to avoid issues with fake empty columns.
         $rows[0] = array_slice($rows[0], 0, count($columns), true);
 
-        if ($rows[0] !== array_combine($columns, $columns)) {
-            $errorStore->addError('spreadsheet', 'The exact list of 19 headers of a Knightlab spreadsheet should be used.'); // @ŧranslate
+        if ($rows[0] !== $columns) {
+            $diff = array_unique(array_merge(
+                array_values(array_diff($columns, $rows[0])),
+                array_values(array_diff($rows[0], $columns))
+            ));
+            $errorStore->addError('spreadsheet', new PsrMessage(
+                'The exact list of 19 headers of a Knightlab spreadsheet should be used: check {list}.', // @ŧranslate
+                ['list' => $diff]
+            ));
             return null;
         }
 

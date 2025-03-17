@@ -539,51 +539,12 @@ class TimelineExhibit extends AbstractBlockLayout implements TemplateableBlockLa
 
     protected function prepareSlidesFromSpreadsheet(string $spreadsheet, ErrorStore $errorStore): ?array
     {
-        // TODO The "@" avoids the deprecation notice. Replace by html_entity_decode/htmlentities.
-        // Do not trim early.
-        $spreadsheet = (string) @mb_convert_encoding($spreadsheet, 'HTML-ENTITIES', 'UTF-8');
-        if (substr($spreadsheet, 0, 3) === chr(0xEF) . chr(0xBB) . chr(0xBF)) {
-            $spreadsheet = substr($spreadsheet, 3);
-        }
+        $rows = PHP_VERSION_ID < 80100
+            ? $this->rowsFromCsv($spreadsheet, $errorStore)
+            : $this->rowsFromSpreadsheet($spreadsheet, $errorStore);
 
-        if (mb_strpos($spreadsheet, "\t") !== false) {
-            $separator = "\t";
-            $enclosure = chr(0);
-            $escape = chr(0);
-        } else {
-            $separator = ',';
-            $enclosure = '"';
-            $escape = '\\';
-        }
-
-        $first = true;
-        $rows = array_map(fn ($v) => array_map('trim', array_map('strval', str_getcsv($v, $separator, $enclosure, $escape))), explode("\n", $spreadsheet));
-        foreach ($rows as $key => $row) {
-            if (empty(array_filter($row))) {
-                unset($rows[$key]);
-                continue;
-            }
-            // First row is headers.
-            if ($first) {
-                $first = false;
-                $headers = array_combine($row, $row);
-                $countHeaders = count($headers);
-                // Headers should not be empty and duplicates are forbidden.
-                if (!$countHeaders
-                    || $countHeaders !== count($row)
-                ) {
-                    $errorStore->addError('spreadsheet', 'Some headers are duplicated.'); // @ŧranslate
-                    return null;
-                }
-                $rows[$key] = $headers;
-                continue;
-            }
-            if (count($row) < $countHeaders) {
-                $row = array_slice(array_merge($row, array_fill(0, $countHeaders, '')), 0, $countHeaders);
-            } elseif (count($row) > $countHeaders) {
-                $row = array_slice($row, 0, $countHeaders);
-            }
-            $rows[$key] = array_combine($headers, array_map('trim', $row));
+        if (!$rows) {
+            return null;
         }
 
         $rows = array_values(array_filter($rows));
@@ -831,5 +792,131 @@ class TimelineExhibit extends AbstractBlockLayout implements TemplateableBlockLa
         }
 
         return $slides;
+    }
+
+    protected function rowsFromCsv(string $spreadsheet, ErrorStore $errorStore): ?array
+    {
+        // TODO The "@" avoids the deprecation notice. Replace by html_entity_decode/htmlentities.
+        // Do not trim early.
+        $spreadsheet = (string) @mb_convert_encoding($spreadsheet, 'HTML-ENTITIES', 'UTF-8');
+        if (substr($spreadsheet, 0, 3) === chr(0xEF) . chr(0xBB) . chr(0xBF)) {
+            $spreadsheet = substr($spreadsheet, 3);
+        }
+
+        if (substr($spreadsheet, 0, 5) === 'PK' . chr(3) . chr(4) . chr(0)) {
+            $errorStore->addError('spreadsheet', 'The support of OpenDocument Spreadsheet requires php version 8.1 or greater.'); // @ŧranslate
+            return null;
+        }
+
+        if (mb_strpos($spreadsheet, "\t") !== false) {
+            $separator = "\t";
+            $enclosure = chr(0);
+            $escape = chr(0);
+        } else {
+            $separator = ',';
+            $enclosure = '"';
+            $escape = '\\';
+        }
+
+        $rows = array_map(fn ($v) => array_map('trim', array_map('strval', str_getcsv($v, $separator, $enclosure, $escape))), explode("\n", $spreadsheet));
+
+        return $this->rowsWithHeaders($rows, $errorStore);
+    }
+
+    protected function rowsFromSpreadsheet(string $spreadsheet, ErrorStore $errorStore): ?array
+    {
+        $tempFile = tempnam(sys_get_temp_dir(), 'spreadsheet');
+        file_put_contents($tempFile, $spreadsheet);
+        $mediaType = mime_content_type($tempFile);
+
+        $mediaTypesToExtensions = [
+            'application/csv' => 'csv',
+            'text/csv' => 'csv',
+            'text/plain' => 'csv',
+            // OpenSpout does not support tsv for now.
+            'text/tab-separated-values' => 'csv',
+            'application/vnd.oasis.opendocument.spreadsheet' => 'ods',
+            // Not standard, and complex format, so not officially supported.
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' => 'xlsx',
+        ];
+
+        if (!isset($mediaTypesToExtensions[$mediaType])) {
+            return null;
+        }
+
+        $extension = $mediaTypesToExtensions[$mediaType];
+        $oldTempFile = $tempFile;
+        $tempFile .= '.' . $extension;
+        rename($oldTempFile, $tempFile);
+
+        if ($mediaType === 'text/tab-separated-values'
+            || ($extension === 'csv' && mb_strpos($spreadsheet, "\t") !== false)
+        ) {
+            $options = new \OpenSpout\Reader\CSV\Options();
+            $options->FIELD_DELIMITER = "\t";
+            $options->FIELD_ENCLOSURE = chr(0);
+            $reader = \OpenSpout\Reader\CSV\Reader($options);
+        } else {
+            $reader = \OpenSpout\Reader\Common\Creator\ReaderEntityFactory::createReaderFromFile($tempFile);
+        }
+
+        $reader->open($tempFile);
+
+        // Only one sheet, the active one.
+        /** @var \OpenSpout\Reader\ODS\Sheet $sheet */
+        foreach ($reader->getSheetIterator() as $currentSheet) {
+            if ($extension === 'csv'
+                || ($currentSheet->isActive() && $currentSheet->isVisible())
+            ) {
+                $sheet = $currentSheet;
+                break;
+            }
+        }
+
+        $rows = [];
+        $sheet ??= $currentSheet;
+        foreach ($sheet->getRowIterator() as $row) {
+            $rows[] = $row->toArray();
+        }
+
+        $reader->close();
+        unlink($tempFile);
+
+        return $this->rowsWithHeaders($rows, $errorStore);
+    }
+
+    protected function rowsWithHeaders(array $rows, ErrorStore $errorStore): ?array
+    {
+        $first = true;
+        foreach ($rows as $key => $row) {
+            // Normally already filtered.
+            if (empty(array_filter($row))) {
+                unset($rows[$key]);
+                continue;
+            }
+            // First row is headers.
+            if ($first) {
+                $first = false;
+                $headers = array_combine($row, $row);
+                $countHeaders = count($headers);
+                // Headers should not be empty and duplicates are forbidden.
+                if (!$countHeaders
+                    || $countHeaders !== count($row)
+                ) {
+                    $errorStore->addError('spreadsheet', 'Some headers are duplicated.'); // @ŧranslate
+                    return null;
+                }
+                $rows[$key] = $headers;
+                continue;
+            }
+            if (count($row) < $countHeaders) {
+                $row = array_slice(array_merge($row, array_fill(0, $countHeaders, '')), 0, $countHeaders);
+            } elseif (count($row) > $countHeaders) {
+                $row = array_slice($row, 0, $countHeaders);
+            }
+            $rows[$key] = array_combine($headers, array_map('trim', $row));
+        }
+
+        return $rows;
     }
 }

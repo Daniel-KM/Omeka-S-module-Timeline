@@ -1,10 +1,45 @@
 {
+    "name": "daniel-km/omeka-s-module-timeline",
+    "description": "Module for Omeka S that integrates the Simile Timeline and the Knightlab Timeline to create advanced timelines from the dates of items.",
+    "type": "library",
+    "license": "CECILL-2.1",
+    "authors": [
+        {
+            "name": "Daniel Berthereau",
+            "email": "Daniel.packagist@Berthereau.net"
+        }
+    ],
+    "homepage": "https://gitlab.com/Daniel-KM/Omeka-S-module-Timeline",
+    "support": {
+        "issues": "https://gitlab.com/Daniel-KM/Omeka-S-module-Timeline/-/issues",
+        "forum": "https://forum.omeka.org/"
+    },
+    "keywords": [
+        "Omeka S",
+        "module",
+        "data visualization",
+        "timeline",
+        "chronology"
+    ],
+    "require": {
+        "ext-xml": "*",
+        "openspout/openspout": "^4.25"
+    },
     "require-dev": {
         "biblibre/omeka-s-test-helper": "dev-master"
     },
     "autoload-dev": {
         "psr-4": {
             "TimelineTest\\": "test/TimelineTest/"
+        }
+    },
+    "config": {
+        "platform": {
+            "php": "8.1"
+        },
+        "allow-plugins": {
+            "composer/installers": true,
+            "oomphinc/composer-installers-extender": true
         }
     }
 }

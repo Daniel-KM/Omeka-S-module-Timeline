@@ -12,18 +12,26 @@ use Omeka\Stdlib\Message;
  * @var string $oldVersion
  *
  * @var \Omeka\Api\Manager $api
+ * @var \Omeka\View\Helper\Url $url
  * @var \Laminas\Log\Logger $logger
  * @var \Omeka\Settings\Settings $settings
+ * @var \Laminas\I18n\View\Helper\Translate $translate
  * @var \Doctrine\DBAL\Connection $connection
+ * @var \Laminas\Mvc\I18n\Translator $translator
  * @var \Doctrine\ORM\EntityManager $entityManager
+ * @var \Omeka\Settings\SiteSettings $siteSettings
  * @var \Omeka\Mvc\Controller\Plugin\Messenger $messenger
  */
 $plugins = $services->get('ControllerPluginManager');
+$url = $plugins->get('url');
 $api = $plugins->get('api');
 $logger = $services->get('Omeka\Logger');
 $settings = $services->get('Omeka\Settings');
+$translate = $plugins->get('translate');
+$translator = $services->get('MvcTranslator');
 $connection = $services->get('Omeka\Connection');
 $messenger = $plugins->get('messenger');
+$siteSettings = $services->get('Omeka\Settings\Site');
 $entityManager = $services->get('Omeka\EntityManager');
 
 $localConfig = require dirname(__DIR__, 2) . '/config/module.config.php';
@@ -31,10 +39,10 @@ $localConfig = require dirname(__DIR__, 2) . '/config/module.config.php';
 if (version_compare($oldVersion, '3.4.6', '<')) {
     // Replace item pool by a search query.
     $sql = <<<'SQL'
-        SELECT id, data
-        FROM site_page_block
-        WHERE layout = 'timeline';
-        SQL;
+    SELECT id, data
+    FROM site_page_block
+    WHERE layout = 'timeline';
+    SQL;
     $timelines = $connection->executeQuery($sql)->fetchAllKeyValue();
     foreach ($timelines as $id => $data) {
         $data = json_decode($data, true);
@@ -50,10 +58,10 @@ if (version_compare($oldVersion, '3.4.6', '<')) {
         $data = json_encode($data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
         $data = $connection->quote($data);
         $sql = <<<SQL
-            UPDATE site_page_block
-            SET data = $data
-            WHERE id = $id;
-            SQL;
+        UPDATE site_page_block
+        SET data = $data
+        WHERE id = $id;
+        SQL;
         $connection->executeStatement($sql);
     }
 }
@@ -305,8 +313,79 @@ if (version_compare($oldVersion, '3.4.23', '<')) {
 }
 
 if (version_compare($oldVersion, '3.4.25', '<')) {
+    /**
+     * Update config of exhibits (remove content and background).
+     */
+
+    /** @see \Omeka\Db\Migrations\MigrateBlockLayoutData */
+    $pageRepository = $entityManager->getRepository(\Omeka\Entity\SitePage::class);
+
+    $pagesUpdated = [];
+    foreach ($pageRepository->findAll() as $page) {
+        $pageSlug = $page->getSlug();
+        $siteSlug = $page->getSite()->getSlug();
+        foreach ($page->getBlocks() as $block) {
+            $layout = $block->getLayout();
+            if ($layout !== 'timelineExhibit') {
+                continue;
+            }
+            $blockId = $block->getId();
+            $data = $block->getData() ?: [];
+            $content = $data['content'] ?? null;
+            $background = $data['background'] ?? null;
+            $data['resource'] ??= null;
+            $data['asset'] ??= null;
+            $data['external'] ??= null;
+            $data['background_resource'] ??= null;
+            $data['background_asset'] ??= null;
+            $data['background_external'] ??= null;
+            $data['background_color'] ??= null;
+            if ($content) {
+                if (substr($content, 0,6) === 'asset/' && empty($data['asset'])) {
+                    $data['asset'] = substr($content, 6);
+                } elseif (empty($data['external'])) {
+                    $data['external'] = $content;
+                }
+            }
+            if ($background) {
+                if (is_numeric($background) && empty($data['background_resource'])) {
+                    $data['background_resource'] = $background;
+                } elseif (substr($background, 0,6) === 'asset/' && empty($data['background_asset'])) {
+                    $data['background_asset'] = substr($background, 6);
+                } elseif (filter_var($background, FILTER_VALIDATE_URL)) {
+                    $data['background_external'] = $background;
+                } elseif (empty($data['background_color'])) {
+                    $data['background_color'] = $background;
+                }
+            }
+            unset($data['content']);
+            unset($data['background']);
+            $block->setData($data);
+            $pagesUpdated[$siteSlug][$pageSlug] = $pageSlug;
+        }
+    }
+
+    // Do a clear to fix issues with new blocks created during migration.
+    $entityManager->flush();
+    $entityManager->clear();
+
+    if ($pagesUpdated) {
+        $result = array_map('array_values', $pagesUpdated);
+        $message = new PsrMessage(
+            'The settings for exhibits were improved. You may check pages: {json}', // @translate
+            ['json' => json_encode($result, 448)]
+        );
+        $messenger->addWarning($message);
+        $logger->warn($message->getMessage(), $message->getContext());
+    }
+
     $message = new PsrMessage(
         'It is now possible to fill a resource, asset or external url as main content or background for timeline exhibit.' // @translate
+    );
+    $messenger->addSuccess($message);
+
+    $message = new PsrMessage(
+        'Furthermore, the file can be a native standard spreadsheet file (ods, OpenDocument Spreadsheet), avoiding issues with encoding and end of lines and allowing cells with multilines.' // @translate
     );
     $messenger->addSuccess($message);
 }

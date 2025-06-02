@@ -598,6 +598,14 @@ class TimelineExhibit extends AbstractBlockLayout implements TemplateableBlockLa
         // The empty fields are filled in a second step when a resource is set.
 
         $resourceOrAssetOrString = function ($val, $index) use ($errorStore) {
+            if (!is_null($val) && !is_scalar($val)) {
+                $errorStore->addError('spreadsheet', new PsrMessage(
+                    'Spreadsheet row #{index}: The cell content is invalid: {content}', // @ŧranslate
+                    ['index' => $index, 'content' => $val]
+                ));
+                return null;
+            }
+            $val = trim((string) $val);
             if (empty($val)) {
                 return null;
             } elseif (is_numeric($val)) {
@@ -627,11 +635,13 @@ class TimelineExhibit extends AbstractBlockLayout implements TemplateableBlockLa
                 // Check if the value is an identifier of a resource.
                 // Only "items" and "dcterms:identifier" are managed.
                 // The api searches does not allow to search "resources".
+                // There is no searchOne for main api manager.
                 $res = $this->api->search('items', ['property' => [['property' => 'dcterms:identifier', 'type' => 'eq', 'text' => $val]], 'limit' => 1])->getContent();
                 if ($res) {
-                    return $res;
+                    return reset($res);
                 }
             }
+            // Keep string.
             return $val;
         };
 
@@ -655,8 +665,8 @@ class TimelineExhibit extends AbstractBlockLayout implements TemplateableBlockLa
             } elseif ($row['Media']) {
                 $slideHasError = true;
                 $errorStore->addError('spreadsheet', new PsrMessage(
-                    'Spreadsheet row #{index}: column Media is invalid.', // @ŧranslate
-                    ['index' => $index]
+                    'Spreadsheet row #{index}: column Media is invalid: {content}', // @ŧranslate
+                    ['index' => $index, 'content' => $row['Media']]
                 ));
             }
 
@@ -795,8 +805,8 @@ class TimelineExhibit extends AbstractBlockLayout implements TemplateableBlockLa
             } elseif ($row['Background']) {
                 $slideHasError = true;
                 $errorStore->addError('spreadsheet', new PsrMessage(
-                    'Spreadsheet row #{index}: column Background is invalid.', // @ŧranslate
-                    ['index' => $index]
+                    'Spreadsheet row #{index}: column Background is invalid: {content}', // @ŧranslate
+                    ['index' => $index, 'content' => $row['Background']]
                 ));
             }
 

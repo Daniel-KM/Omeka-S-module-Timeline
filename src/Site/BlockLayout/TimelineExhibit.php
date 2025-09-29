@@ -598,7 +598,7 @@ class TimelineExhibit extends AbstractBlockLayout implements TemplateableBlockLa
         // The empty fields are filled in a second step when a resource is set.
 
         $resourceOrAssetOrString = function ($val, $index) use ($errorStore) {
-            if (!is_null($val) && !is_scalar($val)) {
+            if ($val !== null && !is_scalar($val)) {
                 $errorStore->addError('spreadsheet', new PsrMessage(
                     'Spreadsheet row #{index}: The cell content is invalid: {content}', // @ŧranslate
                     ['index' => $index, 'content' => $val]

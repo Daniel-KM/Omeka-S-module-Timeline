@@ -217,7 +217,7 @@ trait TraitTimelineData
             }
             $event = [];
             $event['start_date'] = $this->date($dateStart);
-            if (!is_null($dateEnd)) {
+            if ($dateEnd !== null) {
                 $event['end_date'] = $this->date($dateEnd);
             }
             $event['text'] = [
@@ -251,7 +251,7 @@ trait TraitTimelineData
             }
             $event = [];
             $event['start'] = $dateStart;
-            if (!is_null($dateEnd)) {
+            if ($dateEnd !== null) {
                 $event['end'] = $dateEnd;
             }
             $event['title'] = $heading;
@@ -546,7 +546,7 @@ trait TraitTimelineData
                 return null;
             }
             $parts = array_intersect_key($dateTime, $parts);
-            if (!is_null($displayDate)) {
+            if ($displayDate !== null) {
                 $parts['displayDate'] = $displayDate;
             }
         }
@@ -610,7 +610,7 @@ trait TraitTimelineData
             $parts['day'] = (int) $dateTimeO->format('d');
         }
 
-        $parts = array_filter($parts, fn ($v) => !is_null($v));
+        $parts = array_filter($parts, fn ($v) => $v !== null);
 
         if (!isset($parts['year'])) {
             return null;

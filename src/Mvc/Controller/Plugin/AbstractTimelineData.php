@@ -97,7 +97,7 @@ abstract class AbstractTimelineData extends AbstractPlugin
                 }
                 if ($this->timelineJs === 'knightlab') {
                     $event['start_date'] = $this->dateToArray($dateStart);
-                    if (!is_null($dateEnd)) {
+                    if ($dateEnd !== null) {
                         $event['end_date'] = $this->dateToArray($dateEnd);
                     }
                     $event['text'] = [
@@ -122,7 +122,7 @@ abstract class AbstractTimelineData extends AbstractPlugin
                     }
                 } else {
                     $event['start'] = $dateStart;
-                    if (!is_null($dateEnd)) {
+                    if ($dateEnd !== null) {
                         $event['end'] = $dateEnd;
                     }
                     $event['title'] = $itemTitle;

@@ -18,6 +18,11 @@ return [
             'ViewJsonStrategy',
         ],
     ],
+    'view_helpers' => [
+        'factories' => [
+            'timeline' => Service\ViewHelper\TimelineFactory::class,
+        ],
+    ],
     'page_templates' => [
     ],
     'block_templates' => [

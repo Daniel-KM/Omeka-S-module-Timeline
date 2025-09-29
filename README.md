@@ -58,6 +58,12 @@ them and config it (the item pool and eventually the options).
 
 Furthermore, any timeline can be created dynamically via the api `/api/timeline`.
 
+For theme developers, a view helper can be included anywhere, with an item set:
+
+```php
+echo $this->timeline($itemSet, ['library' => 'knightlab']);
+```
+
 The options for the blocks are the following ones.
 
 ### Fields
@@ -286,7 +292,9 @@ for Omeka Classic, and the [examples] of customization on the wiki.
 TODO
 ----
 
-- [ ] Create a view helper and restructure the blocks.
+- [x] Create a view helper.
+- [ ] Allow to use a query in the view helper
+- [ ] Restructure the blocks and genericize the view helper.
 - [ ] Integrate attachments for the exhibit and improve the form (hide all by default except resource),
 - [ ] Integrate Numeric data type Interval and Duration (?).
 - [ ] Create the json for knightlab directly from the controller, not the js in view.

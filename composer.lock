@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c21a13f5bd1bc25b5bfbfc59f142541e",
+    "content-hash": "caba012824e4272480eb414686bc1fec",
     "packages": [
         {
             "name": "openspout/openspout",
@@ -100,61 +100,18 @@
             "time": "2024-09-24T09:03:42+00:00"
         }
     ],
-    "packages-dev": [
-        {
-            "name": "biblibre/omeka-s-test-helper",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/biblibre/omeka-s-test-helper.git",
-                "reference": "a02c8dc4259365f7de1d09626a97347ba19cbf6e"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/biblibre/omeka-s-test-helper/zipball/a02c8dc4259365f7de1d09626a97347ba19cbf6e",
-                "reference": "a02c8dc4259365f7de1d09626a97347ba19cbf6e",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.5.0"
-            },
-            "default-branch": true,
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "OmekaTestHelper\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "description": "Test helpers for Omeka S",
-            "homepage": "https://github.com/biblibre/omeka-s-test-helper",
-            "keywords": [
-                "omeka",
-                "test"
-            ],
-            "support": {
-                "issues": "https://github.com/biblibre/omeka-s-test-helper/issues",
-                "source": "https://github.com/biblibre/omeka-s-test-helper/tree/master"
-            },
-            "time": "2016-09-22T16:40:26+00:00"
-        }
-    ],
+    "packages-dev": [],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "biblibre/omeka-s-test-helper": 20
-    },
+    "stability-flags": {},
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
         "ext-xml": "*"
     },
-    "platform-dev": [],
+    "platform-dev": {},
     "platform-overrides": {
         "php": "8.1"
     },
-    "plugin-api-version": "2.3.0"
+    "plugin-api-version": "2.6.0"
 }

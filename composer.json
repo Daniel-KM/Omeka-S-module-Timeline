@@ -1,36 +1,42 @@
 {
     "name": "daniel-km/omeka-s-module-timeline",
-    "description": "Module for Omeka S that integrates the Simile Timeline and the Knightlab Timeline to create advanced timelines from the dates of items.",
-    "type": "library",
+    "type": "omeka-s-module",
+    "description": "Module for Omeka S: Integrate the Simile Timeline and the Knightlab Timeline to create advanced timelines from the dates of items.",
+    "keywords": [
+        "Omeka S",
+        "Omeka S module",
+        "timeline",
+        "chronology",
+        "data visualization"
+    ],
     "license": "CECILL-2.1",
+    "homepage": "https://gitlab.com/Daniel-KM/Omeka-S-module-Timeline",
     "authors": [
         {
             "name": "Daniel Berthereau",
             "email": "Daniel.packagist@Berthereau.net"
         }
     ],
-    "homepage": "https://gitlab.com/Daniel-KM/Omeka-S-module-Timeline",
     "support": {
         "issues": "https://gitlab.com/Daniel-KM/Omeka-S-module-Timeline/-/issues",
         "forum": "https://forum.omeka.org/"
     },
-    "keywords": [
-        "Omeka S",
-        "module",
-        "data visualization",
-        "timeline",
-        "chronology"
-    ],
+    "_require (not set until Omeka S merges PR #2412)": {
+        "omeka/omeka-s": "^4.1",
+        "daniel-km/omeka-s-module-common": "*"
+    },
     "require": {
         "ext-xml": "*",
         "openspout/openspout": "^4.25"
     },
-    "require-dev": {
-        "biblibre/omeka-s-test-helper": "dev-master"
+    "autoload": {
+        "psr-4": {
+            "Timeline\\": "src/"
+        }
     },
     "autoload-dev": {
         "psr-4": {
-            "TimelineTest\\": "test/TimelineTest/"
+            "TimelineTest\\": "tests/TimelineTest/"
         }
     },
     "config": {
@@ -41,5 +47,8 @@
             "composer/installers": true,
             "oomphinc/composer-installers-extender": true
         }
+    },
+    "extra": {
+        "installer-name": "Timeline"
     }
 }

@@ -13,7 +13,12 @@ $timelineAjaxUrl = $assetUrl('vendor/simile/ajax-api/simile-ajax-api.js', 'Timel
 $timelineUrlPrefix = dirname($assetUrl('vendor/simile/timeline-api/timeline-api.js', 'Timeline')) . '/';
 
 $timelineId = 'timeline-r' . $resource->id();
-$timelineUrl = json_encode($url('api/timeline', ['block-id' => 'r' . $resource->id()], ['query' => ['output' => 'simile']]), 320);
+$siteSlug = $this->currentSite() ? $this->currentSite()->slug() : null;
+$timelineQuery = ['output' => 'simile'];
+if ($siteSlug) {
+    $timelineQuery['site_slug'] = $siteSlug;
+}
+$timelineUrl = json_encode($url('api/timeline', ['block-id' => 'r' . $resource->id()], ['query' => $timelineQuery]), 320);
 
 // The viewer options are passed even when they are not valid json.
 $timelineParamsString = $data['viewer'] ?? '';

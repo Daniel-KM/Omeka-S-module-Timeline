@@ -20,7 +20,12 @@ $language = substr($siteSetting('locale', ''), 0, 2) ?: (substr($setting('locale
 $containerStyle = 'width: 100%; height: 80vh;';
 
 $timelineId = 'timeline-r' . $resource->id() . 'k';
-$timelineUrl = json_encode($url('api/timeline', ['block-id' => 'r' . $resource->id()], ['query' => ['output' => 'knightlab']]), 320);
+$siteSlug = $this->currentSite() ? $this->currentSite()->slug() : null;
+$timelineQuery = ['output' => 'knightlab'];
+if ($siteSlug) {
+    $timelineQuery['site_slug'] = $siteSlug;
+}
+$timelineUrl = json_encode($url('api/timeline', ['block-id' => 'r' . $resource->id()], ['query' => $timelineQuery]), 320);
 
 // The viewer options are passed even when they are not valid json.
 $timelineParamsString = $data['viewer'] ?? '';

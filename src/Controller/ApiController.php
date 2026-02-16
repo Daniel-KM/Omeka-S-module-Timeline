@@ -81,9 +81,10 @@ class ApiController extends \Omeka\Controller\ApiController
 
             $isResource = $blockOrResource instanceof \Omeka\Api\Representation\AbstractResourceEntityRepresentation;
             if ($isResource) {
-                // Warning: the site is undefined here, except if set in query.
                 $resource = $blockOrResource;
                 $blockData = $this->mainTimelineData();
+                // Set the site slug from query, so item links are built.
+                $blockData['site_slug'] = $query['site_slug'] ?? null;
                 $query['item_set_id'] = $resource->id();
                 $output = ($query['output'] ?? $this->settings()->get('timeline_library', 'simile')) === 'knightlab' ? 'knightlab' : 'simile';
                 $data = $output === 'knightlab'
@@ -148,6 +149,8 @@ class ApiController extends \Omeka\Controller\ApiController
 
         // Use the query and the options set in the config.
         $blockData = $this->mainTimelineData();
+        // Set the site slug from query, so item links are built.
+        $blockData['site_slug'] = $query['site_slug'] ?? null;
         $data = ($query['output'] ?? $this->settings()->get('timeline_library', 'simile')) === 'knightlab'
             ? $this->timelineKnightlabData($query, $blockData)
             : $this->timelineSimileData($query, $blockData);

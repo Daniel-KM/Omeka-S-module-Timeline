@@ -17,6 +17,8 @@ Installation
 
 See general end user documentation for [installing a module].
 
+The module requires the module [Common], that should be installed first.
+
 The module uses an external library to allow to load timeline from a standard
 spreadsheet, so use the release zip to install it, or use and init the source.
 
@@ -36,10 +38,19 @@ composer install --no-dev
 
 Then install it like any other Omeka module and follow the config instructions.
 
-Note: If Omeka is https, if external assets are used, and if the Simile library
+**WARNING**: If Omeka is https, if external assets are used, and if the Simile library
 is used, the library will not load on recent browsers, because the online
 library contains an url with unsecure http. In that case, you need to set the
 option "Use Internal library for Simile", that is the default anyway.
+
+* For test
+
+The module includes a comprehensive test suite with unit and functional tests.
+Run them from the root of Omeka:
+
+```sh
+vendor/bin/phpunit -c modules/Timeline/phpunit.xml --testdox
+```
 
 
 Usage
@@ -48,9 +59,8 @@ Usage
 Once enabled, the module adds new block for site pages and resource pages.
 
 For resource pages, there are two blocks for item set: with the internal widget
-Simile or with the third party Knightlab. Simply set them in the config of the
-theme. The options used are the default one of the modules, that may be modified
-via the main config file of Omeka (`config/local.config.php`) (key ['timeline']['block_settings']['timeline']).
+Simile or with the third party Knightlab. The params are set in the main
+settings of Omeka.
 
 For site pages, the first block allows to create an automatic timeline and the
 second one allows to create an exhibit with selected items. Simply select one of
@@ -383,6 +393,7 @@ and the [Curiothèque] of the [Institut Curie].
 [spreadsheet formatted as indicated]: https://timeline.knightlab.com/docs/using-spreadsheets.html
 [example of use]: https://docs.neatline.org/working-with-the-simile-timeline-widget.html
 [examples]: http://www.simile-widgets.org/timeline/examples/index.html
+[Common]: https://gitlab.com/Daniel-KM/Omeka-S-module-Common
 [module issues]: https://gitlab.com/Daniel-KM/Omeka-S-module-Timeline/-/issues
 [CeCILL v2.1]: https://www.cecill.info/licences/Licence_CeCILL_V2.1-en.html
 [GNU/GPL]: https://www.gnu.org/licenses/gpl-3.0.html

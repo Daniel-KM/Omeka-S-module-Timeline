@@ -4,11 +4,11 @@ namespace Timeline;
 
 return [
     'service_manager' => [
-        'factories' => [
+        'factories' => version_compare(\Omeka\Module::VERSION, '4.2', '<')
             // Override theme factory to inject module pages and block templates.
             // Copied in BlockPlus, Reference, Timeline.
-            'Omeka\Site\ThemeManager' => Service\ThemeManagerFactory::class,
-        ],
+            ? ['Omeka\Site\ThemeManager' => Service\ThemeManagerFactory::class]
+            : [],
     ],
     'view_manager' => [
         'template_path_stack' => [

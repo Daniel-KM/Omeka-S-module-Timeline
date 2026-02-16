@@ -89,11 +89,6 @@ class Timeline extends AbstractBlockLayout implements TemplateableBlockLayoutInt
             $this->messenger->addWarning('The config of the Timeline viewer is not a valid json object. Nevertheless, the data are saved and it will be passed as it.'); // @translate
         }
 
-        $property = $this->api
-            ->searchOne('properties', ['term' => $data['item_date'] ?? 'dcterms:date'])
-            ->getContent();
-        $data['item_date_id'] = (string) $property->id();
-
         $block->setData($data);
     }
 
@@ -127,9 +122,10 @@ class Timeline extends AbstractBlockLayout implements TemplateableBlockLayoutInt
         parse_str($data['query'], $query);
 
         // This property is automatically appended via the controller too.
+        $itemDate = empty($data['item_date']) ? 'dcterms:date' : $data['item_date'];
         $query['property'][] = [
             'joiner' => 'and',
-            'property' => empty($data['item_date_id']) ? 'dcterms:date' : $data['item_date_id'],
+            'property' => $services->get('Common\EasyMeta')->propertyId($itemDate),
             'type' => 'ex',
         ];
         $itemCount = $this->itemCount($query);

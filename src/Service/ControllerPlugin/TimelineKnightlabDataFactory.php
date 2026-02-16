@@ -13,6 +13,7 @@ class TimelineKnightlabDataFactory implements FactoryInterface
         $plugins = $services->get('ControllerPluginManager');
         return new TimelineKnightlabData(
             $services->get('Omeka\ApiManager'),
+            $services->get('Common\EasyMeta'),
             $plugins->get('translate')
         );
     }

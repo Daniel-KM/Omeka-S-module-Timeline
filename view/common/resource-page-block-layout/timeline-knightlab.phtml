@@ -23,7 +23,7 @@ $timelineId = 'timeline-r' . $resource->id() . 'k';
 $timelineUrl = json_encode($url('api/timeline', ['block-id' => 'r' . $resource->id()], ['query' => ['output' => 'knightlab']]), 320);
 
 // The viewer options are passed even when they are not valid json.
-$timelineParamsString = $data['viewer'];
+$timelineParamsString = $data['viewer'] ?? '';
 $timelineParams = json_decode($timelineParamsString, true) ?: [];
 if (is_array($timelineParams)) {
     if (array_key_exists('container_style', $timelineParams)) {

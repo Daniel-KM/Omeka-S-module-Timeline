@@ -13,6 +13,7 @@ class TimelineExhibitDataFactory implements FactoryInterface
         $plugins = $services->get('ControllerPluginManager');
         return new TimelineExhibitData(
             $services->get('Omeka\ApiManager'),
+            $services->get('Common\EasyMeta'),
             $plugins->get('translate')
         );
     }

@@ -13,6 +13,7 @@ class TimelineSimileDataFactory implements FactoryInterface
         $plugins = $services->get('ControllerPluginManager');
         return new TimelineSimileData(
             $services->get('Omeka\ApiManager'),
+            $services->get('Common\EasyMeta'),
             $plugins->get('translate')
         );
     }

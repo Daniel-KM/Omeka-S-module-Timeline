@@ -24,7 +24,7 @@ class TimelineFactory implements FactoryInterface
 
         return new Timeline(
             $currentTheme,
-            $config['timeline']['block_settings']['timeline']
+            $config['timeline']
         );
     }
 }

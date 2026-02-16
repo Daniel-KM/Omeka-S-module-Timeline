@@ -2,6 +2,7 @@
 
 namespace Timeline\Mvc\Controller\Plugin;
 
+use Common\Stdlib\EasyMeta;
 use Laminas\Mvc\Controller\Plugin\AbstractPlugin;
 use Omeka\Api\Manager as ApiManager;
 use Omeka\Api\Representation\ItemRepresentation;
@@ -17,13 +18,19 @@ abstract class AbstractTimelineData extends AbstractPlugin
     protected $api;
 
     /**
+     * @var \Common\Stdlib\EasyMeta
+     */
+    protected $easyMeta;
+
+    /**
      * @var \Omeka\Mvc\Controller\Plugin\Translate
      */
     protected $translate;
 
-    public function __construct(ApiManager $api, Translate $translate)
+    public function __construct(ApiManager $api, EasyMeta $easyMeta, Translate $translate)
     {
         $this->api = $api;
+        $this->easyMeta = $easyMeta;
         $this->translate = $translate;
     }
 
@@ -52,7 +59,7 @@ abstract class AbstractTimelineData extends AbstractPlugin
         $thumbnailResource = !empty($args['thumbnail_resource']);
 
         $params = $itemPool;
-        $params['property'][] = ['joiner' => 'and', 'property' => $args['item_date_id'], 'type' => 'ex'];
+        $params['property'][] = ['joiner' => 'and', 'property' => $this->easyMeta->propertyId($propertyItemDate), 'type' => 'ex'];
 
         // To avoid overflow when requesting all items, use a loop with id.
         $itemIds = $this->api->search('items', $params, ['returnScalar' => 'id'])->getContent();

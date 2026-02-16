@@ -46,6 +46,7 @@ return [
     ],
     'form_elements' => [
         'invokables' => [
+            Form\SettingsFieldset::class => Form\SettingsFieldset::class,
             Form\TimelineFieldset::class => Form\TimelineFieldset::class,
         ],
         'factories' => [
@@ -97,6 +98,25 @@ return [
         ],
     ],
     'timeline' => [
+        // Main settings are used for resource page block layout.
+        'settings' => [
+            'timeline_library' => 'knightlab',
+            'timeline_item_title' => 'default',
+            'timeline_item_description' => 'default',
+            'timeline_item_date' => 'dcterms:date',
+            'timeline_item_date_end' => null,
+            'timeline_item_metadata' => [],
+            'timeline_group' => null,
+            'timeline_group_default' => '',
+            'timeline_render_year' => 'january_1',
+            'timeline_center_date' => '9999-99-99',
+            'timeline_eras' => [],
+            'timeline_markers' => [],
+            'timeline_thumbnail_type' => 'medium',
+            'timeline_thumbnail_resource' => true,
+            'timeline_viewer' => '{}',
+            'timeline_link_to_self' => false,
+        ],
         'block_settings' => [
             'timeline' => [
                 'query' => [],
@@ -114,8 +134,6 @@ return [
                 'thumbnail_type' => 'medium',
                 'thumbnail_resource' => true,
                 'viewer' => '{}',
-                // The id of dcterms:date in the standard install of Omeka S.
-                'item_date_id' => '7',
                 'link_to_self' => false,
             ],
             'timelineExhibit' => [

@@ -2,15 +2,33 @@
 
 namespace Timeline;
 
+if (!class_exists('Common\TraitModule', false)) {
+    require_once dirname(__DIR__) . '/Common/TraitModule.php';
+}
+
+use Common\TraitModule;
+use Laminas\EventManager\SharedEventManagerInterface;
 use Laminas\Mvc\MvcEvent;
-use Laminas\ServiceManager\ServiceLocatorInterface;
 use Omeka\Module\AbstractModule;
 
 class Module extends AbstractModule
 {
-    public function getConfig()
+    use TraitModule;
+
+    const NAMESPACE = __NAMESPACE__;
+
+    protected function preInstall(): void
     {
-        return include __DIR__ . '/config/module.config.php';
+        $services = $this->getServiceLocator();
+        $translate = $services->get('ControllerPluginManager')->get('translate');
+
+        if (!method_exists($this, 'checkModuleActiveVersion') || !$this->checkModuleActiveVersion('Common', '3.4.74')) {
+            $message = new \Omeka\Stdlib\Message(
+                $translate('The module %1$s should be upgraded to version %2$s or later.'), // @translate
+                'Common', '3.4.74'
+            );
+            throw new \Omeka\Module\Exception\ModuleCannotInstallException((string) $message);
+        }
     }
 
     public function onBootstrap(MvcEvent $event): void
@@ -25,11 +43,12 @@ class Module extends AbstractModule
                 ]);
     }
 
-    public function upgrade(
-        $oldVersion,
-        $newVersion,
-        ServiceLocatorInterface $services
-    ): void {
-        require_once 'data/scripts/upgrade.php';
+    public function attachListeners(SharedEventManagerInterface $sharedEventManager): void
+    {
+        $sharedEventManager->attach(
+            \Omeka\Form\SettingForm::class,
+            'form.add_elements',
+            [$this, 'handleMainSettings']
+        );
     }
 }

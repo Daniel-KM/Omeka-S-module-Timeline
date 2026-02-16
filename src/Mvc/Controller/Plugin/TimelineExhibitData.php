@@ -2,6 +2,7 @@
 
 namespace Timeline\Mvc\Controller\Plugin;
 
+use Common\Stdlib\EasyMeta;
 use Laminas\Mvc\Controller\Plugin\AbstractPlugin;
 use Laminas\Uri\Http as HttpUri;
 use NumericDataTypes\DataType\Timestamp;
@@ -54,6 +55,11 @@ class TimelineExhibitData extends AbstractPlugin
      * @var \Omeka\Api\Manager
      */
     protected $api;
+
+    /**
+     * @var \Common\Stdlib\EasyMeta
+     */
+    protected $easyMeta;
 
     /**
      * @var \Omeka\Mvc\Controller\Plugin\Translate
@@ -118,9 +124,10 @@ class TimelineExhibitData extends AbstractPlugin
      */
     protected $startDateProperty = 'dcterms:date';
 
-    public function __construct(ApiManager $api, Translate $translate)
+    public function __construct(ApiManager $api, EasyMeta $easyMeta, Translate $translate)
     {
         $this->api = $api;
+        $this->easyMeta = $easyMeta;
         $this->translate = $translate;
     }
 

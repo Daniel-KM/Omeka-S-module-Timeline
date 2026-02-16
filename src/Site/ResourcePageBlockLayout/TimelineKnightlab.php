@@ -25,8 +25,15 @@ class TimelineKnightlab implements ResourcePageBlockLayoutInterface
 
     public function render(PhpRenderer $view, AbstractResourceEntityRepresentation $resource) : string
     {
-        $config = $resource->getServiceLocator()->get('Config');
-        $data = $config['timeline']['block_settings']['timeline'];
+        $services = $resource->getServiceLocator();
+        $config = $services->get('Config');
+        $settings = $services->get('Omeka\Settings');
+
+        $data = [];
+        foreach ($config['timeline']['settings'] as $key => $default) {
+            $data[substr($key, 9)] = $settings->get($key, $default);
+        }
+
         return $view->partial('common/resource-page-block-layout/timeline-knightlab', [
             'resource' => $resource,
             'data' => $data,

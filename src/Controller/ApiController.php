@@ -25,14 +25,14 @@ class ApiController extends \Omeka\Controller\ApiController
     /**
      * @var array
      */
-    protected $config;
+    protected $configTimeline;
 
     public function __construct(Paginator $paginator, ApiManager $api, EntityManager $entityManager, array $config)
     {
         $this->paginator = $paginator;
         $this->api = $api;
         $this->entityManager = $entityManager;
-        $this->config = $config;
+        $this->configTimeline = $config;
     }
 
     public function create($data, $fileData = [])
@@ -83,10 +83,9 @@ class ApiController extends \Omeka\Controller\ApiController
             if ($isResource) {
                 // Warning: the site is undefined here, except if set in query.
                 $resource = $blockOrResource;
-                // Use the query and the options set in the config.
-                $blockData = $this->config['timeline']['block_settings']['timeline'];
+                $blockData = $this->mainTimelineData();
                 $query['item_set_id'] = $resource->id();
-                $output = ($query['output'] ?? 'simile') === 'knightlab' ? 'knightlab' : 'simile';
+                $output = ($query['output'] ?? $this->settings()->get('timeline_library', 'simile')) === 'knightlab' ? 'knightlab' : 'simile';
                 $data = $output === 'knightlab'
                     ? $this->timelineKnightlabData($query, $blockData)
                     : $this->timelineSimileData($query, $blockData);
@@ -148,8 +147,8 @@ class ApiController extends \Omeka\Controller\ApiController
         }
 
         // Use the query and the options set in the config.
-        $blockData = $this->config['timeline']['block_settings']['timeline'];
-        $data = ($query['output'] ?? 'simile') === 'knightlab'
+        $blockData = $this->mainTimelineData();
+        $data = ($query['output'] ?? $this->settings()->get('timeline_library', 'simile')) === 'knightlab'
             ? $this->timelineKnightlabData($query, $blockData)
             : $this->timelineSimileData($query, $blockData);
         return new ApiJsonModel($data, $this->getViewOptions());
@@ -277,5 +276,15 @@ class ApiController extends \Omeka\Controller\ApiController
             }
         }
         return $query;
+    }
+
+    protected function mainTimelineData(): array
+    {
+        $settings = $this->settings();
+        $data = [];
+        foreach ($this->configTimeline['settings'] as $key => $default) {
+            $data[substr($key, 9)] = $settings->get($key, $default);
+        }
+        return $data;
     }
 }

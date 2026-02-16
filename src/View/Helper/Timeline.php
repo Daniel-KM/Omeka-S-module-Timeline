@@ -19,7 +19,7 @@ class Timeline extends AbstractHelper
     /**
      * @var array
      */
-    protected $configDefault = [];
+    protected $configTimeline = [];
 
     /**
      * @var bool
@@ -31,15 +31,10 @@ class Timeline extends AbstractHelper
      */
     protected $resource;
 
-    /**
-     * Construct the helper.
-     *
-     * @param Theme|null $currentTheme
-     */
-    public function __construct(Theme $currentTheme = null, array $configDefault = [])
+    public function __construct(Theme $currentTheme = null, array $configTimeline = [])
     {
         $this->currentTheme = $currentTheme;
-        $this->configDefault = $configDefault;
+        $this->configTimeline = $configTimeline;
     }
 
     /**
@@ -63,6 +58,7 @@ class Timeline extends AbstractHelper
 
         $view = $this->getView();
         $this->isSite = $view->status()->isSiteRequest();
+        $setting = $view->plugin('setting');
 
         $library = strtolower($options['library'] ?? '') === 'knightlab' ? 'knightlab':  'simile';
         $template = $options['template']
@@ -70,7 +66,14 @@ class Timeline extends AbstractHelper
                 ? 'common/resource-page-block-layout/timeline-knightlab'
                 : 'common/resource-page-block-layout/timeline');
 
-        $data = array_replace($this->configDefault, $options);
+        $data = [];
+        foreach ($this->configTimeline['settings'] as $key => $default) {
+            $dataKey = substr($key, 9);
+            $data[$dataKey] = $options[$dataKey] ?? $setting($key, $default);
+        }
+
+        // Keep passed options.
+        $data += $options;
 
         if ($resource instanceof ItemSetRepresentation) {
             return $view->partial($template, [

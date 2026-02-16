@@ -41,16 +41,17 @@ if (!method_exists($this, 'checkModuleActiveVersion') || !$this->checkModuleActi
         $translate('The module %1$s should be upgraded to version %2$s or later.'), // @translate
         'Common', '3.4.79'
     );
-    throw new \Omeka\Module\Exception\ModuleCannotInstallException((string) $message);
+    $messenger->addError($message);
+    throw new \Omeka\Module\Exception\ModuleCannotInstallException((string) $translate('Missing requirement. Unable to upgrade.')); // @translate
 }
 
 if (version_compare($oldVersion, '3.4.6', '<')) {
     // Replace item pool by a search query.
     $sql = <<<'SQL'
-    SELECT id, data
-    FROM site_page_block
-    WHERE layout = 'timeline';
-    SQL;
+        SELECT id, data
+        FROM site_page_block
+        WHERE layout = 'timeline';
+        SQL;
     $timelines = $connection->executeQuery($sql)->fetchAllKeyValue();
     foreach ($timelines as $id => $data) {
         $data = json_decode($data, true);
@@ -66,10 +67,10 @@ if (version_compare($oldVersion, '3.4.6', '<')) {
         $data = json_encode($data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
         $data = $connection->quote($data);
         $sql = <<<SQL
-        UPDATE site_page_block
-        SET data = $data
-        WHERE id = $id;
-        SQL;
+            UPDATE site_page_block
+            SET data = $data
+            WHERE id = $id;
+            SQL;
         $connection->executeStatement($sql);
     }
 }
@@ -297,7 +298,8 @@ if (version_compare($oldVersion, '3.4.22', '<')) {
             json_encode($result, 448)
         );
         $logger->err($message);
-        throw new \Omeka\Module\Exception\ModuleCannotInstallException((string) $message);
+        $messenger->addError($message);
+    throw new \Omeka\Module\Exception\ModuleCannotInstallException((string) $translate('Missing requirement. Unable to upgrade.')); // @translate
     } else {
         $message = new Message(
             'The deprecated route "timeline-block" (for url "/timeline/:block-id/events.json") was replaced by "api/timeline". Check your old themes if you used it.' // @translate
@@ -394,6 +396,13 @@ if (version_compare($oldVersion, '3.4.25', '<')) {
 
     $message = new PsrMessage(
         'Furthermore, the file can be a native standard spreadsheet file (ods, OpenDocument Spreadsheet), avoiding issues with encoding and end of lines and allowing cells with multilines.' // @translate
+    );
+    $messenger->addSuccess($message);
+}
+
+if (version_compare($oldVersion, '3.4.28', '<')) {
+    $message = new PsrMessage(
+        'It is now possible to define a configuration for resource block in main settings.' // @translate
     );
     $messenger->addSuccess($message);
 }

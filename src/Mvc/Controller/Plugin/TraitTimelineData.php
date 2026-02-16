@@ -659,7 +659,7 @@ trait TraitTimelineData
                     // Render a year as a range: use timeline_convert_single_date().
                 case static::$renderYears['skip']:
                 default:
-                    $dateOut = false;
+                    $dateOut = null;
                     break;
             }
             return $dateOut;

@@ -2,7 +2,7 @@
 
 namespace Timeline\Service\ControllerPlugin;
 
-use Interop\Container\ContainerInterface;
+use Psr\Container\ContainerInterface;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Timeline\Mvc\Controller\Plugin\TimelineExhibitData;
 

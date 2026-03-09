@@ -2,7 +2,7 @@
 
 namespace Timeline\Service\Form;
 
-use Interop\Container\ContainerInterface;
+use Psr\Container\ContainerInterface;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Timeline\Form\TimelineExhibitFieldset;
 

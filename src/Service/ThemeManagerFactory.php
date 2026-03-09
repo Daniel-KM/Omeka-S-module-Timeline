@@ -4,7 +4,7 @@ namespace Timeline\Service;
 
 use Composer\Semver\Semver;
 use DirectoryIterator;
-use Interop\Container\ContainerInterface;
+use Psr\Container\ContainerInterface;
 use Laminas\Config\Reader\Ini as IniReader;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Omeka\Module as CoreModule;

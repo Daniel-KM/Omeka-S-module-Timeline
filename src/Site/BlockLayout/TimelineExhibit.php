@@ -882,10 +882,17 @@ class TimelineExhibit extends AbstractBlockLayout implements TemplateableBlockLa
         ) {
             $options = new \OpenSpout\Reader\CSV\Options();
             $options->FIELD_DELIMITER = "\t";
-            $options->FIELD_ENCLOSURE = chr(0);
-            $reader = \OpenSpout\Reader\CSV\Reader($options);
+            $options->FIELD_ENCLOSURE = "\0";
+            $reader = new \OpenSpout\Reader\CSV\Reader($options);
         } else {
-            $reader = \OpenSpout\Reader\Common\Creator\ReaderEntityFactory::createReaderFromFile($tempFile);
+            $ext = strtolower(pathinfo($tempFile, PATHINFO_EXTENSION));
+            if ($ext === 'csv') {
+                $reader = new \OpenSpout\Reader\CSV\Reader();
+            } elseif ($ext === 'ods') {
+                $reader = new \OpenSpout\Reader\ODS\Reader();
+            } else {
+                $reader = new \OpenSpout\Reader\XLSX\Reader();
+            }
         }
 
         $reader->open($tempFile);

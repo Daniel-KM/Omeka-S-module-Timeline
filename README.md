@@ -5,7 +5,6 @@ Timeline (module for Omeka S)
 > are available on [GitLab], which seems to respect users and privacy better
 > than the previous repository.__
 
-[![Build Status](https://travis-ci.org/Daniel-KM/Omeka-S-module-Timeline.svg?branch=develop,master)](https://travis-ci.org/Daniel-KM/Omeka-S-module-Timeline)
 
 [Timeline] is a module for [Omeka S] that integrates the [SIMILE Timeline]
 widget and the online [Knightlab timeline] to create timelines via page blocks

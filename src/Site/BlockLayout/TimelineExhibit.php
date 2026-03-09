@@ -824,22 +824,21 @@ class TimelineExhibit extends AbstractBlockLayout implements TemplateableBlockLa
 
     protected function rowsFromCsv(string $spreadsheet, ErrorStore $errorStore): ?array
     {
-        // TODO The "@" avoids the deprecation notice. Replace by html_entity_decode/htmlentities.
         // Do not trim early.
-        $spreadsheet = (string) @mb_convert_encoding($spreadsheet, 'HTML-ENTITIES', 'UTF-8');
+        $spreadsheet = (string) mb_encode_numericentity($spreadsheet, [0x80, 0x10FFFF, 0, 0x1FFFFF], 'UTF-8');
         if (substr($spreadsheet, 0, 3) === chr(0xEF) . chr(0xBB) . chr(0xBF)) {
             $spreadsheet = substr($spreadsheet, 3);
         }
 
-        if (substr($spreadsheet, 0, 5) === 'PK' . chr(3) . chr(4) . chr(0)) {
+        if (substr($spreadsheet, 0, 5) === 'PK' . chr(3) . chr(4) . "\0") {
             $errorStore->addError('spreadsheet', 'The support of OpenDocument Spreadsheet requires php version 8.1 or greater.'); // @ŧranslate
             return null;
         }
 
         if (mb_strpos($spreadsheet, "\t") !== false) {
             $separator = "\t";
-            $enclosure = chr(0);
-            $escape = chr(0);
+            $enclosure = "\0";
+            $escape = "\0";
         } else {
             $separator = ',';
             $enclosure = '"';

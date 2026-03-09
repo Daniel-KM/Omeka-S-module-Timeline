@@ -31,7 +31,7 @@ class Timeline extends AbstractHelper
      */
     protected $resource;
 
-    public function __construct(Theme $currentTheme = null, array $configTimeline = [])
+    public function __construct(?Theme $currentTheme = null, array $configTimeline = [])
     {
         $this->currentTheme = $currentTheme;
         $this->configTimeline = $configTimeline;

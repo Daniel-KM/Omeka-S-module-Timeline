@@ -185,8 +185,8 @@ class TimelineExhibit extends AbstractBlockLayout implements TemplateableBlockLa
     public function form(
         PhpRenderer $view,
         SiteRepresentation $site,
-        SitePageRepresentation $page = null,
-        SitePageBlockRepresentation $block = null
+        ?SitePageRepresentation $page = null,
+        ?SitePageBlockRepresentation $block = null
     ) {
         $services = $site->getServiceLocator();
         $formElementManager = $services->get('FormElementManager');

@@ -8,7 +8,7 @@ use Timeline\Mvc\Controller\Plugin\TimelineExhibitData;
 
 class TimelineExhibitDataFactory implements FactoryInterface
 {
-    public function __invoke(ContainerInterface $services, $name, array $options = null)
+    public function __invoke(ContainerInterface $services, $name, ?array $options = null)
     {
         $plugins = $services->get('ControllerPluginManager');
         return new TimelineExhibitData(

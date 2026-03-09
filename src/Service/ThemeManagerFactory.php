@@ -21,7 +21,7 @@ use SplFileInfo;
  */
 class ThemeManagerFactory implements FactoryInterface
 {
-    public function __invoke(ContainerInterface $serviceLocator, $requestedName, array $options = null)
+    public function __invoke(ContainerInterface $serviceLocator, $requestedName, ?array $options = null)
     {
         // This is a copy of ThemeManagerFactory, except last lines of the loop.
 

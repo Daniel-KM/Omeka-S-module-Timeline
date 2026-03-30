@@ -46,34 +46,69 @@ abstract class AbstractTimelineData extends AbstractPlugin
         $propertyItemTitle = $args['item_title'] === 'default' ? '' : $args['item_title'];
         $propertyItemDescription = $args['item_description'] === 'default' ? '' : $args['item_description'];
         $propertyItemDate = $args['item_date'];
+        $propertyItemDateVa = !empty($args['item_date_va'])
+            ? $args['item_date_va']
+            : null;
         $propertyItemDateEnd = $args['item_date_end'] ?? null;
+        $propertyItemDateEndVa = !empty($args['item_date_end_va'])
+            ? $args['item_date_end_va']
+            : null;
         $fieldsItem = $args['item_metadata'] ?? [];
         $fieldGroup = $args['group'] ?? null;
-        $groupDefault = empty($args['group_default']) ? null : $args['group_default'];
+        $fieldGroupVa = !empty($args['group_va'])
+            ? $args['group_va']
+            : null;
+        $groupDefault = empty($args['group_default'])
+            ? null
+            : $args['group_default'];
         $linkToSelf = !empty($args['link_to_self']);
 
-        $eras = empty($args['eras']) ? [] : $this->extractEras($args['eras']);
-        $markers = empty($args['markers']) ? [] : $this->extractMarkers($args['markers']);
+        $eras = empty($args['eras'])
+            ? []
+            : $this->extractEras($args['eras']);
+        $markers = empty($args['markers'])
+            ? []
+            : $this->extractMarkers($args['markers']);
 
-        $thumbnailType = empty($args['thumbnail_type']) ? 'medium' : $args['thumbnail_type'];
+        $thumbnailType = empty($args['thumbnail_type'])
+            ? 'medium'
+            : $args['thumbnail_type'];
         $thumbnailResource = !empty($args['thumbnail_resource']);
 
         $params = $itemPool;
-        $params['property'][] = ['joiner' => 'and', 'property' => $this->easyMeta->propertyId($propertyItemDate), 'type' => 'ex'];
+        $params['property'][] = [
+            'joiner' => 'and',
+            'property' => $this->easyMeta->propertyId($propertyItemDate),
+            'type' => 'ex',
+        ];
 
-        // To avoid overflow when requesting all items, use a loop with id.
-        $itemIds = $this->api->search('items', $params, ['returnScalar' => 'id'])->getContent();
+        // To avoid overflow when requesting all items, use a
+        // loop with id.
+        $itemIds = $this->api->search(
+            'items', $params, ['returnScalar' => 'id']
+        )->getContent();
 
         /** @var \Omeka\Api\Representation\ItemRepresentation $item */
         foreach (array_chunk($itemIds, 100) as $idsChunk) foreach ($this->api->search('items', ['id' => $idsChunk])->getContent() as $item) {
             // All items without dates are already automatically removed.
-            $itemDates = $item->value($propertyItemDate, ['all' => true]);
-            $itemTitle = strip_tags($propertyItemTitle ? (string) $item->value($propertyItemTitle) : $item->displayTitle());
-            $itemDescription = $this->snippet($propertyItemDescription ? (string) $item->value($propertyItemDescription) : $item->displayDescription(), 200);
-            $itemGroup = $this->resourceMetadataSingle($item, $fieldGroup) ?: $groupDefault;
-            $itemGroup = $itemGroup ? strip_tags($itemGroup) : null;
+            $itemDates = $propertyItemDateVa
+                ? $this->valuesFromAnnotations($item, $propertyItemDate, $propertyItemDateVa)
+                : $item->value($propertyItemDate, ['all' => true]);
+            $itemTitle = strip_tags($propertyItemTitle
+                ? (string) $item->value($propertyItemTitle)
+                : $item->displayTitle());
+            $itemDescription = $this->snippet($propertyItemDescription
+                ? (string) $item->value($propertyItemDescription)
+                : $item->displayDescription(), 200);
+            $itemGroup = $fieldGroupVa
+                ? $this->firstValueFromAnnotations($item, $fieldGroup, $fieldGroupVa)
+                : $this->resourceMetadataSingle($item, $fieldGroup);
+            $itemGroup = ($itemGroup ?: $groupDefault)
+                ? strip_tags($itemGroup ?: $groupDefault) : null;
             $itemDatesEnd = $propertyItemDateEnd
-                ? $item->value($propertyItemDateEnd, ['all' => true])
+                ? ($propertyItemDateEndVa
+                    ? $this->valuesFromAnnotations($item, $propertyItemDateEnd, $propertyItemDateEndVa)
+                    : $item->value($propertyItemDateEnd, ['all' => true]))
                 : [];
             $itemLink = empty($args['site_slug'])
                 ? null
@@ -194,5 +229,48 @@ abstract class AbstractTimelineData extends AbstractPlugin
         }
 
         return implode(' ', $classes);
+    }
+
+    /**
+     * Extract values from value annotations of a property.
+     *
+     * Get the annotation value of $annotationTerm from the first value of
+     * $sourceTerm that has one.
+     *
+     * @return \Omeka\Api\Representation\ValueRepresentation[]
+     */
+    protected function valuesFromAnnotations(
+        ItemRepresentation $item,
+        string $sourceTerm,
+        string $annotationTerm
+    ): array {
+        $sourceValues = $item->value($sourceTerm, ['all' => true]);
+        foreach ($sourceValues as $sourceValue) {
+            $annotation = $sourceValue->valueAnnotation();
+            if (!$annotation) {
+                continue;
+            }
+            $annValues = $annotation->value(
+                $annotationTerm, ['all' => true]
+            );
+            if ($annValues) {
+                return $annValues;
+            }
+        }
+        return [];
+    }
+
+    /**
+     * Extract the first value from value annotations of a property.
+     */
+    protected function firstValueFromAnnotations(
+        ItemRepresentation $item,
+        string $sourceTerm,
+        string $annotationTerm
+    ): ?string {
+        $values = $this->valuesFromAnnotations(
+            $item, $sourceTerm, $annotationTerm
+        );
+        return $values ? (string) $values[0] : null;
     }
 }

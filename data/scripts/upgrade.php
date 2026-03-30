@@ -292,7 +292,7 @@ if (version_compare($oldVersion, '3.4.22', '<')) {
                     }
                 }
             } else {
-                $has = preg_match($phtml, $stringsOrRegex);
+                $has = preg_match($stringsOrRegex, $phtml);
                 if ((!$invert && $has) || ($invert && !$has)) {
                     $result[] = mb_substr($filepath, $start);
                 }
@@ -419,5 +419,22 @@ if (version_compare($oldVersion, '3.4.28', '<')) {
     $message = new PsrMessage(
         'It is now possible to define a configuration for resource block in main settings.' // @translate
     );
+    $messenger->addSuccess($message);
+}
+
+if (version_compare($oldVersion, '3.4.30', '<')) {
+    $message = new PsrMessage(
+        'It is now possible to use value annotations as date source for timeline and timeline exhibit blocks.' // @translate
+    );
+    $messenger->addSuccess($message);
+
+    $message = new PsrMessage(
+        'The module {link}DataTypeEdtf{link_end} (Extended Date/Time Format) is now fully supported: dates, intervals, seasons, centuries (17XX), and decades (192X) are rendered natively without spurious times.', // @translate
+        [
+            'link' => '<a href="https://gitlab.com/Daniel-KM/Omeka-S-module-DataTypeEdtf" target="_blank" rel="noopener">',
+            'link_end' => '</a>',
+        ]
+    );
+    $message->setEscapeHtml(false);
     $messenger->addSuccess($message);
 }

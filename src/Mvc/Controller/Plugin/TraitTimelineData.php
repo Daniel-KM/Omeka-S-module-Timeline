@@ -681,7 +681,7 @@ trait TraitTimelineData
             $dateOut = preg_replace('/^(-?)(\d{3}-)/', '${1}0\2', $dateOut);
             $dateOut = preg_replace('/^(-?)(\d{2}-)/', '${1}00\2', $dateOut);
             $dateOut = preg_replace('/^(-?)(\d{1}-)/', '${1}000\2', $dateOut);
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             $dateOut = null;
         }
 

@@ -118,7 +118,7 @@ class ApiController extends \Omeka\Controller\ApiController
                 /** @see https://gitlab.com/Daniel-KM/Omeka-S-module-Timeline/-/issues/24 */
                 /** @see https://github.com/Daniel-KM/Omeka-S-module-Timeline/issues/25 */
                 $blockData['site_slug'] = $block->getPage()->getSite()->getSlug();
-            } catch (\Exception $e) {
+            } catch (\Throwable $e) {
                 $sql = <<<'SQL'
                     SELECT site.slug
                     FROM site
@@ -177,7 +177,7 @@ class ApiController extends \Omeka\Controller\ApiController
             $resourceId = (int) substr((string) $blockOrResourceId, 1);
             try {
                 return $this->api()->read('item_sets', $resourceId)->getContent();
-            } catch (\Exception $e) {
+            } catch (\Throwable $e) {
                 return null;
             }
         }

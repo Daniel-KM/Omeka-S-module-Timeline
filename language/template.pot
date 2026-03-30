@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-11-03 00:00+0000\n"
+"POT-Creation-Date: 2026-03-30 00:00+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,13 +17,28 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: data/scripts/upgrade.php:41 Module.php:27
+#: data/scripts/upgrade.php:41 Module.php:39
 #, php-format
 msgid "The module %1$s should be upgraded to version %2$s or later."
 msgstr ""
 
-#: src/Controller/ApiController.php:241
+#: data/scripts/upgrade.php:45 data/scripts/upgrade.php:60
+#: data/scripts/upgrade.php:317
+msgid "Missing requirement. Unable to upgrade."
+msgstr ""
+
+#: data/scripts/upgrade.php:52 Module.php:31
+#, php-format
+msgid "The module %1$s requires PHP %2$s or later."
+msgstr ""
+
+#: src/Controller/ApiController.php:262
 msgid "Method Not Allowed"
+msgstr ""
+
+#: src/Mvc/Controller/Plugin/AbstractTimelineData.php:238
+#: src/Mvc/Controller/Plugin/TimelineExhibitData.php:263
+msgid "Events"
 msgstr ""
 
 #: view/common/block-layout/admin/timeline-form.phtml:19
@@ -62,11 +77,11 @@ msgstr ""
 msgid "collapse"
 msgstr ""
 
-#: data/scripts/upgrade.php:110
+#: data/scripts/upgrade.php:126
 msgid "The json is now built dynamically from the url /api/timeline."
 msgstr ""
 
-#: data/scripts/upgrade.php:197
+#: data/scripts/upgrade.php:213
 #, php-format
 msgid ""
 "The setting \"heading\" was removed from blocks. A new block \"Heading\" "
@@ -74,27 +89,27 @@ msgid ""
 "heading. You may check pages for styles: %s"
 msgstr ""
 
-#: data/scripts/upgrade.php:209
+#: data/scripts/upgrade.php:225
 msgid "timeline-simile-online"
 msgstr ""
 
-#: data/scripts/upgrade.php:210
+#: data/scripts/upgrade.php:226
 msgid "timeline-knightlab"
 msgstr ""
 
-#: data/scripts/upgrade.php:230
+#: data/scripts/upgrade.php:246
 msgid ""
 "It is now possible to add groups, eras and extra-markers, for example "
 "historical events, in timelines."
 msgstr ""
 
-#: data/scripts/upgrade.php:235
+#: data/scripts/upgrade.php:251
 msgid ""
 "The timeline for Knightlab has been updated to avoid a js transformation. "
 "Check if you used the output of the api directly."
 msgstr ""
 
-#: data/scripts/upgrade.php:296
+#: data/scripts/upgrade.php:312
 #, php-format
 msgid ""
 "The deprecated route \"timeline-block\" (for url \"/timeline/:block-id/"
@@ -102,200 +117,254 @@ msgid ""
 "you used it. Matching templates: %s"
 msgstr ""
 
-#: data/scripts/upgrade.php:303
+#: data/scripts/upgrade.php:320
 msgid ""
 "The deprecated route \"timeline-block\" (for url \"/timeline/:block-id/"
 "events.json\") was replaced by \"api/timeline\". Check your old themes if "
 "you used it."
 msgstr ""
 
-#: data/scripts/upgrade.php:309
+#: data/scripts/upgrade.php:326
 msgid ""
 "It is now possible to add a timeline to an item set as a resource page block."
 msgstr ""
 
-#: data/scripts/upgrade.php:316
+#: data/scripts/upgrade.php:333
 msgid ""
 "It is now possible to fill slides for timeline exhibit with a spreadsheet "
 "(csv, tsv) formatted according to {link}Knightslab{link_end}."
 msgstr ""
 
-#: data/scripts/upgrade.php:383
+#: data/scripts/upgrade.php:400
 msgid "The settings for exhibits were improved. You may check pages: {json}"
 msgstr ""
 
-#: data/scripts/upgrade.php:391
+#: data/scripts/upgrade.php:408
 msgid ""
 "It is now possible to fill a resource, asset or external url as main content "
 "or background for timeline exhibit."
 msgstr ""
 
-#: data/scripts/upgrade.php:396
+#: data/scripts/upgrade.php:413
 msgid ""
 "Furthermore, the file can be a native standard spreadsheet file (ods, "
 "OpenDocument Spreadsheet), avoiding issues with encoding and end of lines "
 "and allowing cells with multilines."
 msgstr ""
 
-#: data/scripts/upgrade.php:403
+#: data/scripts/upgrade.php:420
 msgid ""
 "It is now possible to define a configuration for resource block in main "
 "settings."
 msgstr ""
 
-#: src/Mvc/Controller/Plugin/TimelineExhibitData.php:221
-#: src/Mvc/Controller/Plugin/AbstractTimelineData.php:150
-msgid "Events"
+#: data/scripts/upgrade.php:427
+msgid ""
+"It is now possible to use value annotations as date source for timeline and "
+"timeline exhibit blocks."
+msgstr ""
+
+#: data/scripts/upgrade.php:432
+msgid ""
+"The module {link}DataTypeEdtf{link_end} (Extended Date/Time Format) is now "
+"fully supported: dates, intervals, seasons, centuries (17XX), and decades "
+"(192X) are rendered natively without spurious times."
 msgstr ""
 
 #: src/Form/SettingsFieldset.php:13 src/Form/SettingsFieldset.php:16
 msgid "Timeline (for resource blocks)"
 msgstr ""
 
-#: src/Form/SettingsFieldset.php:32 src/Form/TimelineFieldset.php:37
+#: src/Form/SettingsFieldset.php:32
+msgid "Library"
+msgstr ""
+
+#: src/Form/SettingsFieldset.php:34
+msgid "Knightlab TimelineJS"
+msgstr ""
+
+#: src/Form/SettingsFieldset.php:35
+msgid "Simile Timeline"
+msgstr ""
+
+#: src/Form/SettingsFieldset.php:48 src/Form/TimelineFieldset.php:37
 msgid "Item title"
 msgstr ""
 
-#: src/Form/SettingsFieldset.php:36 src/Form/SettingsFieldset.php:54
+#: src/Form/SettingsFieldset.php:52 src/Form/SettingsFieldset.php:71
 #: src/Form/TimelineFieldset.php:41 src/Form/TimelineFieldset.php:59
 msgid "Automatic"
 msgstr ""
 
-#: src/Form/SettingsFieldset.php:43 src/Form/SettingsFieldset.php:61
-#: src/Form/SettingsFieldset.php:76 src/Form/SettingsFieldset.php:91
-#: src/Form/TimelineExhibitFieldset.php:34
-#: src/Form/TimelineExhibitFieldset.php:50
-#: src/Form/TimelineExhibitFieldset.php:66 src/Form/TimelineFieldset.php:48
+#: src/Form/SettingsFieldset.php:59 src/Form/SettingsFieldset.php:78
+#: src/Form/SettingsFieldset.php:94 src/Form/SettingsFieldset.php:111
+#: src/Form/SettingsFieldset.php:127 src/Form/SettingsFieldset.php:144
+#: src/Form/SettingsFieldset.php:207 src/Form/TimelineExhibitFieldset.php:34
+#: src/Form/TimelineExhibitFieldset.php:51
+#: src/Form/TimelineExhibitFieldset.php:66
+#: src/Form/TimelineExhibitFieldset.php:83
+#: src/Form/TimelineExhibitFieldset.php:98 src/Form/TimelineFieldset.php:48
 #: src/Form/TimelineFieldset.php:66 src/Form/TimelineFieldset.php:81
-#: src/Form/TimelineFieldset.php:96
+#: src/Form/TimelineFieldset.php:97 src/Form/TimelineFieldset.php:112
+#: src/Form/TimelineFieldset.php:128 src/Form/TimelineFieldset.php:188
 msgid "Select a property…"
 msgstr ""
 
-#: src/Form/SettingsFieldset.php:50 src/Form/TimelineFieldset.php:55
+#: src/Form/SettingsFieldset.php:67 src/Form/TimelineFieldset.php:55
 msgid "Item description"
 msgstr ""
 
-#: src/Form/SettingsFieldset.php:68 src/Form/TimelineFieldset.php:73
+#: src/Form/SettingsFieldset.php:86 src/Form/TimelineFieldset.php:73
 msgid "Item date"
 msgstr ""
 
-#: src/Form/SettingsFieldset.php:83 src/Form/TimelineFieldset.php:88
+#: src/Form/SettingsFieldset.php:102 src/Form/TimelineFieldset.php:88
+msgid "Item date: value annotation property"
+msgstr ""
+
+#: src/Form/SettingsFieldset.php:103 src/Form/TimelineFieldset.php:89
+msgid ""
+"If set, the date will be extracted from the value annotation of the item "
+"date property above."
+msgstr ""
+
+#: src/Form/SettingsFieldset.php:119 src/Form/TimelineFieldset.php:104
 msgid "Item end date"
 msgstr ""
 
-#: src/Form/SettingsFieldset.php:84 src/Form/TimelineFieldset.php:89
+#: src/Form/SettingsFieldset.php:120 src/Form/TimelineFieldset.php:105
 msgid "If set, the process will use the other date as a start date."
 msgstr ""
 
-#: src/Form/SettingsFieldset.php:98 src/Form/TimelineExhibitFieldset.php:74
-#: src/Form/TimelineFieldset.php:103
+#: src/Form/SettingsFieldset.php:135 src/Form/TimelineFieldset.php:119
+msgid "Item end date: value annotation property"
+msgstr ""
+
+#: src/Form/SettingsFieldset.php:136 src/Form/TimelineFieldset.php:120
+msgid ""
+"If set, the end date will be extracted from the value annotation of the item "
+"end date property above."
+msgstr ""
+
+#: src/Form/SettingsFieldset.php:152 src/Form/TimelineExhibitFieldset.php:106
+#: src/Form/TimelineFieldset.php:135
 msgid "Metadata to append for custom timeline"
 msgstr ""
 
-#: src/Form/SettingsFieldset.php:103 src/Form/SettingsFieldset.php:125
-#: src/Form/TimelineExhibitFieldset.php:79
-#: src/Form/TimelineExhibitFieldset.php:101 src/Form/TimelineFieldset.php:108
-#: src/Form/TimelineFieldset.php:130
+#: src/Form/SettingsFieldset.php:157 src/Form/SettingsFieldset.php:180
+#: src/Form/TimelineExhibitFieldset.php:111
+#: src/Form/TimelineExhibitFieldset.php:133 src/Form/TimelineFieldset.php:140
+#: src/Form/TimelineFieldset.php:162
 msgid "Resource class label"
 msgstr ""
 
-#: src/Form/SettingsFieldset.php:113 src/Form/SettingsFieldset.php:135
-#: src/Form/TimelineExhibitFieldset.php:89
-#: src/Form/TimelineExhibitFieldset.php:111 src/Form/TimelineFieldset.php:118
-#: src/Form/TimelineFieldset.php:140
+#: src/Form/SettingsFieldset.php:167 src/Form/SettingsFieldset.php:190
+#: src/Form/TimelineExhibitFieldset.php:121
+#: src/Form/TimelineExhibitFieldset.php:143 src/Form/TimelineFieldset.php:150
+#: src/Form/TimelineFieldset.php:172
 msgid "Select a metadata…"
 msgstr ""
 
-#: src/Form/SettingsFieldset.php:120 src/Form/TimelineExhibitFieldset.php:96
-#: src/Form/TimelineFieldset.php:125
+#: src/Form/SettingsFieldset.php:175 src/Form/TimelineExhibitFieldset.php:128
+#: src/Form/TimelineFieldset.php:157
 msgid "Metadata to use as group"
 msgstr ""
 
-#: src/Form/SettingsFieldset.php:142 src/Form/TimelineExhibitFieldset.php:118
-#: src/Form/TimelineFieldset.php:147
+#: src/Form/SettingsFieldset.php:198 src/Form/TimelineFieldset.php:179
+msgid "Group: value annotation property"
+msgstr ""
+
+#: src/Form/SettingsFieldset.php:199 src/Form/TimelineFieldset.php:180
+msgid ""
+"If set, the group will be extracted from the value annotation of the group "
+"property above."
+msgstr ""
+
+#: src/Form/SettingsFieldset.php:215 src/Form/TimelineExhibitFieldset.php:150
+#: src/Form/TimelineFieldset.php:195
 msgid "Default group"
 msgstr ""
 
-#: src/Form/SettingsFieldset.php:153 src/Form/TimelineFieldset.php:159
+#: src/Form/SettingsFieldset.php:227 src/Form/TimelineFieldset.php:207
 msgid "Render year"
 msgstr ""
 
-#: src/Form/SettingsFieldset.php:154 src/Form/TimelineFieldset.php:160
+#: src/Form/SettingsFieldset.php:228 src/Form/TimelineFieldset.php:208
 msgid ""
 "When a date is a single year, like \"1066\", the value should be interpreted "
 "to be displayed on the timeline."
 msgstr ""
 
-#: src/Form/SettingsFieldset.php:156 src/Form/TimelineFieldset.php:162
+#: src/Form/SettingsFieldset.php:230 src/Form/TimelineFieldset.php:210
 msgid "Pick first January"
 msgstr ""
 
-#: src/Form/SettingsFieldset.php:157 src/Form/TimelineFieldset.php:163
+#: src/Form/SettingsFieldset.php:231 src/Form/TimelineFieldset.php:211
 msgid "Pick first July"
 msgstr ""
 
-#: src/Form/SettingsFieldset.php:158 src/Form/TimelineFieldset.php:164
+#: src/Form/SettingsFieldset.php:232 src/Form/TimelineFieldset.php:212
 msgid "Mark entire year"
 msgstr ""
 
-#: src/Form/SettingsFieldset.php:159 src/Form/TimelineFieldset.php:165
+#: src/Form/SettingsFieldset.php:233 src/Form/TimelineFieldset.php:213
 msgid "Skip the resource"
 msgstr ""
 
-#: src/Form/SettingsFieldset.php:170 src/Form/TimelineFieldset.php:176
+#: src/Form/SettingsFieldset.php:245 src/Form/TimelineFieldset.php:224
 msgid "Center date"
 msgstr ""
 
-#: src/Form/SettingsFieldset.php:171 src/Form/TimelineFieldset.php:177
+#: src/Form/SettingsFieldset.php:246 src/Form/TimelineFieldset.php:225
 msgid ""
 "Set the default center date for the timeline. The format should be \"YYYY-MM-"
 "DD\". An empty value means \"now\", \"0000-00-00\" the earliest date, and "
 "\"9999-99-99\" the latest date."
 msgstr ""
 
-#: src/Form/SettingsFieldset.php:184 src/Form/TimelineExhibitFieldset.php:144
-#: src/Form/TimelineFieldset.php:190
+#: src/Form/SettingsFieldset.php:260 src/Form/TimelineExhibitFieldset.php:176
+#: src/Form/TimelineFieldset.php:238
 msgid "Eras/Periods"
 msgstr ""
 
-#: src/Form/SettingsFieldset.php:198 src/Form/TimelineExhibitFieldset.php:158
-#: src/Form/TimelineFieldset.php:204
+#: src/Form/SettingsFieldset.php:275 src/Form/TimelineExhibitFieldset.php:190
+#: src/Form/TimelineFieldset.php:252
 msgid "Markers for well-known or extra events"
 msgstr ""
 
-#: src/Form/SettingsFieldset.php:217 src/Form/TimelineFieldset.php:223
+#: src/Form/SettingsFieldset.php:295 src/Form/TimelineFieldset.php:271
 msgid "Thumbnail to use"
 msgstr ""
 
-#: src/Form/SettingsFieldset.php:219 src/Form/TimelineFieldset.php:225
+#: src/Form/SettingsFieldset.php:297 src/Form/TimelineFieldset.php:273
 msgid "Square"
 msgstr ""
 
-#: src/Form/SettingsFieldset.php:221 src/Form/TimelineFieldset.php:227
+#: src/Form/SettingsFieldset.php:299 src/Form/TimelineFieldset.php:275
 msgid "Large"
 msgstr ""
 
-#: src/Form/SettingsFieldset.php:222 src/Form/TimelineFieldset.php:228
+#: src/Form/SettingsFieldset.php:300 src/Form/TimelineFieldset.php:276
 msgid "Original (not recommended)"
 msgstr ""
 
-#: src/Form/SettingsFieldset.php:234 src/Form/TimelineFieldset.php:240
+#: src/Form/SettingsFieldset.php:313 src/Form/TimelineFieldset.php:288
 msgid "Use the specific thumbnail of the resource if any"
 msgstr ""
 
-#: src/Form/SettingsFieldset.php:245 src/Form/TimelineFieldset.php:251
+#: src/Form/SettingsFieldset.php:325 src/Form/TimelineFieldset.php:299
 msgid "Timeline viewer params"
 msgstr ""
 
-#: src/Form/SettingsFieldset.php:246 src/Form/TimelineExhibitFieldset.php:178
-#: src/Form/TimelineFieldset.php:252
+#: src/Form/SettingsFieldset.php:326 src/Form/TimelineExhibitFieldset.php:210
+#: src/Form/TimelineFieldset.php:300
 msgid ""
 "Set the default params of the viewer as json, or let empty for the included "
 "default."
 msgstr ""
 
-#: src/Form/SettingsFieldset.php:258 src/Form/TimelineExhibitFieldset.php:191
-#: src/Form/TimelineFieldset.php:264
+#: src/Form/SettingsFieldset.php:339 src/Form/TimelineExhibitFieldset.php:223
+#: src/Form/TimelineFieldset.php:312
 msgid "Open links in current browse tab"
 msgstr ""
 
@@ -308,48 +377,68 @@ msgid "Date to use from the attachement when no date is set."
 msgstr ""
 
 #: src/Form/TimelineExhibitFieldset.php:42
-msgid "End date property"
+msgid "Start date: value annotation property"
 msgstr ""
 
 #: src/Form/TimelineExhibitFieldset.php:43
-msgid "End date to use from the attachement when no end date is set."
+msgid ""
+"If set, the start date will be extracted from the value annotation of the "
+"start date property above."
 msgstr ""
 
 #: src/Form/TimelineExhibitFieldset.php:58
-msgid "Credit property"
+msgid "End date property"
 msgstr ""
 
 #: src/Form/TimelineExhibitFieldset.php:59
+msgid "End date to use from the attachement when no end date is set."
+msgstr ""
+
+#: src/Form/TimelineExhibitFieldset.php:74
+msgid "End date: value annotation property"
+msgstr ""
+
+#: src/Form/TimelineExhibitFieldset.php:75
+msgid ""
+"If set, the end date will be extracted from the value annotation of the end "
+"date property above."
+msgstr ""
+
+#: src/Form/TimelineExhibitFieldset.php:90
+msgid "Credit property"
+msgstr ""
+
+#: src/Form/TimelineExhibitFieldset.php:91
 msgid ""
 "Credit to use from the attachement when no credit is set (generally creator "
 "or rights)."
 msgstr ""
 
-#: src/Form/TimelineExhibitFieldset.php:129
+#: src/Form/TimelineExhibitFieldset.php:161
 msgid "Scale"
 msgstr ""
 
-#: src/Form/TimelineExhibitFieldset.php:131
+#: src/Form/TimelineExhibitFieldset.php:163
 msgid "Human"
 msgstr ""
 
-#: src/Form/TimelineExhibitFieldset.php:132
+#: src/Form/TimelineExhibitFieldset.php:164
 msgid "Cosmological"
 msgstr ""
 
-#: src/Form/TimelineExhibitFieldset.php:205
+#: src/Form/TimelineExhibitFieldset.php:237
 msgid ""
 "Spreadsheet filename or url (csv or tsv) to fill following exhibit slides "
 "automatically"
 msgstr ""
 
-#: src/Form/TimelineExhibitFieldset.php:206
+#: src/Form/TimelineExhibitFieldset.php:238
 msgid ""
 "Spreadsheet filename or url (ods, csv or tsv) to fill following exhibit "
 "slides automatically"
 msgstr ""
 
-#: src/Form/TimelineExhibitFieldset.php:207
+#: src/Form/TimelineExhibitFieldset.php:239
 msgid ""
 "The file may be uploaded via the module Easy Admin or an url.\n"
 "The column \"Media\" may be a numeric item or media id,  asset/xxx, any url "
@@ -360,83 +449,83 @@ msgid ""
 "replaced. The page should be saved to regenerate slides."
 msgstr ""
 
-#: src/Form/TimelineExhibitFieldset.php:226
+#: src/Form/TimelineExhibitFieldset.php:258
 msgid "Slides"
 msgstr ""
 
-#: src/Form/TimelineExhibitFieldset.php:252
+#: src/Form/TimelineExhibitFieldset.php:284
 msgid "o:block[__blockIndex__][o:data][slides][__slideIndex__]"
 msgstr ""
 
-#: src/Form/TimelineExhibitFieldset.php:283
+#: src/Form/TimelineExhibitFieldset.php:315
 msgid "Main content: Resource"
 msgstr ""
 
-#: src/Form/TimelineExhibitFieldset.php:296
+#: src/Form/TimelineExhibitFieldset.php:328
 msgid "Main content: Or asset"
 msgstr ""
 
-#: src/Form/TimelineExhibitFieldset.php:306
+#: src/Form/TimelineExhibitFieldset.php:338
 msgid "Main content: Or external media"
 msgstr ""
 
-#: src/Form/TimelineExhibitFieldset.php:321
+#: src/Form/TimelineExhibitFieldset.php:353
 msgid "Era"
 msgstr ""
 
-#: src/Form/TimelineExhibitFieldset.php:334
+#: src/Form/TimelineExhibitFieldset.php:366
 msgid "Start date"
 msgstr ""
 
-#: src/Form/TimelineExhibitFieldset.php:347
+#: src/Form/TimelineExhibitFieldset.php:379
 msgid "Display date for start"
 msgstr ""
 
-#: src/Form/TimelineExhibitFieldset.php:357
+#: src/Form/TimelineExhibitFieldset.php:389
 msgid "End date"
 msgstr ""
 
-#: src/Form/TimelineExhibitFieldset.php:370
+#: src/Form/TimelineExhibitFieldset.php:402
 msgid "Display date for end"
 msgstr ""
 
-#: src/Form/TimelineExhibitFieldset.php:380
+#: src/Form/TimelineExhibitFieldset.php:412
 msgid "Display main date"
 msgstr ""
 
-#: src/Form/TimelineExhibitFieldset.php:390
+#: src/Form/TimelineExhibitFieldset.php:422
 msgid "Headline"
 msgstr ""
 
-#: src/Form/TimelineExhibitFieldset.php:422
+#: src/Form/TimelineExhibitFieldset.php:454
 msgid "Credit"
 msgstr ""
 
-#: src/Form/TimelineExhibitFieldset.php:434
+#: src/Form/TimelineExhibitFieldset.php:466
 msgid "Background: Resource"
 msgstr ""
 
-#: src/Form/TimelineExhibitFieldset.php:447
+#: src/Form/TimelineExhibitFieldset.php:479
 msgid "Background: Or asset"
 msgstr ""
 
-#: src/Form/TimelineExhibitFieldset.php:457
+#: src/Form/TimelineExhibitFieldset.php:489
 msgid "Background: Or external file"
 msgstr ""
 
-#: src/Form/TimelineExhibitFieldset.php:469
+#: src/Form/TimelineExhibitFieldset.php:501
 msgid "Background: Or color"
 msgstr ""
 
-#: src/Form/TimelineExhibitFieldset.php:470
+#: src/Form/TimelineExhibitFieldset.php:502
 msgid "A css color as hexadecimal or keyword."
 msgstr ""
 
-#: src/Form/TimelineExhibitFieldset.php:492
+#: src/Form/TimelineExhibitFieldset.php:524
 msgid "Add another slide"
 msgstr ""
 
-#: src/Form/TimelineExhibitFieldset.php:503
+#: src/Form/TimelineExhibitFieldset.php:535
 msgid "Remove this slide"
 msgstr ""
 
@@ -449,15 +538,15 @@ msgid ""
 "Restrict timeline to a particular subset of resources, for example a site."
 msgstr ""
 
-#: src/Controller/ApiController.php:68
+#: src/Controller/ApiController.php:83
 msgid "A well-formed url or a query is needed to get a timeline."
 msgstr ""
 
-#: src/Controller/ApiController.php:78
+#: src/Controller/ApiController.php:93
 msgid "Block or resource not found"
 msgstr ""
 
-#: src/Controller/ApiController.php:101
+#: src/Controller/ApiController.php:117
 #, php-format
 msgid "Id %d is not a timeline."
 msgstr ""

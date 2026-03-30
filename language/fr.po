@@ -1,31 +1,41 @@
-# Translation for the Neatline Time plugin for Omeka.
-#
-# Translators:
-# katinalynn <katina.rogers@gmail.com>, 2012
+#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Neatline\n"
+"Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-11-03 00:00+0000\n"
-"PO-Revision-Date: 2025-11-03 00:00+0000\n"
+"POT-Creation-Date: 2026-03-30 00:00+0000\n"
+"PO-Revision-Date: 2026-03-30 00:00+0000\n"
 "Last-Translator: Daniel Berthereau <Daniel.fr@Berthereau.net>\n"
-"Language-Team: French (http://www.transifex.com/projects/p/neatline/language/"
-"fr/)\n"
+"Language-Team: \n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "X-Generator: Poedit 3.6\n"
 
-#: data/scripts/upgrade.php:41 Module.php:27
+#: data/scripts/upgrade.php:41 Module.php:39
 #, php-format
 msgid "The module %1$s should be upgraded to version %2$s or later."
 msgstr "Le module %1$s doit être mis à niveau à la version %2$s ou supérieure."
 
-#: src/Controller/ApiController.php:241
+#: data/scripts/upgrade.php:45 data/scripts/upgrade.php:60
+#: data/scripts/upgrade.php:317
+msgid "Missing requirement. Unable to upgrade."
+msgstr "Pré-requis absent. Impossible de mettre à jour."
+
+#: data/scripts/upgrade.php:52 Module.php:31
+#, php-format
+msgid "The module %1$s requires PHP %2$s or later."
+msgstr "Le module « %1$s » a besoin de PHP %2$s ou supérieure."
+
+#: src/Controller/ApiController.php:262
 msgid "Method Not Allowed"
 msgstr "Méthode non autorisée"
+
+#: src/Mvc/Controller/Plugin/AbstractTimelineData.php:238
+#: src/Mvc/Controller/Plugin/TimelineExhibitData.php:263
+msgid "Events"
+msgstr "Événements"
 
 #: view/common/block-layout/admin/timeline-form.phtml:19
 msgid ""
@@ -71,12 +81,12 @@ msgstr ""
 msgid "collapse"
 msgstr "plier"
 
-#: data/scripts/upgrade.php:110
+#: data/scripts/upgrade.php:126
 msgid "The json is now built dynamically from the url /api/timeline."
 msgstr ""
 "Le json est désormais construit dynamiquement depuis l’url /api/timeline."
 
-#: data/scripts/upgrade.php:197
+#: data/scripts/upgrade.php:213
 #, php-format
 msgid ""
 "The setting \"heading\" was removed from blocks. A new block \"Heading\" "
@@ -87,15 +97,15 @@ msgstr ""
 "(module BlockPlus) ou « Html » a été ajouté pour tous les blocs qui "
 "l’utilisaient. Vous pouvez vérifier les pages pour les styles : %s"
 
-#: data/scripts/upgrade.php:209
+#: data/scripts/upgrade.php:225
 msgid "timeline-simile-online"
 msgstr "timeline-simile-online"
 
-#: data/scripts/upgrade.php:210
+#: data/scripts/upgrade.php:226
 msgid "timeline-knightlab"
 msgstr "timeline-knightlab"
 
-#: data/scripts/upgrade.php:230
+#: data/scripts/upgrade.php:246
 msgid ""
 "It is now possible to add groups, eras and extra-markers, for example "
 "historical events, in timelines."
@@ -103,7 +113,7 @@ msgstr ""
 "Il est désormais possible d’ajouter des groupes, des ères et des marqueurs "
 "autres, par exemple des événements historiques, dans les frises."
 
-#: data/scripts/upgrade.php:235
+#: data/scripts/upgrade.php:251
 msgid ""
 "The timeline for Knightlab has been updated to avoid a js transformation. "
 "Check if you used the output of the api directly."
@@ -111,7 +121,7 @@ msgstr ""
 "La frise pour Knightlab a été mise à jour pour éviter une transformation js. "
 "Vérifiez si vous utilisez la sortie de l’api directement."
 
-#: data/scripts/upgrade.php:296
+#: data/scripts/upgrade.php:312
 #, php-format
 msgid ""
 "The deprecated route \"timeline-block\" (for url \"/timeline/:block-id/"
@@ -122,7 +132,7 @@ msgstr ""
 "events.json ») a été remplacée par « api/timeline ». Vérifiez vos anciens "
 "thèmes si vous l’utilisez. Fichiers correspondants : %s"
 
-#: data/scripts/upgrade.php:303
+#: data/scripts/upgrade.php:320
 msgid ""
 "The deprecated route \"timeline-block\" (for url \"/timeline/:block-id/"
 "events.json\") was replaced by \"api/timeline\". Check your old themes if "
@@ -132,14 +142,14 @@ msgstr ""
 "events.json ») a été remplacée par « api/timeline ». Vérifiez vos anciens "
 "thèmes si vous l’utilisez."
 
-#: data/scripts/upgrade.php:309
+#: data/scripts/upgrade.php:326
 msgid ""
 "It is now possible to add a timeline to an item set as a resource page block."
 msgstr ""
 "Il est désormais d’ajouter une frise à une collection en tant que bloc de "
 "ressource."
 
-#: data/scripts/upgrade.php:316
+#: data/scripts/upgrade.php:333
 msgid ""
 "It is now possible to fill slides for timeline exhibit with a spreadsheet "
 "(csv, tsv) formatted according to {link}Knightslab{link_end}."
@@ -147,13 +157,13 @@ msgstr ""
 "Il est désormais possible de préparer les vues automatiquement avec un "
 "tableur (csv, tsv) au format {link}Knightslab{link_end}."
 
-#: data/scripts/upgrade.php:383
+#: data/scripts/upgrade.php:400
 msgid "The settings for exhibits were improved. You may check pages: {json}"
 msgstr ""
 "Les paramètres pour les expositions ont été améliorées. Vous pouvez vérifier "
 "les pages : {json}"
 
-#: data/scripts/upgrade.php:391
+#: data/scripts/upgrade.php:408
 msgid ""
 "It is now possible to fill a resource, asset or external url as main content "
 "or background for timeline exhibit."
@@ -161,7 +171,7 @@ msgstr ""
 "Il est désormais possible de définir une ressource, un fichier ou une url "
 "externe comme contenu principal et comme arrière-plan pour les expositions."
 
-#: data/scripts/upgrade.php:396
+#: data/scripts/upgrade.php:413
 msgid ""
 "Furthermore, the file can be a native standard spreadsheet file (ods, "
 "OpenDocument Spreadsheet), avoiding issues with encoding and end of lines "
@@ -171,7 +181,7 @@ msgstr ""
 "Spreadsheet), évitant ainsi les problèmes d’encodage et de fin de ligne et "
 "permettant d’avoir des cellules avec plusieurs lignes."
 
-#: data/scripts/upgrade.php:403
+#: data/scripts/upgrade.php:420
 msgid ""
 "It is now possible to define a configuration for resource block in main "
 "settings."
@@ -179,84 +189,151 @@ msgstr ""
 "Il est désormais de définir une configuration pour les blocs de ressources "
 "dans les paramètres généraux."
 
-#: src/Mvc/Controller/Plugin/TimelineExhibitData.php:221
-#: src/Mvc/Controller/Plugin/AbstractTimelineData.php:150
-msgid "Events"
-msgstr "Événements"
+#: data/scripts/upgrade.php:427
+msgid ""
+"It is now possible to use value annotations as date source for timeline and "
+"timeline exhibit blocks."
+msgstr ""
+"Il est désormais possible d’utiliser des annotations de valeurs comme date "
+"source pour la frise et les blocs."
+
+#: data/scripts/upgrade.php:432
+msgid ""
+"The module {link}DataTypeEdtf{link_end} (Extended Date/Time Format) is now "
+"fully supported: dates, intervals, seasons, centuries (17XX), and decades "
+"(192X) are rendered natively without spurious times."
+msgstr ""
+"Le module {link}Data Type Edtf{link_end} (format étendu de date et heure) "
+"est désormais entièrement pris en charge : les dates, les intervalles, les "
+"saisons, les siècles (17XX) et les décennies (192X) sont affichés de manière "
+"native sans heure fantôme."
 
 #: src/Form/SettingsFieldset.php:13 src/Form/SettingsFieldset.php:16
+#, fuzzy
 msgid "Timeline (for resource blocks)"
-msgstr "Frise chronologique (pour les blocs de ressources)"
+msgstr "Chronologie (pour les blocs de ressources)"
 
-#: src/Form/SettingsFieldset.php:32 src/Form/TimelineFieldset.php:37
+#: src/Form/SettingsFieldset.php:32
+msgid "Library"
+msgstr "Bibliothèque"
+
+#: src/Form/SettingsFieldset.php:34
+msgid "Knightlab TimelineJS"
+msgstr "Knightlab TimelineJS"
+
+#: src/Form/SettingsFieldset.php:35
+msgid "Simile Timeline"
+msgstr "Frise Simile"
+
+#: src/Form/SettingsFieldset.php:48 src/Form/TimelineFieldset.php:37
 msgid "Item title"
-msgstr "Titre de l’objet"
+msgstr "Titre du contenu"
 
-#: src/Form/SettingsFieldset.php:36 src/Form/SettingsFieldset.php:54
+#: src/Form/SettingsFieldset.php:52 src/Form/SettingsFieldset.php:71
 #: src/Form/TimelineFieldset.php:41 src/Form/TimelineFieldset.php:59
 msgid "Automatic"
 msgstr "Automatique"
 
-#: src/Form/SettingsFieldset.php:43 src/Form/SettingsFieldset.php:61
-#: src/Form/SettingsFieldset.php:76 src/Form/SettingsFieldset.php:91
-#: src/Form/TimelineExhibitFieldset.php:34
-#: src/Form/TimelineExhibitFieldset.php:50
-#: src/Form/TimelineExhibitFieldset.php:66 src/Form/TimelineFieldset.php:48
+#: src/Form/SettingsFieldset.php:59 src/Form/SettingsFieldset.php:78
+#: src/Form/SettingsFieldset.php:94 src/Form/SettingsFieldset.php:111
+#: src/Form/SettingsFieldset.php:127 src/Form/SettingsFieldset.php:144
+#: src/Form/SettingsFieldset.php:207 src/Form/TimelineExhibitFieldset.php:34
+#: src/Form/TimelineExhibitFieldset.php:51
+#: src/Form/TimelineExhibitFieldset.php:66
+#: src/Form/TimelineExhibitFieldset.php:83
+#: src/Form/TimelineExhibitFieldset.php:98 src/Form/TimelineFieldset.php:48
 #: src/Form/TimelineFieldset.php:66 src/Form/TimelineFieldset.php:81
-#: src/Form/TimelineFieldset.php:96
+#: src/Form/TimelineFieldset.php:97 src/Form/TimelineFieldset.php:112
+#: src/Form/TimelineFieldset.php:128 src/Form/TimelineFieldset.php:188
 msgid "Select a property…"
 msgstr "Choisir une propriété…"
 
-#: src/Form/SettingsFieldset.php:50 src/Form/TimelineFieldset.php:55
+#: src/Form/SettingsFieldset.php:67 src/Form/TimelineFieldset.php:55
 msgid "Item description"
 msgstr "Description de l’objet"
 
-#: src/Form/SettingsFieldset.php:68 src/Form/TimelineFieldset.php:73
+#: src/Form/SettingsFieldset.php:86 src/Form/TimelineFieldset.php:73
 msgid "Item date"
 msgstr "Date de l’objet"
 
-#: src/Form/SettingsFieldset.php:83 src/Form/TimelineFieldset.php:88
+#: src/Form/SettingsFieldset.php:102 src/Form/TimelineFieldset.php:88
+msgid "Item date: value annotation property"
+msgstr "Date du contenu : propriété de l’annotation de valeur"
+
+#: src/Form/SettingsFieldset.php:103 src/Form/TimelineFieldset.php:89
+msgid ""
+"If set, the date will be extracted from the value annotation of the item "
+"date property above."
+msgstr ""
+"Si activé, la date sera extraite de l’annotation de valeur de la propriété "
+"« date » du contenu ci-dessus."
+
+#: src/Form/SettingsFieldset.php:119 src/Form/TimelineFieldset.php:104
 msgid "Item end date"
 msgstr "Date de fin de l’objet"
 
-#: src/Form/SettingsFieldset.php:84 src/Form/TimelineFieldset.php:89
+#: src/Form/SettingsFieldset.php:120 src/Form/TimelineFieldset.php:105
 msgid "If set, the process will use the other date as a start date."
 msgstr "Si indiqué, l’autre date sera utilisée comme date de départ."
 
-#: src/Form/SettingsFieldset.php:98 src/Form/TimelineExhibitFieldset.php:74
-#: src/Form/TimelineFieldset.php:103
+#: src/Form/SettingsFieldset.php:135 src/Form/TimelineFieldset.php:119
+msgid "Item end date: value annotation property"
+msgstr "Date de fin du contenu : propriété de l’annotation de valeur"
+
+#: src/Form/SettingsFieldset.php:136 src/Form/TimelineFieldset.php:120
+msgid ""
+"If set, the end date will be extracted from the value annotation of the item "
+"end date property above."
+msgstr ""
+"Si activé, la date de fin sera extraite de l’annotation de valeur de la "
+"propriété « date de fin » du contenu ci-dessus."
+
+#: src/Form/SettingsFieldset.php:152 src/Form/TimelineExhibitFieldset.php:106
+#: src/Form/TimelineFieldset.php:135
 msgid "Metadata to append for custom timeline"
 msgstr "Métadonnées pour frise personnalisée"
 
-#: src/Form/SettingsFieldset.php:103 src/Form/SettingsFieldset.php:125
-#: src/Form/TimelineExhibitFieldset.php:79
-#: src/Form/TimelineExhibitFieldset.php:101 src/Form/TimelineFieldset.php:108
-#: src/Form/TimelineFieldset.php:130
+#: src/Form/SettingsFieldset.php:157 src/Form/SettingsFieldset.php:180
+#: src/Form/TimelineExhibitFieldset.php:111
+#: src/Form/TimelineExhibitFieldset.php:133 src/Form/TimelineFieldset.php:140
+#: src/Form/TimelineFieldset.php:162
 msgid "Resource class label"
 msgstr "Étiquette de la classe de ressource"
 
-#: src/Form/SettingsFieldset.php:113 src/Form/SettingsFieldset.php:135
-#: src/Form/TimelineExhibitFieldset.php:89
-#: src/Form/TimelineExhibitFieldset.php:111 src/Form/TimelineFieldset.php:118
-#: src/Form/TimelineFieldset.php:140
+#: src/Form/SettingsFieldset.php:167 src/Form/SettingsFieldset.php:190
+#: src/Form/TimelineExhibitFieldset.php:121
+#: src/Form/TimelineExhibitFieldset.php:143 src/Form/TimelineFieldset.php:150
+#: src/Form/TimelineFieldset.php:172
 msgid "Select a metadata…"
 msgstr "Choisir une métadonnée…"
 
-#: src/Form/SettingsFieldset.php:120 src/Form/TimelineExhibitFieldset.php:96
-#: src/Form/TimelineFieldset.php:125
+#: src/Form/SettingsFieldset.php:175 src/Form/TimelineExhibitFieldset.php:128
+#: src/Form/TimelineFieldset.php:157
 msgid "Metadata to use as group"
 msgstr "Métadonnée à utiliser pour le groupe"
 
-#: src/Form/SettingsFieldset.php:142 src/Form/TimelineExhibitFieldset.php:118
-#: src/Form/TimelineFieldset.php:147
+#: src/Form/SettingsFieldset.php:198 src/Form/TimelineFieldset.php:179
+msgid "Group: value annotation property"
+msgstr "Groupe : propriété pour annotation de valeur"
+
+#: src/Form/SettingsFieldset.php:199 src/Form/TimelineFieldset.php:180
+msgid ""
+"If set, the group will be extracted from the value annotation of the group "
+"property above."
+msgstr ""
+"Si activé, le groupe sera extrait de l'annotation de valeur de la propriété "
+"« groupe » du contenu ci-dessus."
+
+#: src/Form/SettingsFieldset.php:215 src/Form/TimelineExhibitFieldset.php:150
+#: src/Form/TimelineFieldset.php:195
 msgid "Default group"
 msgstr "Groupe par défaut"
 
-#: src/Form/SettingsFieldset.php:153 src/Form/TimelineFieldset.php:159
+#: src/Form/SettingsFieldset.php:227 src/Form/TimelineFieldset.php:207
 msgid "Render year"
 msgstr "Afficher l’année"
 
-#: src/Form/SettingsFieldset.php:154 src/Form/TimelineFieldset.php:160
+#: src/Form/SettingsFieldset.php:228 src/Form/TimelineFieldset.php:208
 msgid ""
 "When a date is a single year, like \"1066\", the value should be interpreted "
 "to be displayed on the timeline."
@@ -264,27 +341,27 @@ msgstr ""
 "Quand une date est une année simple, comme « 1066 », la valeur doit être "
 "interprétée et affichée sur la frise."
 
-#: src/Form/SettingsFieldset.php:156 src/Form/TimelineFieldset.php:162
+#: src/Form/SettingsFieldset.php:230 src/Form/TimelineFieldset.php:210
 msgid "Pick first January"
 msgstr "Choisir le premier janvier"
 
-#: src/Form/SettingsFieldset.php:157 src/Form/TimelineFieldset.php:163
+#: src/Form/SettingsFieldset.php:231 src/Form/TimelineFieldset.php:211
 msgid "Pick first July"
 msgstr "Choisir le premier juillet"
 
-#: src/Form/SettingsFieldset.php:158 src/Form/TimelineFieldset.php:164
+#: src/Form/SettingsFieldset.php:232 src/Form/TimelineFieldset.php:212
 msgid "Mark entire year"
 msgstr "Marquer l’année complète"
 
-#: src/Form/SettingsFieldset.php:159 src/Form/TimelineFieldset.php:165
+#: src/Form/SettingsFieldset.php:233 src/Form/TimelineFieldset.php:213
 msgid "Skip the resource"
 msgstr "Ignorer la ressource"
 
-#: src/Form/SettingsFieldset.php:170 src/Form/TimelineFieldset.php:176
+#: src/Form/SettingsFieldset.php:245 src/Form/TimelineFieldset.php:224
 msgid "Center date"
 msgstr "Centrer la date"
 
-#: src/Form/SettingsFieldset.php:171 src/Form/TimelineFieldset.php:177
+#: src/Form/SettingsFieldset.php:246 src/Form/TimelineFieldset.php:225
 msgid ""
 "Set the default center date for the timeline. The format should be \"YYYY-MM-"
 "DD\". An empty value means \"now\", \"0000-00-00\" the earliest date, and "
@@ -294,42 +371,42 @@ msgstr ""
 "Une valeur vide correspond à « maintenant », « 0000-00-00 » la date la plus "
 "ancienne et « 9999-99-99 » la plus récente."
 
-#: src/Form/SettingsFieldset.php:184 src/Form/TimelineExhibitFieldset.php:144
-#: src/Form/TimelineFieldset.php:190
+#: src/Form/SettingsFieldset.php:260 src/Form/TimelineExhibitFieldset.php:176
+#: src/Form/TimelineFieldset.php:238
 msgid "Eras/Periods"
 msgstr "Ères / Périodes"
 
-#: src/Form/SettingsFieldset.php:198 src/Form/TimelineExhibitFieldset.php:158
-#: src/Form/TimelineFieldset.php:204
+#: src/Form/SettingsFieldset.php:275 src/Form/TimelineExhibitFieldset.php:190
+#: src/Form/TimelineFieldset.php:252
 msgid "Markers for well-known or extra events"
 msgstr "Marqueurs pour des événements autres"
 
-#: src/Form/SettingsFieldset.php:217 src/Form/TimelineFieldset.php:223
+#: src/Form/SettingsFieldset.php:295 src/Form/TimelineFieldset.php:271
 msgid "Thumbnail to use"
 msgstr "Vignette à utiliser"
 
-#: src/Form/SettingsFieldset.php:219 src/Form/TimelineFieldset.php:225
+#: src/Form/SettingsFieldset.php:297 src/Form/TimelineFieldset.php:273
 msgid "Square"
 msgstr "Carré"
 
-#: src/Form/SettingsFieldset.php:221 src/Form/TimelineFieldset.php:227
+#: src/Form/SettingsFieldset.php:299 src/Form/TimelineFieldset.php:275
 msgid "Large"
 msgstr "Large"
 
-#: src/Form/SettingsFieldset.php:222 src/Form/TimelineFieldset.php:228
+#: src/Form/SettingsFieldset.php:300 src/Form/TimelineFieldset.php:276
 msgid "Original (not recommended)"
 msgstr "Original (non recommandé)"
 
-#: src/Form/SettingsFieldset.php:234 src/Form/TimelineFieldset.php:240
+#: src/Form/SettingsFieldset.php:313 src/Form/TimelineFieldset.php:288
 msgid "Use the specific thumbnail of the resource if any"
 msgstr "Utiliser la vignette spécifique de la ressource si présente"
 
-#: src/Form/SettingsFieldset.php:245 src/Form/TimelineFieldset.php:251
+#: src/Form/SettingsFieldset.php:325 src/Form/TimelineFieldset.php:299
 msgid "Timeline viewer params"
 msgstr "Paramètres de la frise"
 
-#: src/Form/SettingsFieldset.php:246 src/Form/TimelineExhibitFieldset.php:178
-#: src/Form/TimelineFieldset.php:252
+#: src/Form/SettingsFieldset.php:326 src/Form/TimelineExhibitFieldset.php:210
+#: src/Form/TimelineFieldset.php:300
 msgid ""
 "Set the default params of the viewer as json, or let empty for the included "
 "default."
@@ -337,8 +414,8 @@ msgstr ""
 "Indiquer les paramètres par défaut de la visionneuse en json. Laisser vide "
 "pour conserver les paramètres par défaut."
 
-#: src/Form/SettingsFieldset.php:258 src/Form/TimelineExhibitFieldset.php:191
-#: src/Form/TimelineFieldset.php:264
+#: src/Form/SettingsFieldset.php:339 src/Form/TimelineExhibitFieldset.php:223
+#: src/Form/TimelineFieldset.php:312
 msgid "Open links in current browse tab"
 msgstr "Ouvrir les liens dans l’onglet en cours"
 
@@ -352,20 +429,44 @@ msgstr ""
 "Date du document attaché à utiliser lorsque aucune date n’est indiquée."
 
 #: src/Form/TimelineExhibitFieldset.php:42
+msgid "Start date: value annotation property"
+msgstr "Date de début : propriété pour annotation de valeur"
+
+#: src/Form/TimelineExhibitFieldset.php:43
+msgid ""
+"If set, the start date will be extracted from the value annotation of the "
+"start date property above."
+msgstr ""
+"Si activé, la date de début sera extraite de l’annotation de valeur de la "
+"propriété « date de début » du contenu ci-dessus."
+
+#: src/Form/TimelineExhibitFieldset.php:58
 msgid "End date property"
 msgstr "Propriété pour la date de fin"
 
-#: src/Form/TimelineExhibitFieldset.php:43
+#: src/Form/TimelineExhibitFieldset.php:59
 msgid "End date to use from the attachement when no end date is set."
 msgstr ""
 "Date de fin du document attaché à utiliser lorsque aucune date de fin n’est "
 "indiquée."
 
-#: src/Form/TimelineExhibitFieldset.php:58
+#: src/Form/TimelineExhibitFieldset.php:74
+msgid "End date: value annotation property"
+msgstr "Date de fin : propriété pour annotation de valeur"
+
+#: src/Form/TimelineExhibitFieldset.php:75
+msgid ""
+"If set, the end date will be extracted from the value annotation of the end "
+"date property above."
+msgstr ""
+"Si activé, la date de fin sera extraite de l’annotation de valeur de la "
+"propriété « date de fin » du contenu ci-dessus."
+
+#: src/Form/TimelineExhibitFieldset.php:90
 msgid "Credit property"
 msgstr "Propriété pour les crédits"
 
-#: src/Form/TimelineExhibitFieldset.php:59
+#: src/Form/TimelineExhibitFieldset.php:91
 msgid ""
 "Credit to use from the attachement when no credit is set (generally creator "
 "or rights)."
@@ -373,26 +474,26 @@ msgstr ""
 "Propriété du document attaché à utiliser lorsque aucun crédit n’est indiqué "
 "(généralement Créateur ou Droits)."
 
-#: src/Form/TimelineExhibitFieldset.php:129
+#: src/Form/TimelineExhibitFieldset.php:161
 msgid "Scale"
 msgstr "Échelle"
 
-#: src/Form/TimelineExhibitFieldset.php:131
+#: src/Form/TimelineExhibitFieldset.php:163
 msgid "Human"
 msgstr "Humain"
 
-#: src/Form/TimelineExhibitFieldset.php:132
+#: src/Form/TimelineExhibitFieldset.php:164
 msgid "Cosmological"
 msgstr "Cosmologique"
 
-#: src/Form/TimelineExhibitFieldset.php:205
+#: src/Form/TimelineExhibitFieldset.php:237
 msgid ""
 "Spreadsheet filename or url (csv or tsv) to fill following exhibit slides "
 "automatically"
 msgstr ""
 "Nom ou url du tableur (csv ou tsv) pour préparer les vues automatiquement"
 
-#: src/Form/TimelineExhibitFieldset.php:206
+#: src/Form/TimelineExhibitFieldset.php:238
 msgid ""
 "Spreadsheet filename or url (ods, csv or tsv) to fill following exhibit "
 "slides automatically"
@@ -400,7 +501,7 @@ msgstr ""
 "Nom ou url du tableur (ods, csv ou tsv) pour préparer les vues "
 "automatiquement"
 
-#: src/Form/TimelineExhibitFieldset.php:207
+#: src/Form/TimelineExhibitFieldset.php:239
 msgid ""
 "The file may be uploaded via the module Easy Admin or an url.\n"
 "The column \"Media\" may be a numeric item or media id,  asset/xxx, any url "
@@ -420,83 +521,83 @@ msgstr ""
 "existantes sont remplacées. La page doit être enregistrée pour régénérer les "
 "vues."
 
-#: src/Form/TimelineExhibitFieldset.php:226
+#: src/Form/TimelineExhibitFieldset.php:258
 msgid "Slides"
 msgstr "Vues"
 
-#: src/Form/TimelineExhibitFieldset.php:252
+#: src/Form/TimelineExhibitFieldset.php:284
 msgid "o:block[__blockIndex__][o:data][slides][__slideIndex__]"
 msgstr "o:block[__blockIndex__][o:data][slides][__slideIndex__]"
 
-#: src/Form/TimelineExhibitFieldset.php:283
+#: src/Form/TimelineExhibitFieldset.php:315
 msgid "Main content: Resource"
 msgstr "Contenu principal : ressource"
 
-#: src/Form/TimelineExhibitFieldset.php:296
+#: src/Form/TimelineExhibitFieldset.php:328
 msgid "Main content: Or asset"
 msgstr "Contenu principal : ou fichier"
 
-#: src/Form/TimelineExhibitFieldset.php:306
+#: src/Form/TimelineExhibitFieldset.php:338
 msgid "Main content: Or external media"
 msgstr "Contenu principal : ou média externe"
 
-#: src/Form/TimelineExhibitFieldset.php:321
+#: src/Form/TimelineExhibitFieldset.php:353
 msgid "Era"
 msgstr "Ère"
 
-#: src/Form/TimelineExhibitFieldset.php:334
+#: src/Form/TimelineExhibitFieldset.php:366
 msgid "Start date"
 msgstr "Date de début"
 
-#: src/Form/TimelineExhibitFieldset.php:347
+#: src/Form/TimelineExhibitFieldset.php:379
 msgid "Display date for start"
 msgstr "Date à afficher pour le début"
 
-#: src/Form/TimelineExhibitFieldset.php:357
+#: src/Form/TimelineExhibitFieldset.php:389
 msgid "End date"
 msgstr "Date de fin"
 
-#: src/Form/TimelineExhibitFieldset.php:370
+#: src/Form/TimelineExhibitFieldset.php:402
 msgid "Display date for end"
 msgstr "Date à afficher pour la fin"
 
-#: src/Form/TimelineExhibitFieldset.php:380
+#: src/Form/TimelineExhibitFieldset.php:412
 msgid "Display main date"
 msgstr "Date principale à afficher"
 
-#: src/Form/TimelineExhibitFieldset.php:390
+#: src/Form/TimelineExhibitFieldset.php:422
 msgid "Headline"
 msgstr "Titre principal"
 
-#: src/Form/TimelineExhibitFieldset.php:422
+#: src/Form/TimelineExhibitFieldset.php:454
 msgid "Credit"
 msgstr "Crédits"
 
-#: src/Form/TimelineExhibitFieldset.php:434
+#: src/Form/TimelineExhibitFieldset.php:466
 msgid "Background: Resource"
 msgstr "Arrière-plan : ressource"
 
-#: src/Form/TimelineExhibitFieldset.php:447
+#: src/Form/TimelineExhibitFieldset.php:479
 msgid "Background: Or asset"
 msgstr "Arrière-plan : ou fichier"
 
-#: src/Form/TimelineExhibitFieldset.php:457
+#: src/Form/TimelineExhibitFieldset.php:489
 msgid "Background: Or external file"
 msgstr "Arrière-plan : ou fichier externe"
 
-#: src/Form/TimelineExhibitFieldset.php:469
+#: src/Form/TimelineExhibitFieldset.php:501
 msgid "Background: Or color"
 msgstr "Arrière-plan : ou couleur"
 
-#: src/Form/TimelineExhibitFieldset.php:470
+#: src/Form/TimelineExhibitFieldset.php:502
 msgid "A css color as hexadecimal or keyword."
 msgstr "Une couleur css en hexadécimal ou mot-clé."
 
-#: src/Form/TimelineExhibitFieldset.php:492
+#: src/Form/TimelineExhibitFieldset.php:524
 msgid "Add another slide"
 msgstr "Ajouter une autre vue"
 
-#: src/Form/TimelineExhibitFieldset.php:503
+#: src/Form/TimelineExhibitFieldset.php:535
 msgid "Remove this slide"
 msgstr "Supprimer cette vue"
 
@@ -509,16 +610,16 @@ msgid ""
 "Restrict timeline to a particular subset of resources, for example a site."
 msgstr "Limiter la frise à un lot de ressources, par exemple un site."
 
-#: src/Controller/ApiController.php:68
+#: src/Controller/ApiController.php:83
 msgid "A well-formed url or a query is needed to get a timeline."
 msgstr ""
 "Une url bien formée ou une requête est nécessaire pour définir la frise."
 
-#: src/Controller/ApiController.php:78
+#: src/Controller/ApiController.php:93
 msgid "Block or resource not found"
 msgstr "Bloc ou ressource non trouvé"
 
-#: src/Controller/ApiController.php:101
+#: src/Controller/ApiController.php:117
 #, php-format
 msgid "Id %d is not a timeline."
 msgstr "Id %d n’est pas une frise."
@@ -580,158 +681,3 @@ msgstr "Simile en ligne (utilise js/css en ligne)"
 #: config/module.config.php:32
 msgid "Knightlab"
 msgstr "Knightlab"
-
-#~ msgid "info"
-#~ msgstr "info"
-
-#~ msgid "Resource for content"
-#~ msgstr "Ressource pour le contenu"
-
-#~ msgid "block-html full wysiwyg"
-#~ msgstr "bloc html wysiwyg"
-
-#~ msgid "External content"
-#~ msgstr "Contenu externe"
-
-#~ msgid "The next version (3.4.20) will require Omeka S v4.1."
-#~ msgstr "La version suivante (3.4.20) nécessitera Omeka S v4.1."
-
-#~ msgid "Block title"
-#~ msgstr "Titre du bloc"
-
-#~ msgid "Timeline library"
-#~ msgstr "Bibliothèque js pour la frise"
-
-#~ msgid ""
-#~ "Three libraries are available: the standard open source Simile Timeline, "
-#~ "or the online Knightlab Timeline."
-#~ msgstr ""
-#~ "Trois bibliothèques js sont disponibles : la frise libre Simile Timeline, "
-#~ "en ligne ou en local, ou la frise de Knightlab."
-
-#~ msgid "Heading for the block, if any."
-#~ msgstr "Entête du bloc."
-
-#~ msgid "Simile online (cannot be used on a https site)"
-#~ msgstr "Simile online (ne peut pas être utilisé avec un site en https)"
-
-#~ msgid "Background"
-#~ msgstr "Arrière-plan"
-
-#~ msgid "Query to limit resources"
-#~ msgstr "Requête pour limiter les ressources"
-
-#, php-format
-#~ msgid "%s entity with criteria %s not found"
-#~ msgstr "Entité %s avec le critère %s non trouvé"
-
-#~ msgid ""
-#~ "<strong>Warning</strong>: Uninstalling the Neatline Time plugin\n"
-#~ "          will remove all custom Timeline records."
-#~ msgstr ""
-#~ "<strong>Attention</strong>: Si vous désinstaller le plug-in Neatline "
-#~ "Time, tous les objets personnalisés du Timeline seront également "
-#~ "supprimés."
-
-#~ msgid ""
-#~ "The date field to use to retrieve and display items on a timeline. "
-#~ "Default is DC:Date."
-#~ msgstr ""
-#~ "Le champ de date à utiliser pour retrouver et exhiber les objets sur une "
-#~ "chronologie. DC:Date par défaut."
-
-#~ msgid ""
-#~ "The title field to use when displaying an item on a timeline. Default is "
-#~ "DC:Title"
-#~ msgstr ""
-#~ "Le champ de titre à utiliser pour exhiber les objets sur une chronologie. "
-#~ "DC:Titre par défaut."
-
-#~ msgid ""
-#~ "The description field to use when displaying an item on a timeline. "
-#~ "Default is DC:Description"
-#~ msgstr ""
-#~ "Le champ de description à utiliser pour exhiber les objets sur une "
-#~ "chronologie. DC:Description par défaut."
-
-#~ msgid "The timeline \"%s\" was successfully added!"
-#~ msgstr "Succès : La chronologie \"%s\" a été ajoutée !"
-
-#~ msgid "The timeline \"%s\" was successfully changed!"
-#~ msgstr "Succès : La chronologie \"%s\" a été modifiée !"
-
-#~ msgid "The timeline \"%s\" was successfully deleted!"
-#~ msgstr "Succès : La chronologie \"%s\" a été supprimée !"
-
-#~ msgid ""
-#~ "This will delete the timeline \"%s\" and its associated metadata. This "
-#~ "will not delete any items associated with this timeline."
-#~ msgstr ""
-#~ "Cette action supprimera définitivement la chronologie \"%s\" et ses "
-#~ "métadonnées associées. Cette action ne supprimera pas les objets associés "
-#~ "avec cette chronologie."
-
-#~ msgid "A description for your timeline."
-#~ msgstr "Une description de votre chronologie."
-
-#~ msgid "Status"
-#~ msgstr "Statut"
-
-#~ msgid "Whether the timeline is public or not."
-#~ msgstr "Si la chronologie est publique ou pas."
-
-#~ msgid "Whether the timeline is featured or not."
-#~ msgstr "Si la chronologie est en vedette ou pas."
-
-#~ msgid "No"
-#~ msgstr "Non"
-
-#~ msgid "Yes"
-#~ msgstr "Oui"
-
-#~ msgid "Cannot associate the timeline with a user who doesn't exist."
-#~ msgstr ""
-#~ "Impossible d’associer la chronologie avec un utilisateur qui n’existe pas."
-
-#~ msgid "Neatline Time | Add a Timeline"
-#~ msgstr "Neatline Time | Ajouter une chronologie"
-
-#~ msgid "Neatline Time | Browse Timelines"
-#~ msgstr "Neatline Time | Feuilleter les chronologies"
-
-#~ msgid "Edit Metadata"
-#~ msgstr "Modifier les métadonnées"
-
-#~ msgid "Edit Item Query"
-#~ msgstr "Modifier la requête de l’objet"
-
-#~ msgid "There are no timelines."
-#~ msgstr "Il n’y a pas de chronologies."
-
-#~ msgid "Neatline Time | Edit \"%s\" Metadata"
-#~ msgstr "Neatline Time | Modifier les métadonnées de \"%s\""
-
-#~ msgid "Neatline Time | Edit \"%s\" Items Query"
-#~ msgstr "Neatline Time | Modifier les requêtes des objets de \"%s\""
-
-#~ msgid ""
-#~ "The &#8220;%s&#8221; timeline displays items that match the following "
-#~ "query:"
-#~ msgstr ""
-#~ "La chronologie &#8220;%s&#8221; montre des objets qui correspondent à la "
-#~ "requête suivante:"
-
-#~ msgid "Neatline Time | %s"
-#~ msgstr "Neatline Time | %s"
-
-#~ msgid "Edit Items Query"
-#~ msgstr "Modifier la requête des objets"
-
-#~ msgid "Items Query"
-#~ msgstr "Requête des objets"
-
-#~ msgid "Browse Timelines"
-#~ msgstr "Feuilleter les chronologies"
-
-#~ msgid "You have no timelines."
-#~ msgstr "Vous n’avez pas de chronologies."

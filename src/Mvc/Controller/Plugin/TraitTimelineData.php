@@ -644,16 +644,16 @@ trait TraitTimelineData
                 : str_pad($date, 4, '0', STR_PAD_LEFT);
             switch ($renderYear) {
                 case static::$renderYears['january_1']:
-                    $dateOut = $date . '-01-01' . 'T00:00:00+00:00';
+                    $dateOut = $date . '-01-01';
                     break;
                 case static::$renderYears['july_1']:
-                    $dateOut = $date . '-07-01' . 'T00:00:00+00:00';
+                    $dateOut = $date . '-07-01';
                     break;
                 case static::$renderYears['december_31']:
-                    $dateOut = $date . '-12-31' . 'T00:00:00+00:00';
+                    $dateOut = $date . '-12-31';
                     break;
                 case static::$renderYears['june_30']:
-                    $dateOut = $date . '-06-30' . 'T00:00:00+00:00';
+                    $dateOut = $date . '-06-30';
                     break;
                 case static::$renderYears['full_year']:
                     // Render a year as a range: use timeline_convert_single_date().
@@ -665,10 +665,19 @@ trait TraitTimelineData
             return $dateOut;
         }
 
+        // Keep the time part only when a meaningful (non-midnight)
+        // time is present. Dates like "2006-07-01T00:00:00" from
+        // numeric:timestamp are treated as date-only.
+        $hasTime = (bool) preg_match(
+            '/T(?!00:00:00)\d/', $date
+        );
+
         try {
             $dateTime = new DateTime($date);
 
-            $dateOut = $dateTime->format(DateTime::ISO8601);
+            $dateOut = $hasTime
+                ? $dateTime->format(DateTime::ISO8601)
+                : $dateTime->format('Y-m-d');
             $dateOut = preg_replace('/^(-?)(\d{3}-)/', '${1}0\2', $dateOut);
             $dateOut = preg_replace('/^(-?)(\d{2}-)/', '${1}00\2', $dateOut);
             $dateOut = preg_replace('/^(-?)(\d{1}-)/', '${1}000\2', $dateOut);
@@ -884,5 +893,181 @@ trait TraitTimelineData
         $id = preg_replace('/[^\w\-]/', '', $id);
         $id = trim($id, $delimiter);
         return strlen((string) $prepend) ? $prepend . $delimiter . $id : $id;
+    }
+
+    /**
+     * Convert an EDTF value (string or ValueRepresentation) to ISO-8601 dates.
+     *
+     * Return [null, null] when the value cannot be parsed or when the EDTF
+     * library is not available.
+     *
+     * Intervals are mapped to their start/end dates. Imprecise values (year
+     * only, season, set, partial dates) are expanded to the full covered
+     * period.
+     */
+    protected function convertEdtfValue($value): array
+    {
+        if (!class_exists(\EDTF\EdtfFactory::class)) {
+            return [null, null];
+        }
+        $raw = is_object($value) ? (string) $value->value() : (string) $value;
+        if ($raw === '') {
+            return [null, null];
+        }
+        try {
+            $result = \EDTF\EdtfFactory::newParser()->parse($raw);
+        } catch (\Throwable $e) {
+            return [null, null];
+        }
+        if (!$result->isValid()) {
+            return [null, null];
+        }
+        $edtf = $result->getEdtfValue();
+
+        if ($edtf instanceof \EDTF\Model\Interval) {
+            $start = $edtf->hasStartDate()
+                ? $this->edtfNodeToIsoRange($edtf->getStartDate())
+                : [null, null];
+            $end = $edtf->hasEndDate()
+                ? $this->edtfNodeToIsoRange($edtf->getEndDate())
+                : [null, null];
+            $dateStart = $start[0] ?? null;
+            $dateEnd = $end[1] ?? $end[0] ?? null;
+            return [$dateStart, $dateEnd];
+        }
+
+        [$min, $max] = $this->edtfNodeToIsoRange($edtf);
+        if ($min === null) {
+            return [null, null];
+        }
+        return $min === $max ? [$min, null] : [$min, $max];
+    }
+
+    /**
+     * Return [minIso, maxIso] for a non-Interval EDTF node.
+     */
+    protected function edtfNodeToIsoRange($node): array
+    {
+        if ($node instanceof \EDTF\Model\ExtDateTime) {
+            $year = $node->getYear();
+            if ($year === null) {
+                return [null, null];
+            }
+            $y = $this->padYear($year);
+            $hour = $node->getHour();
+            // Include time only when explicitly set.
+            if ($hour !== null) {
+                $iso = sprintf(
+                    '%s-%02d-%02dT%02d:%02d:%02d+00:00',
+                    $y,
+                    $node->getMonth() ?? 1,
+                    $node->getDay() ?? 1,
+                    $hour,
+                    $node->getMinute() ?? 0,
+                    $node->getSecond() ?? 0
+                );
+            } else {
+                $iso = sprintf(
+                    '%s-%02d-%02d',
+                    $y,
+                    $node->getMonth() ?? 1,
+                    $node->getDay() ?? 1
+                );
+            }
+            return [$iso, $iso];
+        }
+        if ($node instanceof \EDTF\Model\ExtDate) {
+            $year = $node->getYear();
+            if ($year === null) {
+                return [null, null];
+            }
+            $month = $node->getMonth();
+            $day = $node->getDay();
+            $y = $this->padYear($year);
+            // Keep partial dates as-is so the timeline shows a point, not an
+            // expanded range.
+            if ($day !== null && $month !== null) {
+                $iso = sprintf('%s-%02d-%02d', $y, $month, $day);
+                return [$iso, $iso];
+            }
+            if ($month !== null) {
+                $iso = sprintf('%s-%02d', $y, $month);
+                return [$iso, $iso];
+            }
+            return [$y, $y];
+        }
+        if ($node instanceof \EDTF\Model\Season) {
+            $year = $node->getYear();
+            $startMonth = $node->getStartMonth();
+            $endMonth = $node->getEndMonth();
+            $y = $this->padYear($year);
+            $min = sprintf('%s-%02d-01', $y, $startMonth);
+            if ($endMonth < $startMonth) {
+                $yEnd = $this->padYear($year + 1);
+                $last = $this->getLastDay($year + 1, $endMonth);
+                $max = sprintf('%s-%02d-%02d', $yEnd, $endMonth, $last);
+            } else {
+                $last = $this->getLastDay($year, $endMonth);
+                $max = sprintf('%s-%02d-%02d', $y, $endMonth, $last);
+            }
+            return [$min, $max];
+        }
+        if ($node instanceof \EDTF\Model\Set) {
+            $min = null;
+            $max = null;
+            foreach ($node->getElements() as $element) {
+                $inner = method_exists($element, 'getDate') ? $element->getDate() : $element;
+                [$lo, $hi] = $this->edtfNodeToIsoRange($inner);
+                if ($lo !== null && ($min === null || $lo < $min)) {
+                    $min = $lo;
+                }
+                if ($hi !== null && ($max === null || $hi > $max)) {
+                    $max = $hi;
+                }
+            }
+            return [$min, $max];
+        }
+        return [null, null];
+    }
+
+    protected function padYear(int $year): string
+    {
+        return $year < 0
+            ? '-' . str_pad((string) abs($year), 4, '0', STR_PAD_LEFT)
+            : str_pad((string) $year, 4, '0', STR_PAD_LEFT);
+    }
+
+    /**
+     * Return a human-readable label for an EDTF date string.
+     *
+     * Use DataTypeEdtf humanizer when available, otherwise return raw EDTF
+     * string.
+     */
+    protected function humanizeEdtf(string $raw): string
+    {
+        static $humanizer;
+        static $checked = false;
+
+        if (!$checked) {
+            $checked = true;
+            if (class_exists(\DataTypeEdtf\Humanizer\FrenchUsage::class)) {
+                $humanizer = new \DataTypeEdtf\Humanizer\FrenchUsage();
+            }
+        }
+        if (!$humanizer
+            || !class_exists(\EDTF\EdtfFactory::class)
+        ) {
+            return $raw;
+        }
+
+        try {
+            $result = \EDTF\EdtfFactory::newParser()->parse($raw);
+            if (!$result->isValid()) {
+                return $raw;
+            }
+            return $humanizer->humanize($raw, $result->getEdtfValue());
+        } catch (\Throwable $e) {
+            return $raw;
+        }
     }
 }

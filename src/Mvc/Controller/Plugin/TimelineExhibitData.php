@@ -577,6 +577,10 @@ class TimelineExhibitData extends AbstractPlugin
 
         $date = $slideData['resource']->value($this->startDateProperty, ['type' => 'numeric:interval']);
         if (!$date) {
+            $edtfValue = $slideData['resource']->value($this->startDateProperty, ['type' => 'edtf']);
+            if ($edtfValue) {
+                return $this->edtfIntervalToSlide($edtfValue, $slideData);
+            }
             return null;
         }
 
@@ -610,6 +614,37 @@ class TimelineExhibitData extends AbstractPlugin
 
         $interval['display_date'] = $slideData['display_date']
             ?: $startDate['date']->format($startDate['format_render']) . ' - ' . $endDate['date']->format($endDate['format_render']);
+        return $interval;
+    }
+
+    /**
+     * Build an interval from an EDTF value for a slide.
+     */
+    protected function edtfIntervalToSlide($edtfValue, array $slideData): ?array
+    {
+        [$startIso, $endIso] = $this->convertEdtfValue($edtfValue);
+        if ($startIso === null) {
+            return null;
+        }
+        if ($endIso === null) {
+            $endIso = $startIso;
+        }
+        $startParts = $this->date($startIso);
+        $endParts = $this->date($endIso);
+        if (!$startParts || !$endParts) {
+            return null;
+        }
+        $interval = [
+            'start_date' => $startParts,
+            'end_date' => $endParts,
+        ];
+        if (!empty($slideData['start_display_date'])) {
+            $interval['start_date']['display_date'] = $slideData['start_display_date'];
+        }
+        if (!empty($slideData['end_display_date'])) {
+            $interval['end_date']['display_date'] = $slideData['end_display_date'];
+        }
+        $interval['display_date'] = $slideData['display_date'] ?: (string) $edtfValue->value();
         return $interval;
     }
 

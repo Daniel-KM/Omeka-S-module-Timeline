@@ -129,7 +129,22 @@ abstract class AbstractTimelineData extends AbstractPlugin
             foreach ($itemDates as $key => $valueItemDate) {
                 $event = [];
                 $itemDate = $valueItemDate->value();
-                if (empty($itemDatesEnd[$key])) {
+                $isEdtfStart = $valueItemDate->type() === 'edtf';
+                $isEdtfEnd = !empty($itemDatesEnd[$key]) && $itemDatesEnd[$key]->type() === 'edtf';
+                if ($isEdtfStart || $isEdtfEnd) {
+                    [$dateStart, $dateEnd] = $isEdtfStart
+                        ? $this->convertEdtfValue($valueItemDate)
+                        : $this->convertAnyDate($itemDate, $this->renderYear);
+                    if (!empty($itemDatesEnd[$key])) {
+                        if ($isEdtfEnd) {
+                            [$s2, $e2] = $this->convertEdtfValue($itemDatesEnd[$key]);
+                            $dateEnd = $e2 ?? $s2 ?? $dateEnd;
+                        } else {
+                            [, $dateEnd2] = $this->convertTwoDates('', $itemDatesEnd[$key]->value(), $this->renderYear);
+                            $dateEnd = $dateEnd2 ?? $dateEnd;
+                        }
+                    }
+                } elseif (empty($itemDatesEnd[$key])) {
                     [$dateStart, $dateEnd] = $this->convertAnyDate($itemDate, $this->renderYear);
                 } else {
                     [$dateStart, $dateEnd] = $this->convertTwoDates($itemDate, $itemDatesEnd[$key]->value(), $this->renderYear);
@@ -141,6 +156,9 @@ abstract class AbstractTimelineData extends AbstractPlugin
                     $event['start_date'] = $this->dateToArray($dateStart);
                     if ($dateEnd !== null) {
                         $event['end_date'] = $this->dateToArray($dateEnd);
+                    }
+                    if ($isEdtfStart) {
+                        $event['start_date']['display_date'] = $this->humanizeEdtf($itemDate);
                     }
                     $event['text'] = [
                         'headline' => '<a href=' . $itemLink . '>' . $itemTitle . '</a>',

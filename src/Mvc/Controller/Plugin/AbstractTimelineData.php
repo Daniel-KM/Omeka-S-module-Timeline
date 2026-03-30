@@ -43,9 +43,9 @@ abstract class AbstractTimelineData extends AbstractPlugin
 
         $this->renderYear = $args['render_year'] ?? static::$renderYears['default'];
 
-        $propertyItemTitle = $args['item_title'] === 'default' ? '' : $args['item_title'];
-        $propertyItemDescription = $args['item_description'] === 'default' ? '' : $args['item_description'];
-        $propertyItemDate = $args['item_date'];
+        $propertyItemTitle = ($args['item_title'] ?? 'default') === 'default' ? '' : $args['item_title'];
+        $propertyItemDescription = ($args['item_description'] ?? 'default') === 'default' ? '' : $args['item_description'];
+        $propertyItemDate = $args['item_date'] ?? 'dcterms:date';
         $propertyItemDateVa = !empty($args['item_date_va'])
             ? $args['item_date_va']
             : null;

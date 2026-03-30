@@ -37,10 +37,10 @@ composer install --no-dev
 
 Then install it like any other Omeka module and follow the config instructions.
 
-**WARNING**: If Omeka is https, if external assets are used, and if the Simile library
-is used, the library will not load on recent browsers, because the online
-library contains an url with unsecure http. In that case, you need to set the
-option "Use Internal library for Simile", that is the default anyway.
+**WARNING**: If Omeka is https, if external assets are used, and if the Simile
+library is used, the library will not load on recent browsers, because the
+online library contains an url with unsecure http. In that case, you need to set
+the option "Use Internal library for Simile", that is the default anyway.
 
 * For test
 
@@ -118,11 +118,11 @@ Creating a timeline is a two-step process:
 2. To choose which items appear on your timeline, fill the "Item Pool" form. The
   options are the same than in the config by default (see above).
 
-  ![Timeline Block](https://gitlab.com/Daniel-KM/Omeka-S-module-Timeline/blob/master/data/readme/timeline-block-v3-4.png)
+  ![Timeline Block](data/readme/timeline-block-v3-4.png)
 
 Ready! Open the page.
 
-  ![Timeline Page](https://gitlab.com/Daniel-KM/Omeka-S-module-Timeline/blob/master/data/readme/timeline-page-v3-4.png)
+  ![Timeline Page](data/readme/timeline-page-v3-4.png)
 
 **Important**: The number of items should be limited according to the memory of
 the server: currently, the json output is created in one shot, so it can't
@@ -175,6 +175,25 @@ This parameter applies with a range of dates too, for example `1939/1945`.
 
 In all cases, it’s recommended to follow the standard [ISO 8601] as much as
 possible and to be as specific as possible.
+
+### EDTF dates (Extended Date/Time Format)
+
+When the module [DataTypeEdtf] is installed, EDTF dates are fully supported:
+intervals, seasons, approximate dates, centuries (`17XX`), and decades (`192X`).
+
+On the Knightlab timeline, EDTF dates are displayed with a human-readable label
+(via the `display_date` field).
+
+### Value annotations as date source
+
+Dates can be extracted from value annotations instead of direct item values.
+For example, if an item has `dcterms:creator` values with a `dcterms:date` in
+each value annotation, the timeline block can be configured to use these
+annotated dates. In the block settings, select the source property (e.g.
+`dcterms:creator`) as "Item date", then select the annotation property (e.g.
+`dcterms:date`) in the "value annotation property" field below it.
+
+Only the first annotated value is used per item.
 
 ### Parameters of the viewer
 
@@ -392,6 +411,7 @@ and the [Curiothèque] of the [Institut Curie].
 [spreadsheet formatted as indicated]: https://timeline.knightlab.com/docs/using-spreadsheets.html
 [example of use]: https://docs.neatline.org/working-with-the-simile-timeline-widget.html
 [examples]: http://www.simile-widgets.org/timeline/examples/index.html
+[DataTypeEdtf]: https://gitlab.com/Daniel-KM/Omeka-S-module-DataTypeEdtf
 [Common]: https://gitlab.com/Daniel-KM/Omeka-S-module-Common
 [module issues]: https://gitlab.com/Daniel-KM/Omeka-S-module-Timeline/-/issues
 [CeCILL v2.1]: https://www.cecill.info/licences/Licence_CeCILL_V2.1-en.html

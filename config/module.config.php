@@ -144,7 +144,9 @@ return [
             ],
             'timelineExhibit' => [
                 'start_date_property' => 'dcterms:date',
+                'start_date_property_va' => null,
                 'end_date_property' => null,
+                'end_date_property_va' => null,
                 'credit_property' => 'dcterms:creator',
                 'item_metadata' => [],
                 'group' => null,

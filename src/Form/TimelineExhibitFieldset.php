@@ -36,6 +36,22 @@ class TimelineExhibitFieldset extends Fieldset
                 ],
             ])
             ->add([
+                'name' => 'o:block[__blockIndex__][o:data][start_date_property_va]',
+                'type' => OmekaElement\PropertySelect::class,
+                'options' => [
+                    'label' => 'Start date: value annotation property', // @translate
+                    'info' => 'If set, the start date will be extracted from the value annotation of the start date property above.', // @translate
+                    'empty_option' => '',
+                    'term_as_value' => true,
+                ],
+                'attributes' => [
+                    'id' => 'timeline-exhibit-start-date-property-va',
+                    'required' => false,
+                    'class' => 'chosen-select',
+                    'data-placeholder' => 'Select a property…', // @translate
+                ],
+            ])
+            ->add([
                 'name' => 'o:block[__blockIndex__][o:data][end_date_property]',
                 'type' => OmekaElement\PropertySelect::class,
                 'options' => [
@@ -49,6 +65,22 @@ class TimelineExhibitFieldset extends Fieldset
                     'class' => 'chosen-select',
                     'data-placeholder' => 'Select a property…', // @translate
                     'value' => 'dcterms:date',
+                ],
+            ])
+            ->add([
+                'name' => 'o:block[__blockIndex__][o:data][end_date_property_va]',
+                'type' => OmekaElement\PropertySelect::class,
+                'options' => [
+                    'label' => 'End date: value annotation property', // @translate
+                    'info' => 'If set, the end date will be extracted from the value annotation of the end date property above.', // @translate
+                    'empty_option' => '',
+                    'term_as_value' => true,
+                ],
+                'attributes' => [
+                    'id' => 'timeline-exhibit-end-date-property-va',
+                    'required' => false,
+                    'class' => 'chosen-select',
+                    'data-placeholder' => 'Select a property…', // @translate
                 ],
             ])
             ->add([

@@ -95,6 +95,23 @@ class SettingsFieldset extends Fieldset
                 ],
             ])
             ->add([
+                'name' => 'timeline_item_date_va',
+                'type' => CommonElement\OptionalPropertySelect::class,
+                'options' => [
+                    'element_group' => 'timeline',
+                    'label' => 'Item date: value annotation property', // @translate
+                    'info' => 'If set, the date will be extracted from the value annotation of the item date property above.', // @translate
+                    'empty_option' => '',
+                    'term_as_value' => true,
+                ],
+                'attributes' => [
+                    'id' => 'timeline-item-date-va',
+                    'required' => false,
+                    'class' => 'chosen-select',
+                    'data-placeholder' => 'Select a property…', // @translate
+                ],
+            ])
+            ->add([
                 'name' => 'timeline_item_date_end',
                 'type' => CommonElement\OptionalPropertySelect::class,
                 'options' => [
@@ -106,6 +123,23 @@ class SettingsFieldset extends Fieldset
                 ],
                 'attributes' => [
                     'id' => 'timeline-item-date-end',
+                    'class' => 'chosen-select',
+                    'data-placeholder' => 'Select a property…', // @translate
+                ],
+            ])
+            ->add([
+                'name' => 'timeline_item_date_end_va',
+                'type' => CommonElement\OptionalPropertySelect::class,
+                'options' => [
+                    'element_group' => 'timeline',
+                    'label' => 'Item end date: value annotation property', // @translate
+                    'info' => 'If set, the end date will be extracted from the value annotation of the item end date property above.', // @translate
+                    'empty_option' => '',
+                    'term_as_value' => true,
+                ],
+                'attributes' => [
+                    'id' => 'timeline-item-date-end-va',
+                    'required' => false,
                     'class' => 'chosen-select',
                     'data-placeholder' => 'Select a property…', // @translate
                 ],
@@ -154,6 +188,23 @@ class SettingsFieldset extends Fieldset
                     'multiple' => false,
                     'class' => 'chosen-select',
                     'data-placeholder' => 'Select a metadata…', // @translate
+                ],
+            ])
+            ->add([
+                'name' => 'timeline_group_va',
+                'type' => CommonElement\OptionalPropertySelect::class,
+                'options' => [
+                    'element_group' => 'timeline',
+                    'label' => 'Group: value annotation property', // @translate
+                    'info' => 'If set, the group will be extracted from the value annotation of the group property above.', // @translate
+                    'empty_option' => '',
+                    'term_as_value' => true,
+                ],
+                'attributes' => [
+                    'id' => 'timeline-group-va',
+                    'required' => false,
+                    'class' => 'chosen-select',
+                    'data-placeholder' => 'Select a property…', // @translate
                 ],
             ])
             ->add([

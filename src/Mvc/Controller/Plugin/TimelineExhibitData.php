@@ -77,6 +77,16 @@ class TimelineExhibitData extends AbstractPlugin
     protected $endDateProperty = null;
 
     /**
+     * @var string
+     */
+    protected $startDatePropertyVa = null;
+
+    /**
+     * @var string
+     */
+    protected $endDatePropertyVa = null;
+
+    /**
      * @var array
      */
     protected $fieldsItem = [];
@@ -137,7 +147,11 @@ class TimelineExhibitData extends AbstractPlugin
     public function __invoke(array $args): array
     {
         $this->startDateProperty = $args['start_date_property'];
+        $this->startDatePropertyVa = !empty($args['start_date_property_va'])
+            ? $args['start_date_property_va'] : null;
         $this->endDateProperty = $args['end_date_property'];
+        $this->endDatePropertyVa = !empty($args['end_date_property_va'])
+            ? $args['end_date_property_va'] : null;
         $this->creditProperty = $args['credit_property'];
         $this->isCosmological = (bool) $args['scale'] === 'cosmological';
         $this->fieldsItem = $args['item_metadata'] ?? [];
@@ -548,7 +562,7 @@ class TimelineExhibitData extends AbstractPlugin
         if (empty($slideData['start_date'])) {
             return empty($slideData['resource']) || empty($this->startDateProperty)
                 ? null
-                : $this->resourceDate($slideData['resource'], $this->startDateProperty, $slideData['start_display_date']);
+                : $this->resourceDate($slideData['resource'], $this->startDateProperty, $slideData['start_display_date'], $this->startDatePropertyVa);
         }
         return $this->date($slideData['start_date'], $slideData['start_display_date']);
     }
@@ -561,7 +575,7 @@ class TimelineExhibitData extends AbstractPlugin
         if (empty($slideData['end_date'])) {
             return empty($slideData['resource']) || empty($this->endDateProperty)
                 ? null
-                : $this->resourceDate($slideData['resource'], $this->endDateProperty, $slideData['end_display_date']);
+                : $this->resourceDate($slideData['resource'], $this->endDateProperty, $slideData['end_display_date'], $this->endDatePropertyVa);
         }
         return $this->date($slideData['end_date'], $slideData['end_display_date']);
     }
@@ -575,39 +589,72 @@ class TimelineExhibitData extends AbstractPlugin
             return null;
         }
 
-        $date = $slideData['resource']->value($this->startDateProperty, ['type' => 'numeric:interval']);
-        if (!$date) {
-            $edtfValue = $slideData['resource']->value($this->startDateProperty, ['type' => 'edtf']);
-            if ($edtfValue) {
-                return $this->edtfIntervalToSlide($edtfValue, $slideData);
+        // When using value annotations, search within the
+        // annotations of the source property.
+        if ($this->startDatePropertyVa) {
+            $sourceValues = $slideData['resource']->value(
+                $this->startDateProperty, ['all' => true]
+            );
+            foreach ($sourceValues as $sourceValue) {
+                $annotation = $sourceValue->valueAnnotation();
+                if (!$annotation) {
+                    continue;
+                }
+                $date = $annotation->value(
+                    $this->startDatePropertyVa,
+                    ['type' => 'numeric:interval']
+                );
+                if ($date) {
+                    break;
+                }
+                $edtfValue = $annotation->value(
+                    $this->startDatePropertyVa,
+                    ['type' => 'edtf']
+                );
+                if ($edtfValue) {
+                    return $this->edtfIntervalToSlide(
+                        $edtfValue, $slideData
+                    );
+                }
             }
-            return null;
+            if (empty($date)) {
+                return null;
+            }
+        } else {
+            $date = $slideData['resource']->value($this->startDateProperty, ['type' => 'numeric:interval']);
+            if (!$date) {
+                $edtfValue = $slideData['resource']->value($this->startDateProperty, ['type' => 'edtf']);
+                if ($edtfValue) {
+                    return $this->edtfIntervalToSlide($edtfValue, $slideData);
+                }
+                return null;
+            }
         }
 
         [$start, $end] = explode('/', $date->value());
 
         $startDate = Timestamp::getDateTimeFromValue($start);
-        $interval['start_date'] = [
+        $interval['start_date'] = array_filter([
             'year' => $startDate['year'],
             'month' => $startDate['month'],
             'day' => $startDate['day'],
             'hour' => $startDate['hour'],
             'minute' => $startDate['minute'],
             'second' => $startDate['second'],
-        ];
+        ], fn ($v) => $v !== null);
         if ($slideData['start_display_date']) {
             $interval['start_date']['display_date'] = $slideData['start_display_date'];
         }
 
         $endDate = Timestamp::getDateTimeFromValue($end, false);
-        $interval['end_date'] = [
+        $interval['end_date'] = array_filter([
             'year' => $endDate['year'],
-            'month' => $endDate['month_normalized'],
-            'day' => $endDate['day_normalized'],
-            'hour' => $endDate['hour_normalized'],
-            'minute' => $endDate['minute_normalized'],
-            'second' => $endDate['second_normalized'],
-        ];
+            'month' => isset($endDate['month']) ? $endDate['month_normalized'] : null,
+            'day' => isset($endDate['day']) ? $endDate['day_normalized'] : null,
+            'hour' => isset($endDate['hour']) ? $endDate['hour_normalized'] : null,
+            'minute' => isset($endDate['minute']) ? $endDate['minute_normalized'] : null,
+            'second' => isset($endDate['second']) ? $endDate['second_normalized'] : null,
+        ], fn ($v) => $v !== null);
         if ($slideData['end_display_date']) {
             $interval['end_date']['display_date'] = $slideData['end_display_date'];
         }
@@ -626,14 +673,11 @@ class TimelineExhibitData extends AbstractPlugin
         if ($startIso === null) {
             return null;
         }
-        if ($endIso === null) {
-            $endIso = $startIso;
-        }
         $startParts = $this->date($startIso);
-        $endParts = $this->date($endIso);
-        if (!$startParts || !$endParts) {
+        if (!$startParts) {
             return null;
         }
+        $endParts = $endIso !== null ? $this->date($endIso) : null;
         $interval = [
             'start_date' => $startParts,
             'end_date' => $endParts,
@@ -654,8 +698,33 @@ class TimelineExhibitData extends AbstractPlugin
      * @param AbstractResourceEntityRepresentation $resource
      * @param string $dateProperty
      */
-    protected function resourceDate(AbstractResourceEntityRepresentation $resource, $dateProperty, ?string $displayDate = null): ?array
-    {
+    protected function resourceDate(
+        AbstractResourceEntityRepresentation $resource,
+        $dateProperty,
+        ?string $displayDate = null,
+        ?string $vaProperty = null
+    ): ?array {
+        if ($vaProperty) {
+            $sourceValues = $resource->value(
+                $dateProperty, ['all' => true]
+            );
+            foreach ($sourceValues as $sourceValue) {
+                $annotation = $sourceValue->valueAnnotation();
+                if (!$annotation) {
+                    continue;
+                }
+                $annValues = $annotation->value(
+                    $vaProperty, ['all' => true]
+                );
+                foreach ($annValues as $annValue) {
+                    $date = $this->date($annValue, $displayDate);
+                    if (is_array($date)) {
+                        return $date;
+                    }
+                }
+            }
+            return null;
+        }
         $dates = $resource->value($dateProperty, ['all' => true]);
         foreach ($dates as $date) {
             $date = $this->date($date, $displayDate);

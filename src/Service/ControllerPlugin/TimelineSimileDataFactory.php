@@ -10,11 +10,12 @@ class TimelineSimileDataFactory implements FactoryInterface
 {
     public function __invoke(ContainerInterface $services, $name, ?array $options = null)
     {
-        $plugins = $services->get('ControllerPluginManager');
         return new TimelineSimileData(
             $services->get('Omeka\ApiManager'),
             $services->get('Common\EasyMeta'),
-            $plugins->get('translate')
+            $services->get('Omeka\Settings'),
+            $services->get('Omeka\Settings\Site'),
+            $services->get('MvcTranslator')
         );
     }
 }

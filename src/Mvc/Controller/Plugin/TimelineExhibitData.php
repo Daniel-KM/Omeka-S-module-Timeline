@@ -4,12 +4,14 @@ namespace Timeline\Mvc\Controller\Plugin;
 
 use Common\Stdlib\EasyMeta;
 use Laminas\Mvc\Controller\Plugin\AbstractPlugin;
+use Laminas\Mvc\I18n\Translator;
 use Laminas\Uri\Http as HttpUri;
 use NumericDataTypes\DataType\Timestamp;
 use Omeka\Api\Manager as ApiManager;
 use Omeka\Api\Representation\AbstractResourceEntityRepresentation;
-use Omeka\Mvc\Controller\Plugin\Translate;
 use Omeka\Api\Representation\MediaRepresentation;
+use Omeka\Settings\Settings;
+use Omeka\Settings\SiteSettings;
 
 /**
  * Create an exhibit for Knightlab timeline.
@@ -62,9 +64,19 @@ class TimelineExhibitData extends AbstractPlugin
     protected $easyMeta;
 
     /**
-     * @var \Omeka\Mvc\Controller\Plugin\Translate
+     * @var \Omeka\Settings\Settings
      */
-    protected $translate;
+    protected $settings;
+
+    /**
+     * @var \Omeka\Settings\SiteSettings
+     */
+    protected $siteSettings;
+
+    /**
+     * @var \Laminas\Mvc\I18n\Translator
+     */
+    protected $translator;
 
     /**
      * @var string
@@ -134,11 +146,18 @@ class TimelineExhibitData extends AbstractPlugin
      */
     protected $startDateProperty = 'dcterms:date';
 
-    public function __construct(ApiManager $api, EasyMeta $easyMeta, Translate $translate)
-    {
+    public function __construct(
+        ApiManager $api,
+        EasyMeta $easyMeta,
+        Settings $settings,
+        SiteSettings $siteSettings,
+        Translator $translator
+    ) {
         $this->api = $api;
         $this->easyMeta = $easyMeta;
-        $this->translate = $translate;
+        $this->settings = $settings;
+        $this->siteSettings = $siteSettings;
+        $this->translator = $translator;
     }
 
     /**
@@ -148,10 +167,12 @@ class TimelineExhibitData extends AbstractPlugin
     {
         $this->startDateProperty = $args['start_date_property'];
         $this->startDatePropertyVa = !empty($args['start_date_property_va'])
-            ? $args['start_date_property_va'] : null;
+            ? $args['start_date_property_va']
+            : null;
         $this->endDateProperty = $args['end_date_property'];
         $this->endDatePropertyVa = !empty($args['end_date_property_va'])
-            ? $args['end_date_property_va'] : null;
+            ? $args['end_date_property_va']
+            : null;
         $this->creditProperty = $args['credit_property'];
         $this->isCosmological = (bool) $args['scale'] === 'cosmological';
         $this->fieldsItem = $args['item_metadata'] ?? [];
@@ -239,7 +260,7 @@ class TimelineExhibitData extends AbstractPlugin
         }
 
         // Append markers.
-        $groupLabel = $this->translate->__invoke('Events'); // @translate
+        $groupLabel = $this->translator->translate('Events'); // @translate
         foreach ($markers as $markerData) {
             $markerData['group'] = $groupLabel;
             $timeline['events'][] = $markerData;
@@ -589,8 +610,8 @@ class TimelineExhibitData extends AbstractPlugin
             return null;
         }
 
-        // When using value annotations, search within the
-        // annotations of the source property.
+        // When using value annotations, search within the annotations of the
+        // source property.
         if ($this->startDatePropertyVa) {
             $sourceValues = $slideData['resource']->value(
                 $this->startDateProperty, ['all' => true]
@@ -673,10 +694,12 @@ class TimelineExhibitData extends AbstractPlugin
         if ($startIso === null) {
             return null;
         }
+
         $startParts = $this->date($startIso);
         if (!$startParts) {
             return null;
         }
+
         $endParts = $endIso !== null ? $this->date($endIso) : null;
         $interval = [
             'start_date' => $startParts,

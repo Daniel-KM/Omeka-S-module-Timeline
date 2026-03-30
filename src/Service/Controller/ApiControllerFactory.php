@@ -14,6 +14,7 @@ class ApiControllerFactory implements FactoryInterface
             $services->get('Omeka\Paginator'),
             $services->get('Omeka\ApiManager'),
             $services->get('Omeka\EntityManager'),
+            $services->get('Omeka\Settings\Site'),
             $services->get('Config')['timeline']
         );
     }

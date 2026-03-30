@@ -43,6 +43,16 @@ trait TraitTimelineData
     protected $yearMax = 292277026595;
 
     /**
+     * @var object|null Cached EDTF humanizer instance.
+     */
+    protected $edtfHumanizer;
+
+    /**
+     * @var bool Whether the EDTF humanizer has been resolved.
+     */
+    protected $edtfHumanizerResolved = false;
+
+    /**
      * ISO 8601 datetime pattern
      *
      * The standard permits the expansion of the year representation beyond
@@ -93,7 +103,7 @@ trait TraitTimelineData
             return $resource->resourceClass();
         } elseif ($field === 'resource_class_label') {
             $value = $resource->resourceClass();
-            return $value ? $this->translate->__invoke($value->label()) : null;
+            return $value ? $this->translator->translate($value->label()) : null;
         } elseif ($field === 'resource_template_label') {
             $value = $resource->resourceTemplate();
             return $value ? $value->label() : null;
@@ -120,7 +130,7 @@ trait TraitTimelineData
             } elseif ($field === 'resource_class_label') {
                 $value = $resource->resourceClass();
                 if ($value) {
-                    $result['o:resource_class'][] = ['value' => $this->translate->__invoke($value->label())];
+                    $result['o:resource_class'][] = ['value' => $this->translator->translate($value->label())];
                 }
             } elseif ($field === 'resource_template_label') {
                 $value = $resource->resourceTemplate();
@@ -910,18 +920,22 @@ trait TraitTimelineData
         if (!class_exists(\EDTF\EdtfFactory::class)) {
             return [null, null];
         }
+
         $raw = is_object($value) ? (string) $value->value() : (string) $value;
         if ($raw === '') {
             return [null, null];
         }
+
         try {
             $result = \EDTF\EdtfFactory::newParser()->parse($raw);
         } catch (\Throwable $e) {
             return [null, null];
         }
+
         if (!$result->isValid()) {
             return [null, null];
         }
+
         $edtf = $result->getEdtfValue();
 
         if ($edtf instanceof \EDTF\Model\Interval) {
@@ -940,7 +954,10 @@ trait TraitTimelineData
         if ($min === null) {
             return [null, null];
         }
-        return $min === $max ? [$min, null] : [$min, $max];
+
+        return $min === $max
+            ? [$min, null]
+            : [$min, $max];
     }
 
     /**
@@ -1076,23 +1093,14 @@ trait TraitTimelineData
     /**
      * Return a human-readable label for an EDTF date string.
      *
-     * Use DataTypeEdtf humanizer when available, otherwise return raw EDTF
-     * string.
+     * Uses the same humanizer as the DataTypeEdtf module when available
+     * (respecting the datatypeedtf_humanizer setting, site-level first then
+     * global), otherwise falls back to the library's built-in humanizer
+     * for the current locale. Returns the raw EDTF string on error.
      */
     protected function humanizeEdtf(string $raw): string
     {
-        static $humanizer;
-        static $checked = false;
-
-        if (!$checked) {
-            $checked = true;
-            if (class_exists(\DataTypeEdtf\Humanizer\FrenchUsage::class)) {
-                $humanizer = new \DataTypeEdtf\Humanizer\FrenchUsage();
-            }
-        }
-        if (!$humanizer
-            || !class_exists(\EDTF\EdtfFactory::class)
-        ) {
+        if (!class_exists(\EDTF\EdtfFactory::class)) {
             return $raw;
         }
 
@@ -1101,9 +1109,65 @@ trait TraitTimelineData
             if (!$result->isValid()) {
                 return $raw;
             }
-            return $humanizer->humanize($raw, $result->getEdtfValue());
+            $humanizer = $this->resolveEdtfHumanizer();
+            if ($humanizer instanceof \DataTypeEdtf\Humanizer\FrenchUsage) {
+                return $humanizer->humanize($raw, $result->getEdtfValue());
+            }
+            if ($humanizer) {
+                return $humanizer->humanize($result->getEdtfValue());
+            }
         } catch (\Throwable $e) {
-            return $raw;
+            // Fall through.
         }
+        return $raw;
+    }
+
+    /**
+     * Resolve and cache the EDTF humanizer for the current request,
+     * respecting the DataTypeEdtf site/global setting.
+     */
+    protected function resolveEdtfHumanizer()
+    {
+        if ($this->edtfHumanizerResolved) {
+            return $this->edtfHumanizer;
+        }
+        $this->edtfHumanizerResolved = true;
+
+        // Read the DataTypeEdtf style setting: site first, then global.
+        $style = null;
+        try {
+            $style = $this->siteSettings->get('datatypeedtf_humanizer');
+        } catch (\Throwable $e) {
+            // Not in a site context.
+        }
+        if ($style === null || $style === '') {
+            $style = $this->settings->get('datatypeedtf_humanizer', 'library');
+        }
+
+        if ($style === 'fr_usage'
+            && class_exists(\DataTypeEdtf\Humanizer\FrenchUsage::class)
+        ) {
+            $this->edtfHumanizer = new \DataTypeEdtf\Humanizer\FrenchUsage();
+            return $this->edtfHumanizer;
+        }
+
+        // Fallback: library's built-in humanizer for the current locale.
+        $locale = null;
+        try {
+            $locale = $this->siteSettings->get('locale');
+        } catch (\Throwable $e) {
+            // Not in a site context.
+        }
+        if (!$locale) {
+            $locale = $this->settings->get('locale', 'en');
+        }
+        try {
+            $this->edtfHumanizer = \EDTF\EdtfFactory::newHumanizerForLanguage(
+                $locale ?: 'en'
+            );
+        } catch (\Throwable $e) {
+            $this->edtfHumanizer = null;
+        }
+        return $this->edtfHumanizer;
     }
 }

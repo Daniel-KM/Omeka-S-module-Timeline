@@ -4,9 +4,11 @@ namespace Timeline\Mvc\Controller\Plugin;
 
 use Common\Stdlib\EasyMeta;
 use Laminas\Mvc\Controller\Plugin\AbstractPlugin;
+use Laminas\Mvc\I18n\Translator;
 use Omeka\Api\Manager as ApiManager;
 use Omeka\Api\Representation\ItemRepresentation;
-use Omeka\Mvc\Controller\Plugin\Translate;
+use Omeka\Settings\Settings;
+use Omeka\Settings\SiteSettings;
 
 abstract class AbstractTimelineData extends AbstractPlugin
 {
@@ -23,15 +25,32 @@ abstract class AbstractTimelineData extends AbstractPlugin
     protected $easyMeta;
 
     /**
-     * @var \Omeka\Mvc\Controller\Plugin\Translate
+     * @var \Omeka\Settings\Settings
      */
-    protected $translate;
+    protected $settings;
 
-    public function __construct(ApiManager $api, EasyMeta $easyMeta, Translate $translate)
-    {
+    /**
+     * @var \Omeka\Settings\SiteSettings
+     */
+    protected $siteSettings;
+
+    /**
+     * @var \Laminas\Mvc\I18n\Translator
+     */
+    protected $translator;
+
+    public function __construct(
+        ApiManager $api,
+        EasyMeta $easyMeta,
+        Settings $settings,
+        SiteSettings $siteSettings,
+        Translator $translator
+    ) {
         $this->api = $api;
         $this->easyMeta = $easyMeta;
-        $this->translate = $translate;
+        $this->settings = $settings;
+        $this->siteSettings = $siteSettings;
+        $this->translator = $translator;
     }
 
     /**
@@ -158,7 +177,16 @@ abstract class AbstractTimelineData extends AbstractPlugin
                         $event['end_date'] = $this->dateToArray($dateEnd);
                     }
                     if ($isEdtfStart) {
-                        $event['start_date']['display_date'] = $this->humanizeEdtf($itemDate);
+                        $humanized = $this->humanizeEdtf($itemDate);
+                        // When the EDTF value already expresses a range
+                        // (interval), set display_date at the event level so
+                        // Knightlab doesn't append the automatic end_date
+                        // rendering.
+                        if ($dateEnd !== null) {
+                            $event['display_date'] = $humanized;
+                        } else {
+                            $event['start_date']['display_date'] = $humanized;
+                        }
                     }
                     $event['text'] = [
                         'headline' => '<a href=' . $itemLink . '>' . $itemTitle . '</a>',
@@ -207,7 +235,7 @@ abstract class AbstractTimelineData extends AbstractPlugin
         }
 
         // Append markers.
-        $groupLabel = $this->translate->__invoke('Events'); // @translate
+        $groupLabel = $this->translator->translate('Events'); // @translate
         foreach ($markers as $markerData) {
             $markerData['group'] = $groupLabel;
             $events[] = $markerData;

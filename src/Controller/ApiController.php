@@ -7,13 +7,14 @@ use Laminas\Http\Response;
 use Omeka\Api\Manager as ApiManager;
 use Omeka\Entity\SitePageBlock;
 use Omeka\Mvc\Exception\NotFoundException;
+use Omeka\Settings\SiteSettings;
 use Omeka\Stdlib\Message;
 use Omeka\Stdlib\Paginator;
 use Omeka\View\Model\ApiJsonModel;
 
 /**
- * This controller extends the Omeka Api controller in order to manage rights
- * in the same way. This part is not a rest api (it does not manage resources).
+ * This controller extends the Omeka Api controller in order to manage rights in
+ * the same way. This part is not a rest api (it does not manage resources).
  */
 class ApiController extends \Omeka\Controller\ApiController
 {
@@ -23,15 +24,26 @@ class ApiController extends \Omeka\Controller\ApiController
     protected $entityManager;
 
     /**
+     * @var \Omeka\Settings\SiteSettings
+     */
+    protected $siteSettings;
+
+    /**
      * @var array
      */
     protected $configTimeline;
 
-    public function __construct(Paginator $paginator, ApiManager $api, EntityManager $entityManager, array $config)
-    {
+    public function __construct(
+        Paginator $paginator,
+        ApiManager $api,
+        EntityManager $entityManager,
+        SiteSettings $siteSettings,
+        array $config
+    ) {
         $this->paginator = $paginator;
         $this->api = $api;
         $this->entityManager = $entityManager;
+        $this->siteSettings = $siteSettings;
         $this->configTimeline = $config;
     }
 
@@ -58,6 +70,9 @@ class ApiController extends \Omeka\Controller\ApiController
     public function getList()
     {
         $query = $this->cleanQuery();
+        // Set the current site on SiteSettings so site-level settings (locale,
+        // humanizer style, etc.) apply.
+        $this->setCurrentSite($query['site_id'] ?? null);
         $blockId = $this->params('block-id');
         if (!$blockId) {
             $blockId = empty($query['block_id']) ? null : $query['block_id'];
@@ -131,6 +146,9 @@ class ApiController extends \Omeka\Controller\ApiController
                     ->executeQuery($sql, ['block_id' => $blockId], ['block_id' => \Doctrine\DBAL\ParameterType::INTEGER])
                     ->fetchOne();
             }
+
+            // Positioner le site courant pour les SiteSettings.
+            $this->setCurrentSiteFromSlug($blockData['site_slug']);
 
             // Get the site slug directly via the page.
             if ($layout === 'timelineExhibit') {
@@ -279,6 +297,39 @@ class ApiController extends \Omeka\Controller\ApiController
             }
         }
         return $query;
+    }
+
+    /**
+     * Set current site on SiteSettings.
+     *
+     *  It allows to get site-level settings can be read from plugins invoked
+     *  from this controller.
+     */
+    protected function setCurrentSite(?int $siteId): void
+    {
+        if ($siteId) {
+            try {
+                $this->siteSettings->setTargetId((int) $siteId);
+            } catch (\Throwable $e) {
+                // Ignore.
+            }
+        }
+    }
+
+    /**
+     * Set the current site from a slug.
+     */
+    protected function setCurrentSiteFromSlug(?string $slug): void
+    {
+        if (!$slug) {
+            return;
+        }
+        $siteId = $this->api()->searchOne(
+            'sites',
+            ['slug' => $slug],
+            ['initialize' => false, 'returnScalar' => 'id']
+        )->getContent();
+        $this->setCurrentSite($siteId ? (int) $siteId : null);
     }
 
     protected function mainTimelineData(): array

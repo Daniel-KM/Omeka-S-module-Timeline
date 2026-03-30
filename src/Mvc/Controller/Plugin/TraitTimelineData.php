@@ -981,8 +981,44 @@ trait TraitTimelineData
             if ($year === null) {
                 return [null, null];
             }
+
+            // Handle unspecified digits (17XX, 192X, 1980-XX):
+            // use getMin()/getMax() to compute the real range.
+            $unspecified = $node->getUnspecifiedDigit();
+            if ($unspecified && method_exists($unspecified, 'specified')
+                && !$unspecified->specified('year')
+            ) {
+                $minDt = (new DateTime())->setTimestamp(
+                    $node->getMin()
+                );
+                $maxDt = (new DateTime())->setTimestamp(
+                    $node->getMax()
+                );
+                return [
+                    $minDt->format('Y'),
+                    $maxDt->format('Y'),
+                ];
+            }
+
             $month = $node->getMonth();
             $day = $node->getDay();
+
+            if ($unspecified && $month === null
+                && method_exists($unspecified, 'specified')
+                && !$unspecified->specified('month')
+            ) {
+                $minDt = (new DateTime())->setTimestamp(
+                    $node->getMin()
+                );
+                $maxDt = (new DateTime())->setTimestamp(
+                    $node->getMax()
+                );
+                return [
+                    $minDt->format('Y-m-d'),
+                    $maxDt->format('Y-m-d'),
+                ];
+            }
+
             $y = $this->padYear($year);
             // Keep partial dates as-is so the timeline shows a point, not an
             // expanded range.

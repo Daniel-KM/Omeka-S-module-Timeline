@@ -377,10 +377,15 @@ class TimelineExhibitData extends AbstractPlugin
             $resourceName = $slideData['resource']->resourceName();
             $isChild = $slideData['resource'] instanceof MediaRepresentation
                 || $resourceName === 'digital_objects';
-            $parent = $isChild ? $slideData['resource']->item() : null;
-            $text['headline'] = $parent
-                ? $parent->link($text['headline'], null, ['target' => '_blank'])
-                : $slideData['resource']->link($text['headline'], null, ['target' => '_blank']);
+            $linkResource = $isChild ? $slideData['resource']->item() : $slideData['resource'];
+            // The data are built via the api, so link() would return the api
+            // url: use the url of the site.
+            $text['headline'] = sprintf(
+                '<a href="%1$s"%2$s>%3$s</a>',
+                htmlspecialchars($this->siteSlug ? $linkResource->siteUrl($this->siteSlug) : $linkResource->url(), ENT_QUOTES),
+                $this->linkToSelf ? '' : ' target="_blank"',
+                htmlspecialchars($text['headline'], ENT_QUOTES)
+            );
         }
 
         if ($slideData['html']) {

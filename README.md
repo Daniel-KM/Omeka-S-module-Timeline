@@ -423,7 +423,7 @@ and the [Curiothèque] of the [Institut Curie].
 [examples]: http://www.simile-widgets.org/timeline/examples/index.html
 [DataTypeEdtf]: https://gitlab.com/Daniel-KM/Omeka-S-module-DataTypeEdtf
 [Common]: https://gitlab.com/Daniel-KM/Omeka-S-module-Common
-[module issues]: https://gitlab.com/Daniel-KM/Omeka-S-module-Timeline/-/issues
+[module issues]: https://gitlab.com/Daniel-KM/Omeka-S-module-Timeline/-/work_items
 [CeCILL v2.1]: https://www.cecill.info/licences/Licence_CeCILL_V2.1-en.html
 [GNU/GPL]: https://www.gnu.org/licenses/gpl-3.0.html
 [FSF]: https://www.fsf.org

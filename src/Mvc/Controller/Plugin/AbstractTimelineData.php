@@ -147,7 +147,11 @@ abstract class AbstractTimelineData extends AbstractPlugin
             }
             foreach ($itemDates as $key => $valueItemDate) {
                 $event = [];
-                $itemDate = $valueItemDate->value();
+                // Skip resource or uri values without literal date.
+                $itemDate = (string) $valueItemDate->value();
+                if ($itemDate === '') {
+                    continue;
+                }
                 $isEdtfStart = $valueItemDate->type() === 'edtf';
                 $isEdtfEnd = !empty($itemDatesEnd[$key]) && $itemDatesEnd[$key]->type() === 'edtf';
                 if ($isEdtfStart || $isEdtfEnd) {
@@ -159,14 +163,14 @@ abstract class AbstractTimelineData extends AbstractPlugin
                             [$s2, $e2] = $this->convertEdtfValue($itemDatesEnd[$key]);
                             $dateEnd = $e2 ?? $s2 ?? $dateEnd;
                         } else {
-                            [, $dateEnd2] = $this->convertTwoDates('', $itemDatesEnd[$key]->value(), $this->renderYear);
+                            [, $dateEnd2] = $this->convertTwoDates('', (string) $itemDatesEnd[$key]->value(), $this->renderYear);
                             $dateEnd = $dateEnd2 ?? $dateEnd;
                         }
                     }
                 } elseif (empty($itemDatesEnd[$key])) {
                     [$dateStart, $dateEnd] = $this->convertAnyDate($itemDate, $this->renderYear);
                 } else {
-                    [$dateStart, $dateEnd] = $this->convertTwoDates($itemDate, $itemDatesEnd[$key]->value(), $this->renderYear);
+                    [$dateStart, $dateEnd] = $this->convertTwoDates($itemDate, (string) $itemDatesEnd[$key]->value(), $this->renderYear);
                 }
                 if (empty($dateStart)) {
                     continue;

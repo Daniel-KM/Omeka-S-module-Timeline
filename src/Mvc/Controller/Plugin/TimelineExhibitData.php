@@ -720,10 +720,11 @@ class TimelineExhibitData extends AbstractPlugin
         if (!empty($slideData['start_display_date'])) {
             $interval['start_date']['display_date'] = $slideData['start_display_date'];
         }
-        if (!empty($slideData['end_display_date'])) {
+        if ($endParts && !empty($slideData['end_display_date'])) {
             $interval['end_date']['display_date'] = $slideData['end_display_date'];
         }
-        $interval['display_date'] = $slideData['display_date'] ?: (string) $edtfValue->value();
+        $interval['display_date'] = $slideData['display_date']
+            ?: $this->humanizeEdtf((string) $edtfValue->value());
         return $interval;
     }
 

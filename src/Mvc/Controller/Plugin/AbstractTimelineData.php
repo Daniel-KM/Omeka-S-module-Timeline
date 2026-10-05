@@ -234,6 +234,10 @@ abstract class AbstractTimelineData extends AbstractPlugin
                         $event['end'] = $dateEnd;
                     }
                     $event['title'] = $itemTitle;
+                    // The caption is displayed as tooltip on the event.
+                    if ($isEdtfStart) {
+                        $event['caption'] = $this->humanizeEdtf($itemDate);
+                    }
                     $event['link'] = $itemLink;
                     if ($itemDescription) {
                         $event['description'] = $itemDescription;

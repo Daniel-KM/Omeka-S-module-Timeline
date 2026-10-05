@@ -108,6 +108,12 @@ deprecated and removed in a version 3.4.22.
 By default, the timeline is formatted for Simile. To get the Knightlab format,
 append `?output=knightlab` to the query.
 
+Without block, the main settings are used. They can be overridden in the query
+with the keys `item_title`, `item_description`, `item_date`, `item_date_va`,
+`item_date_end`, `item_date_end_va`, `group`, `group_va`, `group_default` and
+`render_year`, for example `/api/timeline/r123?output=knightlab&item_date=dcterms:creator&item_date_va=dcterms:date`.
+Invalid values are ignored.
+
 ### Add a Timeline Block or an Timeline Exhibit
 
 Creating a timeline is a two-step process:
@@ -181,8 +187,10 @@ possible and to be as specific as possible.
 When the module [DataTypeEdtf] is installed, EDTF dates are fully supported:
 intervals, seasons, approximate dates, centuries (`17XX`), and decades (`192X`).
 
-On the Knightlab timeline, EDTF dates are displayed with a human-readable label
-(via the `display_date` field).
+On the Knightlab timeline and timeline exhibit, EDTF dates are displayed with a
+human-readable label (via the `display_date` field). On the Simile timeline, the
+label is set as caption (tooltip of the event). The label follows the setting of
+the module DataTypeEdtf for the site, or the main setting.
 
 ### Value annotations as date source
 
@@ -326,6 +334,8 @@ TODO
 - [ ] Integrate attachments for the exhibit and improve the form (hide all by default except resource),
 - [ ] Integrate Numeric data type Interval and Duration (?).
 - [ ] Create the json for knightlab directly from the controller, not the js in view.
+- [ ] Add a shortcode (module Shortcode).
+- [ ] Internalize Knighstlab js.
 
 
 Warning

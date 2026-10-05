@@ -2,6 +2,12 @@
 
 namespace Timeline;
 
+// Load the module dependencies when installed as a zip; in composer mode
+// they live in the root vendor/ and this directory does not exist.
+if (file_exists(__DIR__ . '/vendor/autoload.php')) {
+    require_once __DIR__ . '/vendor/autoload.php';
+}
+
 if (!class_exists('Common\TraitModule', false)) {
     require_once file_exists(dirname(__DIR__) . '/Common/src/TraitModule.php')
         ? dirname(__DIR__) . '/Common/src/TraitModule.php'

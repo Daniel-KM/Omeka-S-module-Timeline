@@ -21,7 +21,7 @@
         "issues": "https://gitlab.com/Daniel-KM/Omeka-S-module-Timeline/-/work_items",
         "forum": "https://forum.omeka.org/"
     },
-    "_require (not set until Omeka S merges PR #2412)": {
+    "_require (not set until Omeka S merges PR #2432)": {
         "omeka/omeka-s": "^4.1",
         "daniel-km/omeka-s-module-common": "*"
     },

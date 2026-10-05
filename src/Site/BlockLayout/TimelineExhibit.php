@@ -584,7 +584,7 @@ class TimelineExhibit extends AbstractBlockLayout implements TemplateableBlockLa
                 array_values(array_diff($rows[0], $columns))
             ));
             $errorStore->addError('spreadsheet', new PsrMessage(
-                'The exact list of 19 headers of a Knightlab spreadsheet should be used: check {list}.', // @ŧranslate
+                'The exact list of 19 headers of a Knightlab spreadsheet should be used: check {list}.', // @translate
                 ['list' => $diff]
             ));
             return null;
@@ -600,7 +600,7 @@ class TimelineExhibit extends AbstractBlockLayout implements TemplateableBlockLa
         $resourceOrAssetOrString = function ($val, $index) use ($errorStore) {
             if ($val !== null && !is_scalar($val)) {
                 $errorStore->addError('spreadsheet', new PsrMessage(
-                    'Spreadsheet row #{index}: The cell content is invalid: {content}', // @ŧranslate
+                    'Spreadsheet row #{index}: The cell content is invalid: {content}', // @translate
                     ['index' => $index, 'content' => $val]
                 ));
                 return null;
@@ -613,7 +613,7 @@ class TimelineExhibit extends AbstractBlockLayout implements TemplateableBlockLa
                     return $this->api->read('resources', ['id' => $val])->getContent();
                 } catch (NotFoundException $e) {
                     $errorStore->addError('spreadsheet', new PsrMessage(
-                        'Spreadsheet row #{index}: The Media "{media}" is an unknown resource.', // @ŧranslate
+                        'Spreadsheet row #{index}: The Media "{media}" is an unknown resource.', // @translate
                         ['index' => $index, 'media' => $val]
                     ));
                     return null;
@@ -624,7 +624,7 @@ class TimelineExhibit extends AbstractBlockLayout implements TemplateableBlockLa
                     return $this->api->read('assets', ['id' => substr($val, 6)])->getContent();
                 } catch (NotFoundException $e) {
                     $errorStore->addError('spreadsheet', new PsrMessage(
-                        'Spreadsheet row #{index}: The asset "{asset}" is unknown.', // @ŧranslate
+                        'Spreadsheet row #{index}: The asset "{asset}" is unknown.', // @translate
                         ['index' => $index, 'asset' => $val]
                     ));
                     return null;
@@ -665,7 +665,7 @@ class TimelineExhibit extends AbstractBlockLayout implements TemplateableBlockLa
             } elseif ($row['Media']) {
                 $slideHasError = true;
                 $errorStore->addError('spreadsheet', new PsrMessage(
-                    'Spreadsheet row #{index}: column Media is invalid: {content}', // @ŧranslate
+                    'Spreadsheet row #{index}: column Media is invalid: {content}', // @translate
                     ['index' => $index, 'content' => $row['Media']]
                 ));
             }
@@ -682,7 +682,7 @@ class TimelineExhibit extends AbstractBlockLayout implements TemplateableBlockLa
                 } else {
                     $slideHasError = true;
                     $errorStore->addError('spreadsheet', new PsrMessage(
-                        'Spreadsheet row #{index}: The Type "{type}" is unmanaged.', // @ŧranslate
+                        'Spreadsheet row #{index}: The Type "{type}" is unmanaged.', // @translate
                         ['index' => $index, 'type' => $row['Type']]
                     ));
                 }
@@ -695,19 +695,19 @@ class TimelineExhibit extends AbstractBlockLayout implements TemplateableBlockLa
             if (empty($row['End Year']) && !empty($row['End Month'])) {
                 $slideHasError = true;
                 $errorStore->addError('spreadsheet', new PsrMessage(
-                    'Spreadsheet row #{index}: The start month "{month}" is set, but the year is empty.', // @ŧranslate
+                    'Spreadsheet row #{index}: The start month "{month}" is set, but the year is empty.', // @translate
                     ['index' => $index, 'month' => $row['End Month']]
                 ));
             } elseif (empty($row['Month']) && !empty($row['Day'])) {
                 $slideHasError = true;
                 $errorStore->addError('spreadsheet', new PsrMessage(
-                    'Spreadsheet row #{index}: The start day "{day}" is set, but the month is empty.', // @ŧranslate
+                    'Spreadsheet row #{index}: The start day "{day}" is set, but the month is empty.', // @translate
                     ['index' => $index, 'day' => $row['Day']]
                 ));
             } elseif (empty($row['Day']) && !empty($row['Time'])) {
                 $slideHasError = true;
                 $errorStore->addError('spreadsheet', new PsrMessage(
-                    'Spreadsheet row #{index}: The start time "{time}" is set, but the day is empty.', // @ŧranslate
+                    'Spreadsheet row #{index}: The start time "{time}" is set, but the day is empty.', // @translate
                     ['index' => $index, 'time' => $row['Time']]
                 ));
             } else {
@@ -726,19 +726,19 @@ class TimelineExhibit extends AbstractBlockLayout implements TemplateableBlockLa
             if (empty($row['End Year']) && !empty($row['End Month'])) {
                 $slideHasError = true;
                 $errorStore->addError('spreadsheet', new PsrMessage(
-                    'Spreadsheet row #{index}: The end month "{month}" is set, but the year is empty.', // @ŧranslate
+                    'Spreadsheet row #{index}: The end month "{month}" is set, but the year is empty.', // @translate
                     ['index' => $index, 'month' => $row['End Month']]
                 ));
             } elseif (empty($row['End Month']) && !empty($row['End Day'])) {
                 $slideHasError = true;
                 $errorStore->addError('spreadsheet', new PsrMessage(
-                    'Spreadsheet row #{index}: The end day "{day}" is set, but the month is empty.', // @ŧranslate
+                    'Spreadsheet row #{index}: The end day "{day}" is set, but the month is empty.', // @translate
                     ['index' => $index, 'day' => $row['End Day']]
                 ));
             } elseif (empty($row['End Day']) && !empty($row['End Time'])) {
                 $slideHasError = true;
                 $errorStore->addError('spreadsheet', new PsrMessage(
-                    'Spreadsheet row #{index}: The end time "{time}" is set, but the day is empty.', // @ŧranslate
+                    'Spreadsheet row #{index}: The end time "{time}" is set, but the day is empty.', // @translate
                     ['index' => $index, 'time' => $row['End Time']]
                 ));
             } else {
@@ -758,7 +758,7 @@ class TimelineExhibit extends AbstractBlockLayout implements TemplateableBlockLa
             if (!$isSlideTitle && empty($row['Year'])) {
                 $slideHasError = true;
                 $errorStore->addError('spreadsheet', new PsrMessage(
-                    'Spreadsheet row #{index}: A start year is required, except for title.', // @ŧranslate
+                    'Spreadsheet row #{index}: A start year is required, except for title.', // @translate
                     ['index' => $index]
                 ));
             }
@@ -767,7 +767,7 @@ class TimelineExhibit extends AbstractBlockLayout implements TemplateableBlockLa
             if ($isSlideEra && (empty($slide['start_date']) || empty($slide['end_date']))) {
                 $slideHasError = true;
                 $errorStore->addError('spreadsheet', new PsrMessage(
-                    'Spreadsheet row #{index}: A slide with type "Era" should have a stard and a end end date.', // @ŧranslate
+                    'Spreadsheet row #{index}: A slide with type "Era" should have a stard and a end end date.', // @translate
                     ['index' => $index, 'time' => $row['End Time']]
                 ));
             }
@@ -805,7 +805,7 @@ class TimelineExhibit extends AbstractBlockLayout implements TemplateableBlockLa
             } elseif ($row['Background']) {
                 $slideHasError = true;
                 $errorStore->addError('spreadsheet', new PsrMessage(
-                    'Spreadsheet row #{index}: column Background is invalid: {content}', // @ŧranslate
+                    'Spreadsheet row #{index}: column Background is invalid: {content}', // @translate
                     ['index' => $index, 'content' => $row['Background']]
                 ));
             }
@@ -831,7 +831,7 @@ class TimelineExhibit extends AbstractBlockLayout implements TemplateableBlockLa
         }
 
         if (substr($spreadsheet, 0, 5) === 'PK' . chr(3) . chr(4) . "\0") {
-            $errorStore->addError('spreadsheet', 'The support of OpenDocument Spreadsheet requires php version 8.1 or greater.'); // @ŧranslate
+            $errorStore->addError('spreadsheet', 'The support of OpenDocument Spreadsheet requires php version 8.1 or greater.'); // @translate
             return null;
         }
 
@@ -937,7 +937,7 @@ class TimelineExhibit extends AbstractBlockLayout implements TemplateableBlockLa
                 if (!$countHeaders
                     || $countHeaders !== count($row)
                 ) {
-                    $errorStore->addError('spreadsheet', 'Some headers are duplicated.'); // @ŧranslate
+                    $errorStore->addError('spreadsheet', 'Some headers are duplicated.'); // @translate
                     return null;
                 }
                 $rows[$key] = $headers;

@@ -236,7 +236,7 @@ class TimelineFieldset extends Fieldset
                 'type' => OmekaElement\ArrayTextarea::class,
                 'options' => [
                     'label' => 'Eras/Periods', // @translate
-                    'info' => 'Write one era by line like "Summer 2024 = 2024-06-20/2024-09-21". Year can be set alone. Require Knightlab.', // @ŧranslate
+                    'info' => 'Write one era by line like "Summer 2024 = 2024-06-20/2024-09-21". Year can be set alone. Require Knightlab.', // @translate
                     'as_key_value' => true,
                 ],
                 'attributes' => [
@@ -250,7 +250,7 @@ class TimelineFieldset extends Fieldset
                 'type' => CommonElement\DataTextarea::class,
                 'options' => [
                     'label' => 'Markers for well-known or extra events', // @translate
-                    'info' => 'Write one markers by line like "Night of the 4th August = 1789-08-04 = Abolition of feudalism in France". Year can be set alone. Require Knightlab.', // @ŧranslate
+                    'info' => 'Write one markers by line like "Night of the 4th August = 1789-08-04 = Abolition of feudalism in France". Year can be set alone. Require Knightlab.', // @translate
                     // Important: these options should be set in the block layout too.
                     'data_options' => [
                         'heading' => null,

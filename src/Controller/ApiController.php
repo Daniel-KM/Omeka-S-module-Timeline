@@ -138,8 +138,8 @@ class ApiController extends \Omeka\Controller\ApiController
             $blockData['site_slug'] = null;
             try {
                 // May be an issue when the page or the site is private.
-                /** @see https://gitlab.com/Daniel-KM/Omeka-S-module-Timeline/-/issues/24 */
-                /** @see https://github.com/Daniel-KM/Omeka-S-module-Timeline/issues/25 */
+                /** @see https://gitlab.com/Daniel-KM/Omeka-S-module-Timeline/-/work_items/24 */
+                /** @see https://gitlab.com/Daniel-KM/Omeka-S-module-Timeline/-/work_items/25 */
                 $blockData['site_slug'] = $block->getPage()->getSite()->getSlug();
             } catch (\Throwable $e) {
                 $sql = <<<'SQL'

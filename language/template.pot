@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-03-30 00:00+0000\n"
+"POT-Creation-Date: 2026-10-05 00:00+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,26 +17,26 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: data/scripts/upgrade.php:41 Module.php:39
+#: data/scripts/upgrade.php:42 Module.php:62
 #, php-format
 msgid "The module %1$s should be upgraded to version %2$s or later."
 msgstr ""
 
-#: data/scripts/upgrade.php:45 data/scripts/upgrade.php:60
-#: data/scripts/upgrade.php:317
+#: data/scripts/upgrade.php:46 data/scripts/upgrade.php:61
+#: data/scripts/upgrade.php:318
 msgid "Missing requirement. Unable to upgrade."
 msgstr ""
 
-#: data/scripts/upgrade.php:52 Module.php:31
+#: data/scripts/upgrade.php:53 Module.php:54
 #, php-format
 msgid "The module %1$s requires PHP %2$s or later."
 msgstr ""
 
-#: src/Controller/ApiController.php:262
+#: src/Controller/ApiController.php:269
 msgid "Method Not Allowed"
 msgstr ""
 
-#: src/Mvc/Controller/Plugin/AbstractTimelineData.php:238
+#: src/Mvc/Controller/Plugin/AbstractTimelineData.php:262
 #: src/Mvc/Controller/Plugin/TimelineExhibitData.php:263
 msgid "Events"
 msgstr ""
@@ -77,11 +77,11 @@ msgstr ""
 msgid "collapse"
 msgstr ""
 
-#: data/scripts/upgrade.php:126
+#: data/scripts/upgrade.php:127
 msgid "The json is now built dynamically from the url /api/timeline."
 msgstr ""
 
-#: data/scripts/upgrade.php:213
+#: data/scripts/upgrade.php:214
 #, php-format
 msgid ""
 "The setting \"heading\" was removed from blocks. A new block \"Heading\" "
@@ -89,27 +89,27 @@ msgid ""
 "heading. You may check pages for styles: %s"
 msgstr ""
 
-#: data/scripts/upgrade.php:225
+#: data/scripts/upgrade.php:226
 msgid "timeline-simile-online"
 msgstr ""
 
-#: data/scripts/upgrade.php:226
+#: data/scripts/upgrade.php:227
 msgid "timeline-knightlab"
 msgstr ""
 
-#: data/scripts/upgrade.php:246
+#: data/scripts/upgrade.php:247
 msgid ""
 "It is now possible to add groups, eras and extra-markers, for example "
 "historical events, in timelines."
 msgstr ""
 
-#: data/scripts/upgrade.php:251
+#: data/scripts/upgrade.php:252
 msgid ""
 "The timeline for Knightlab has been updated to avoid a js transformation. "
 "Check if you used the output of the api directly."
 msgstr ""
 
-#: data/scripts/upgrade.php:312
+#: data/scripts/upgrade.php:313
 #, php-format
 msgid ""
 "The deprecated route \"timeline-block\" (for url \"/timeline/:block-id/"
@@ -117,54 +117,54 @@ msgid ""
 "you used it. Matching templates: %s"
 msgstr ""
 
-#: data/scripts/upgrade.php:320
+#: data/scripts/upgrade.php:321
 msgid ""
 "The deprecated route \"timeline-block\" (for url \"/timeline/:block-id/"
 "events.json\") was replaced by \"api/timeline\". Check your old themes if "
 "you used it."
 msgstr ""
 
-#: data/scripts/upgrade.php:326
+#: data/scripts/upgrade.php:327
 msgid ""
 "It is now possible to add a timeline to an item set as a resource page block."
 msgstr ""
 
-#: data/scripts/upgrade.php:333
+#: data/scripts/upgrade.php:334
 msgid ""
 "It is now possible to fill slides for timeline exhibit with a spreadsheet "
 "(csv, tsv) formatted according to {link}Knightslab{link_end}."
 msgstr ""
 
-#: data/scripts/upgrade.php:400
+#: data/scripts/upgrade.php:401
 msgid "The settings for exhibits were improved. You may check pages: {json}"
 msgstr ""
 
-#: data/scripts/upgrade.php:408
+#: data/scripts/upgrade.php:409
 msgid ""
 "It is now possible to fill a resource, asset or external url as main content "
 "or background for timeline exhibit."
 msgstr ""
 
-#: data/scripts/upgrade.php:413
+#: data/scripts/upgrade.php:414
 msgid ""
 "Furthermore, the file can be a native standard spreadsheet file (ods, "
 "OpenDocument Spreadsheet), avoiding issues with encoding and end of lines "
 "and allowing cells with multilines."
 msgstr ""
 
-#: data/scripts/upgrade.php:420
+#: data/scripts/upgrade.php:421
 msgid ""
 "It is now possible to define a configuration for resource block in main "
 "settings."
 msgstr ""
 
-#: data/scripts/upgrade.php:427
+#: data/scripts/upgrade.php:428
 msgid ""
 "It is now possible to use value annotations as date source for timeline and "
 "timeline exhibit blocks."
 msgstr ""
 
-#: data/scripts/upgrade.php:432
+#: data/scripts/upgrade.php:433
 msgid ""
 "The module {link}DataTypeEdtf{link_end} (Extended Date/Time Format) is now "
 "fully supported: dates, intervals, seasons, centuries (17XX), and decades "
@@ -327,9 +327,23 @@ msgstr ""
 msgid "Eras/Periods"
 msgstr ""
 
+#: src/Form/SettingsFieldset.php:261 src/Form/TimelineExhibitFieldset.php:177
+#: src/Form/TimelineFieldset.php:239
+msgid ""
+"Write one era by line like \"Summer 2024 = 2024-06-20/2024-09-21\". Year can "
+"be set alone. Require Knightlab."
+msgstr ""
+
 #: src/Form/SettingsFieldset.php:275 src/Form/TimelineExhibitFieldset.php:190
 #: src/Form/TimelineFieldset.php:252
 msgid "Markers for well-known or extra events"
+msgstr ""
+
+#: src/Form/SettingsFieldset.php:276 src/Form/TimelineExhibitFieldset.php:191
+#: src/Form/TimelineFieldset.php:253
+msgid ""
+"Write one markers by line like \"Night of the 4th August = 1789-08-04 = "
+"Abolition of feudalism in France\". Year can be set alone. Require Knightlab."
 msgstr ""
 
 #: src/Form/SettingsFieldset.php:295 src/Form/TimelineFieldset.php:271
@@ -538,15 +552,15 @@ msgid ""
 "Restrict timeline to a particular subset of resources, for example a site."
 msgstr ""
 
-#: src/Controller/ApiController.php:83
+#: src/Controller/ApiController.php:91
 msgid "A well-formed url or a query is needed to get a timeline."
 msgstr ""
 
-#: src/Controller/ApiController.php:93
+#: src/Controller/ApiController.php:101
 msgid "Block or resource not found"
 msgstr ""
 
-#: src/Controller/ApiController.php:117
+#: src/Controller/ApiController.php:125
 #, php-format
 msgid "Id %d is not a timeline."
 msgstr ""
@@ -584,6 +598,91 @@ msgstr ""
 
 #: src/Site/BlockLayout/TimelineExhibit.php:532
 msgid "The spreadsheet file is empty."
+msgstr ""
+
+#: src/Site/BlockLayout/TimelineExhibit.php:587
+msgid ""
+"The exact list of 19 headers of a Knightlab spreadsheet should be used: "
+"check {list}."
+msgstr ""
+
+#: src/Site/BlockLayout/TimelineExhibit.php:603
+msgid "Spreadsheet row #{index}: The cell content is invalid: {content}"
+msgstr ""
+
+#: src/Site/BlockLayout/TimelineExhibit.php:616
+msgid "Spreadsheet row #{index}: The Media \"{media}\" is an unknown resource."
+msgstr ""
+
+#: src/Site/BlockLayout/TimelineExhibit.php:627
+msgid "Spreadsheet row #{index}: The asset \"{asset}\" is unknown."
+msgstr ""
+
+#: src/Site/BlockLayout/TimelineExhibit.php:668
+msgid "Spreadsheet row #{index}: column Media is invalid: {content}"
+msgstr ""
+
+#: src/Site/BlockLayout/TimelineExhibit.php:685
+msgid "Spreadsheet row #{index}: The Type \"{type}\" is unmanaged."
+msgstr ""
+
+#: src/Site/BlockLayout/TimelineExhibit.php:698
+msgid ""
+"Spreadsheet row #{index}: The start month \"{month}\" is set, but the year "
+"is empty."
+msgstr ""
+
+#: src/Site/BlockLayout/TimelineExhibit.php:704
+msgid ""
+"Spreadsheet row #{index}: The start day \"{day}\" is set, but the month is "
+"empty."
+msgstr ""
+
+#: src/Site/BlockLayout/TimelineExhibit.php:710
+msgid ""
+"Spreadsheet row #{index}: The start time \"{time}\" is set, but the day is "
+"empty."
+msgstr ""
+
+#: src/Site/BlockLayout/TimelineExhibit.php:729
+msgid ""
+"Spreadsheet row #{index}: The end month \"{month}\" is set, but the year is "
+"empty."
+msgstr ""
+
+#: src/Site/BlockLayout/TimelineExhibit.php:735
+msgid ""
+"Spreadsheet row #{index}: The end day \"{day}\" is set, but the month is "
+"empty."
+msgstr ""
+
+#: src/Site/BlockLayout/TimelineExhibit.php:741
+msgid ""
+"Spreadsheet row #{index}: The end time \"{time}\" is set, but the day is "
+"empty."
+msgstr ""
+
+#: src/Site/BlockLayout/TimelineExhibit.php:761
+msgid "Spreadsheet row #{index}: A start year is required, except for title."
+msgstr ""
+
+#: src/Site/BlockLayout/TimelineExhibit.php:770
+msgid ""
+"Spreadsheet row #{index}: A slide with type \"Era\" should have a stard and "
+"a end end date."
+msgstr ""
+
+#: src/Site/BlockLayout/TimelineExhibit.php:808
+msgid "Spreadsheet row #{index}: column Background is invalid: {content}"
+msgstr ""
+
+#: src/Site/BlockLayout/TimelineExhibit.php:834
+msgid ""
+"The support of OpenDocument Spreadsheet requires php version 8.1 or greater."
+msgstr ""
+
+#: src/Site/BlockLayout/TimelineExhibit.php:940
+msgid "Some headers are duplicated."
 msgstr ""
 
 #: src/Site/BlockLayout/Timeline.php:89

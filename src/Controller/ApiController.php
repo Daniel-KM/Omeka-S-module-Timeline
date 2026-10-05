@@ -72,7 +72,7 @@ class ApiController extends \Omeka\Controller\ApiController
         $query = $this->cleanQuery();
         // Set the current site on SiteSettings so site-level settings (locale,
         // humanizer style, etc.) apply.
-        $this->setCurrentSite($query['site_id'] ?? null);
+        $this->setCurrentSite(empty($query['site_id']) ? null : (int) $query['site_id']);
         $blockId = $this->params('block-id');
         if (!$blockId) {
             $blockId = empty($query['block_id']) ? null : $query['block_id'];
@@ -147,8 +147,7 @@ class ApiController extends \Omeka\Controller\ApiController
                     ->fetchOne();
             }
 
-            // Positioner le site courant pour les SiteSettings.
-            $this->setCurrentSiteFromSlug($blockData['site_slug']);
+            $this->setCurrentSiteFromSlug($blockData['site_slug'] ?: null);
 
             // Get the site slug directly via the page.
             if ($layout === 'timelineExhibit') {
@@ -300,16 +299,13 @@ class ApiController extends \Omeka\Controller\ApiController
     }
 
     /**
-     * Set current site on SiteSettings.
-     *
-     *  It allows to get site-level settings can be read from plugins invoked
-     *  from this controller.
+     * Set the current site so plugins can read site settings.
      */
     protected function setCurrentSite(?int $siteId): void
     {
         if ($siteId) {
             try {
-                $this->siteSettings->setTargetId((int) $siteId);
+                $this->siteSettings->setTargetId($siteId);
             } catch (\Throwable $e) {
                 // Ignore.
             }

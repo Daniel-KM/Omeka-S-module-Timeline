@@ -142,8 +142,24 @@ abstract class AbstractTimelineData extends AbstractPlugin
                     : $media->thumbnailUrl($thumbnailType);
                 $thumbnailAltText = $media->altText();
             } else {
+                // Fallback: first DigitalObject referenced by the item via
+                // property values (post-migration to module DigitalObject, an
+                // item may have no media but DOs).
                 $thumbnailUrl = null;
                 $thumbnailAltText = null;
+                foreach ($item->values() as $property) {
+                    foreach ($property['values'] as $value) {
+                        $vr = $value->valueResource();
+                        if (!$vr || $vr->resourceName() !== 'digital_objects' || !$vr->hasThumbnails()) {
+                            continue;
+                        }
+                        $thumbnailUrl = $thumbnailResource && $vr->thumbnail()
+                            ? $vr->thumbnail()->assetUrl()
+                            : $vr->thumbnailUrl($thumbnailType);
+                        $thumbnailAltText = $vr->altText();
+                        break 2;
+                    }
+                }
             }
             foreach ($itemDates as $key => $valueItemDate) {
                 $event = [];

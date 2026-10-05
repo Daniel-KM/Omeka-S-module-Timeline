@@ -372,8 +372,14 @@ class TimelineExhibitData extends AbstractPlugin
         }
 
         if ($text['headline'] && $slideData['resource']) {
-            $text['headline'] = $slideData['resource'] instanceof MediaRepresentation
-                ? $slideData['resource']->item()->link($text['headline'], null, ['target' => '_blank'])
+            // For media or digital object resources, link to the parent item;
+            // otherwise link to the resource itself.
+            $resourceName = $slideData['resource']->resourceName();
+            $isChild = $slideData['resource'] instanceof MediaRepresentation
+                || $resourceName === 'digital_objects';
+            $parent = $isChild ? $slideData['resource']->item() : null;
+            $text['headline'] = $parent
+                ? $parent->link($text['headline'], null, ['target' => '_blank'])
                 : $slideData['resource']->link($text['headline'], null, ['target' => '_blank']);
         }
 
@@ -409,12 +415,13 @@ class TimelineExhibitData extends AbstractPlugin
             'link_target' => $this->linkToSelf ? null : '_blank',
         ];
 
-        // When a media is set, the item is used for data, according to most
-        // common cases.
-        $isMedia = $resource instanceof MediaRepresentation;
+        // When a media or a digital object is set, the parent item is used for
+        // data, according to most common cases.
+        $isMedia = $resource instanceof MediaRepresentation
+            || $resource->resourceName() === 'digital_objects';
 
         $mainResource = $isMedia
-            ? $resource->item()
+            ? ($resource->item() ?: $resource)
             : $resource;
 
         /** @var \Omeka\Api\Representation\MediaRepresentation $primaryMedia */

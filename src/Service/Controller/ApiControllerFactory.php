@@ -15,6 +15,7 @@ class ApiControllerFactory implements FactoryInterface
             $services->get('Omeka\ApiManager'),
             $services->get('Omeka\EntityManager'),
             $services->get('Omeka\Settings\Site'),
+            $services->get('Common\EasyMeta'),
             $services->get('Config')['timeline']
         );
     }

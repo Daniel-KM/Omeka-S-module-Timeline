@@ -2,6 +2,7 @@
 
 namespace Timeline\Controller;
 
+use Common\Stdlib\EasyMeta;
 use Doctrine\ORM\EntityManager;
 use Laminas\Http\Response;
 use Omeka\Api\Manager as ApiManager;
@@ -29,6 +30,11 @@ class ApiController extends \Omeka\Controller\ApiController
     protected $siteSettings;
 
     /**
+     * @var \Common\Stdlib\EasyMeta
+     */
+    protected $easyMeta;
+
+    /**
      * @var array
      */
     protected $configTimeline;
@@ -38,12 +44,14 @@ class ApiController extends \Omeka\Controller\ApiController
         ApiManager $api,
         EntityManager $entityManager,
         SiteSettings $siteSettings,
+        EasyMeta $easyMeta,
         array $config
     ) {
         $this->paginator = $paginator;
         $this->api = $api;
         $this->entityManager = $entityManager;
         $this->siteSettings = $siteSettings;
+        $this->easyMeta = $easyMeta;
         $this->configTimeline = $config;
     }
 
@@ -97,7 +105,7 @@ class ApiController extends \Omeka\Controller\ApiController
             $isResource = $blockOrResource instanceof \Omeka\Api\Representation\AbstractResourceEntityRepresentation;
             if ($isResource) {
                 $resource = $blockOrResource;
-                $blockData = $this->mainTimelineData();
+                $blockData = $this->mainTimelineData($query);
                 // Set the site slug from query, so item links are built.
                 $blockData['site_slug'] = $query['site_slug'] ?? null;
                 $query['item_set_id'] = $resource->id();
@@ -165,7 +173,7 @@ class ApiController extends \Omeka\Controller\ApiController
         }
 
         // Use the query and the options set in the config.
-        $blockData = $this->mainTimelineData();
+        $blockData = $this->mainTimelineData($query);
         // Set the site slug from query, so item links are built.
         $blockData['site_slug'] = $query['site_slug'] ?? null;
         $data = ($query['output'] ?? $this->settings()->get('timeline_library', 'simile')) === 'knightlab'
@@ -328,13 +336,73 @@ class ApiController extends \Omeka\Controller\ApiController
         $this->setCurrentSite($siteId ? (int) $siteId : null);
     }
 
-    protected function mainTimelineData(): array
+    /**
+     * Get the main timeline settings, overridable via the query.
+     *
+     * The keys used to override settings are removed from the query, so it can
+     * be used as an item pool.
+     */
+    protected function mainTimelineData(array &$query): array
     {
         $settings = $this->settings();
         $data = [];
         foreach ($this->configTimeline['settings'] as $key => $default) {
             $data[substr($key, 9)] = $settings->get($key, $default);
         }
+
+        $specialFields = [
+            'item_title' => ['default'],
+            'item_description' => ['default'],
+            'group' => ['resource_class', 'resource_class_label', 'resource_template_label', 'owner_name'],
+        ];
+        $optionalFields = [
+            'item_date_va',
+            'item_date_end',
+            'item_date_end_va',
+            'group',
+            'group_va',
+        ];
+        $propertyFields = [
+            'item_title',
+            'item_description',
+            'item_date',
+            'item_date_va',
+            'item_date_end',
+            'item_date_end_va',
+            'group',
+            'group_va',
+        ];
+        foreach ($propertyFields as $key) {
+            if (!array_key_exists($key, $query)) {
+                continue;
+            }
+            $value = $query[$key];
+            unset($query[$key]);
+            if (!is_string($value)) {
+                continue;
+            }
+            if ($value === '' && in_array($key, $optionalFields)) {
+                $data[$key] = null;
+            } elseif (in_array($value, $specialFields[$key] ?? [], true)) {
+                $data[$key] = $value;
+            } elseif ($term = $this->easyMeta->propertyTerm($value)) {
+                $data[$key] = $term;
+            }
+        }
+
+        if (isset($query['render_year'])) {
+            $value = $query['render_year'];
+            if (is_string($value)
+                && isset(\Timeline\Mvc\Controller\Plugin\AbstractTimelineData::$renderYears[$value])
+            ) {
+                $data['render_year'] = $value;
+            }
+        }
+        if (isset($query['group_default']) && is_string($query['group_default'])) {
+            $data['group_default'] = $query['group_default'];
+        }
+        unset($query['render_year'], $query['group_default']);
+
         return $data;
     }
 }

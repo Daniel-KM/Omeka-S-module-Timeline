@@ -102,20 +102,7 @@ trait TimelineTestTrait
                 continue;
             }
 
-            $itemData[$term] = [];
-            foreach ($values as $value) {
-                $valueData = [
-                    'type' => $value['type'] ?? 'literal',
-                    'property_id' => $propertyId,
-                ];
-                if (isset($value['@value'])) {
-                    $valueData['@value'] = $value['@value'];
-                }
-                if (isset($value['@id'])) {
-                    $valueData['@id'] = $value['@id'];
-                }
-                $itemData[$term][] = $valueData;
-            }
+            $itemData[$term] = $this->prepareValues($propertyId, $values);
         }
 
         $response = $this->api()->create('items', $itemData);
@@ -123,6 +110,35 @@ trait TimelineTestTrait
         $this->createdResources[] = ['type' => 'items', 'id' => $item->id()];
 
         return $item;
+    }
+
+    /**
+     * Prepare api values of a property, with optional value annotations.
+     */
+    protected function prepareValues(int $propertyId, array $values): array
+    {
+        $easyMeta = $this->getServiceLocator()->get('Common\EasyMeta');
+        $result = [];
+        foreach ($values as $value) {
+            $valueData = [
+                'type' => $value['type'] ?? 'literal',
+                'property_id' => $propertyId,
+            ];
+            if (isset($value['@value'])) {
+                $valueData['@value'] = $value['@value'];
+            }
+            if (isset($value['@id'])) {
+                $valueData['@id'] = $value['@id'];
+            }
+            foreach ($value['@annotation'] ?? [] as $term => $annotationValues) {
+                $annotationPropertyId = $easyMeta->propertyId($term);
+                if ($annotationPropertyId) {
+                    $valueData['@annotation'][$term] = $this->prepareValues($annotationPropertyId, $annotationValues);
+                }
+            }
+            $result[] = $valueData;
+        }
+        return $result;
     }
 
     /**

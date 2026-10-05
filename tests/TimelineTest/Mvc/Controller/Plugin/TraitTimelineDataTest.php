@@ -213,25 +213,25 @@ class TraitTimelineDataTest extends TestCase
     public function testConvertDateSingleYearJanuary1(): void
     {
         $result = $this->helper->callConvertDate('2020', 'january_1');
-        $this->assertEquals('2020-01-01T00:00:00+00:00', $result);
+        $this->assertEquals('2020-01-01', $result);
     }
 
     public function testConvertDateSingleYearJuly1(): void
     {
         $result = $this->helper->callConvertDate('2020', 'july_1');
-        $this->assertEquals('2020-07-01T00:00:00+00:00', $result);
+        $this->assertEquals('2020-07-01', $result);
     }
 
     public function testConvertDateSingleYearDecember31(): void
     {
         $result = $this->helper->callConvertDate('2020', 'december_31');
-        $this->assertEquals('2020-12-31T00:00:00+00:00', $result);
+        $this->assertEquals('2020-12-31', $result);
     }
 
     public function testConvertDateSingleYearJune30(): void
     {
         $result = $this->helper->callConvertDate('2020', 'june_30');
-        $this->assertEquals('2020-06-30T00:00:00+00:00', $result);
+        $this->assertEquals('2020-06-30', $result);
     }
 
     public function testConvertDateSingleYearSkip(): void
